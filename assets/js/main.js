@@ -76,6 +76,7 @@ onReady(function () {
       new Swiper(featuredEl, {
         slidesPerView: 1,
         spaceBetween: 24,
+        centeredSlides: true,
         loop: true,
         pagination: {
           el: '.swiper-pagination',
@@ -83,10 +84,10 @@ onReady(function () {
         },
         breakpoints: {
           768: {
-            slidesPerView: 2
+            slidesPerView: 1
           },
           1024: {
-            slidesPerView: 3
+            slidesPerView: 1
           }
         }
       });
