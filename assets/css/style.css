@@ -471,10 +471,11 @@ p {
 }
 
 .event-card img {
-  height: 190px;
-  height: 100%; /* Ensuring height is set to 100% for consistent sizing */
+  width: 100%;
+  height: auto;
+  max-height: 340px;
+  object-fit: contain;
 }
-
 .event-card-body {
   padding: 14px 16px 16px;
 }
