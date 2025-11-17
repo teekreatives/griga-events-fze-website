@@ -335,6 +335,20 @@ p {
   text-align: center;
 }
 
+.hero-logo {
+  margin: 18px auto 10px;
+  display: inline-block;
+}
+  
+.hero-logo img {
+  display: block;
+  max-width: 320px;
+  width: 100%;
+  height: auto;
+  border-radius: 0;
+  background: transparent;
+}
+
 /* Hero heading uses full hero width so short text wraps cleanly */
 .hero-content h1 {
   max-width: none;
