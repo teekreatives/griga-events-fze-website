@@ -298,7 +298,7 @@ p {
 .hero {
   position: relative;
   padding-top: 110px;
-  padding-bottom: 30px;
+  padding-bottom: 0;
   overflow: hidden;
 }
 
@@ -357,6 +357,15 @@ p {
 .hero-subtitle {
   color: rgba(255,255,255,0.85);
   margin-bottom: 4px;
+}
+
+/* Tighten space between hero/logo and Upcoming Highlights */
+#featured.section {
+  padding-top: 0; /* remove extra top padding for this section */
+}
+
+#featured .section-header {
+  margin-bottom: 4px; /* minimal gap above the cards */
 }
 
 .hero-actions {
@@ -751,6 +760,15 @@ p {
 
   .stats-grid {
     grid-template-columns: 1fr;
+  }
+
+  /* On mobile, remove extra space above Upcoming Highlights cards */
+  #featured.section {
+    padding-top: 0;
+  }
+
+  #featured .section-header {
+    margin-bottom: 4px;
   }
 
   /* Limit event description lines on mobile for cleaner cards */
