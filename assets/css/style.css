@@ -27,6 +27,7 @@ body {
   color: var(--color-black-soft);
   background: var(--color-white);
   scroll-behavior: smooth;
+  overflow-x: hidden;
 }
 
 img {
@@ -94,6 +95,11 @@ h1,
   font-weight: 800;
   text-transform: uppercase;
   letter-spacing: 0.02em;
+}
+
+.hero-content h1 span {
+  display: block;
+  white-space: nowrap;
 }
 
 h2,
@@ -334,6 +340,7 @@ p {
   color: var(--color-white);
   text-align: center;
   padding-bottom: 8px;
+  margin: 0 auto;
 }
 
 .hero-logo {
@@ -343,7 +350,6 @@ p {
   
 .hero-logo img {
   display: block;
-  max-width: 320px;
   width: 100%;
   height: auto;
   border-radius: 0;
@@ -351,8 +357,19 @@ p {
 }
 
 /* Hero heading uses full hero width so short text wraps cleanly */
+
 .hero-content h1 {
-  max-width: none;
+  max-width: min(560px, calc(100% - 40px));
+  margin: 0 auto;
+  padding: 0;
+}
+
+.hero-content h1 span {
+  display: block;
+  width: 100%;
+  text-align: center;
+  white-space: normal;
+  overflow-wrap: break-word;
 }
 
 .hero-subtitle {
