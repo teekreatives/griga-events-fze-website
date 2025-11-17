@@ -753,6 +753,11 @@ p {
     padding: 32px 0;
   }
 
+  .hero {
+    padding-top: 90px;
+    padding-bottom: 20px;
+  }
+
   .hero-actions {
     flex-direction: column;
     align-items: stretch;
@@ -793,6 +798,10 @@ p {
   .hero-logo img {
     max-width: 480px;
     height: auto;
+  }
+
+  #featured.section {
+    margin-top: -150px;
   }
 }
 
