@@ -333,10 +333,11 @@ p {
   max-width: 600px;
   color: var(--color-white);
   text-align: center;
+  padding-bottom: 8px;
 }
 
 .hero-logo {
-  margin: 18px auto 10px;
+  margin: 18px auto 0;
   display: inline-block;
 }
   
@@ -359,13 +360,21 @@ p {
   margin-bottom: 4px;
 }
 
-/* Tighten space between hero/logo and Upcoming Highlights */
+/* Tighten space between hero/logo and Upcoming Events */
 #featured.section {
-  padding-top: 0; /* remove extra top padding for this section */
+  padding-top: 0;
+  padding-bottom: 8px;
+  margin-top: -96px;
+}
+
+@media (max-width: 768px) {
+  #featured.section {
+    margin-top: -140px;
+  }
 }
 
 #featured .section-header {
-  margin-bottom: 4px; /* minimal gap above the cards */
+  margin-bottom: 2px;
 }
 
 .hero-actions {
@@ -736,6 +745,7 @@ p {
   .footer-inner {
     grid-template-columns: 1fr;
   }
+
 }
 
 @media (max-width: 520px) {
@@ -762,7 +772,7 @@ p {
     grid-template-columns: 1fr;
   }
 
-  /* On mobile, remove extra space above Upcoming Highlights cards */
+  /* On mobile, remove extra space above Upcoming Events cards */
   #featured.section {
     padding-top: 0;
   }
@@ -775,7 +785,14 @@ p {
   .event-description {
     display: -webkit-box;
     -webkit-line-clamp: 2;
+    line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
   }
+
+  .hero-logo img {
+    max-width: 480px;
+    height: auto;
+  }
 }
+
