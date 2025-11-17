@@ -87,10 +87,13 @@ a {
 h1,
 .h1 {
   font-family: var(--font-display);
-  font-size: 42px;
-  line-height: 1.1;
-  margin: 0 0 16px;
+  font-size: 64px;
+  line-height: 1.05;
+  margin: 0 0 18px;
   color: var(--color-black);
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
 }
 
 h2,
@@ -329,6 +332,12 @@ p {
 .hero-content {
   max-width: 600px;
   color: var(--color-white);
+  text-align: center;
+}
+
+/* Hero heading uses full hero width so short text wraps cleanly */
+.hero-content h1 {
+  max-width: none;
 }
 
 .hero-subtitle {
@@ -624,7 +633,7 @@ p {
 
   h1,
   .h1 {
-    font-size: 32px;
+    font-size: 42px;
   }
 
   h2,
@@ -717,6 +726,11 @@ p {
   .btn,
   .btn-lg {
     width: 100%;
+  }
+
+  h1,
+  .h1 {
+    font-size: 32px;
   }
 
   .stats-grid {
