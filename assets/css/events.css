@@ -1,0 +1,250 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Playfair+Display:wght@600&display=swap');
+
+:root {
+  --color-black: #020202;
+  --color-dark: #0f0f0f;
+  --color-gold: #caa15b;
+  --color-white: #fefefe;
+  --color-grey: #a7a7a7;
+  --radius-soft: 28px;
+  --shadow-soft: 0 30px 65px rgba(0, 0, 0, 0.45);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  font-family: 'Montserrat', system-ui, -apple-system, sans-serif;
+  background: var(--color-white);
+  color: var(--color-white);
+  min-height: 100vh;
+}
+
+img {
+  max-width: 100%;
+  display: block;
+}
+
+a {
+  color: inherit;
+}
+
+
+.module {
+  width: min(1100px, 92vw);
+  margin: 0 auto;
+}
+
+.hero-section {
+  position: relative;
+  min-height: 85vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.hero-media {
+  position: absolute;
+  inset: 0;
+  background-image: linear-gradient(180deg, rgba(0, 0, 0, 0.35), rgba(0, 0, 0, 0.8)), url('../img/murima-night-flyer.jpg');
+  background-size: cover;
+  background-position: center;
+  filter: saturate(1.1);
+}
+
+.hero-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(120deg, rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.45));
+}
+
+.hero-content {
+  position: relative;
+  text-align: center;
+  padding: 5rem 2rem;
+  max-width: 820px;
+  z-index: 2;
+  border-radius: var(--radius-soft);
+  background: rgba(2, 2, 2, 0.6);
+  box-shadow: var(--shadow-soft);
+}
+
+.hero-content h1 {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(2.6rem, 5vw, 3.5rem);
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  margin-bottom: 1.25rem;
+}
+
+.hero-description {
+  font-size: 1.1rem;
+  color: var(--color-grey);
+  line-height: 1.6;
+  margin-bottom: 1.5rem;
+}
+
+.hero-cta {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.section {
+  padding: 4rem 0;
+}
+
+.section-divider {
+  background: var(--color-dark);
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.55);
+  margin: 2rem 0;
+}
+
+.section-header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.section-header h2 {
+  font-family: 'Playfair Display', serif;
+  font-size: 2.5rem;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+}
+
+.section-header p {
+  color: var(--color-grey);
+  max-width: 620px;
+  margin: 0.6rem auto 0;
+}
+
+.overview-grid,
+.detail-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1.5rem;
+}
+
+.overview-card,
+.detail-card {
+  padding: 1.6rem;
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.35);
+}
+
+.detail-card h3,
+.overview-card h3 {
+  margin-top: 0;
+  margin-bottom: 0.75rem;
+  letter-spacing: 0.08em;
+}
+
+.flyer-frame {
+  border-radius: var(--radius-soft);
+  overflow: hidden;
+  box-shadow: var(--shadow-soft);
+}
+
+.powered-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  justify-content: center;
+}
+
+.powered-logo {
+  padding: 0.8rem 1.2rem;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  font-weight: 600;
+  letter-spacing: 0.2em;
+}
+
+.map-frame {
+  border-radius: var(--radius-soft);
+  overflow: hidden;
+  box-shadow: var(--shadow-soft);
+}
+
+.site-footer {
+  background: #030303;
+  padding: 3rem 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.footer-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  padding: 0 3vw;
+}
+
+.footer-links {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.footer-links a {
+  font-size: 0.9rem;
+  letter-spacing: 0.12em;
+}
+
+.footer-meta {
+  color: var(--color-grey);
+}
+
+.back-to-top {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  background: rgba(0, 0, 0, 0.7);
+  color: var(--color-white);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  border-radius: 999px;
+  width: 48px;
+  height: 48px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+}
+
+@media (max-width: 960px) {
+  .header-inner {
+    flex-wrap: wrap;
+  }
+
+  .main-nav {
+    flex-direction: column;
+    align-items: flex-end;
+  }
+
+  .btn {
+    font-size: 0.75rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .hero-content {
+    padding: 3rem 1.2rem;
+  }
+
+  .section-header h2 {
+    font-size: 2rem;
+  }
+}
