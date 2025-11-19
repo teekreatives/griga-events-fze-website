@@ -123,6 +123,17 @@ a {
   color: #ffffff;
 }
 
+.section-divider#details {
+  background: var(--color-white);
+  color: #020202;
+  box-shadow: 0 30px 65px rgba(0, 0, 0, 0.15);
+}
+
+.section-divider#details h2,
+.section-divider#details p {
+  color: #020202;
+}
+
 .section-header {
   text-align: center;
   margin-bottom: 2rem;
@@ -142,8 +153,7 @@ a {
   margin: 0.6rem auto 0;
 }
 
-.overview-card,
-.detail-card {
+.overview-card {
   padding: 1.6rem;
   border-radius: 20px;
   background: #ffffff;
@@ -152,11 +162,38 @@ a {
   color: #0f0f0f;
 }
 
+.detail-card {
+  padding: 1.6rem;
+  border-radius: 20px;
+  background: linear-gradient(135deg, #d11f26, #040404);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 0 20px 45px rgba(0, 0, 0, 0.35);
+  color: #ffffff;
+}
+
 .detail-card h3,
 .overview-card h3 {
   margin-top: 0;
   margin-bottom: 0.75rem;
   letter-spacing: 0.08em;
+}
+
+.detail-card h3 {
+  color: #ffffff;
+}
+
+.detail-card p,
+.detail-card li {
+  color: rgba(255, 255, 255, 0.95);
+}
+
+.section-divider#details .detail-card p,
+.section-divider#details .detail-card li {
+  color: #ffffff;
+}
+
+.detail-card p {
+  color: rgba(255, 255, 255, 0.95);
 }
 
 .flyer-frame {
