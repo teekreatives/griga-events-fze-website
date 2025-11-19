@@ -340,8 +340,8 @@ p {
 }
 
 .hero-content {
-  max-width: 640px;
-  width: min(640px, 92vw);
+  max-width: min(760px, 95vw);
+  width: min(760px, 95vw);
   color: var(--color-white);
   text-align: center;
   padding-bottom: 8px;
@@ -369,12 +369,12 @@ p {
 /* Hero heading uses full hero width so short text wraps cleanly */
 
 .hero-content h1 {
-  max-width: min(540px, 92vw);
+  max-width: min(720px, 92vw);
   width: 100%;
   margin: 0;
   padding: 0;
   line-height: 1.1;
-  font-size: clamp(2.2rem, 3.6vw, 3.6rem);
+  font-size: clamp(1.95rem, 3vw, 3.4rem);
   letter-spacing: 0.05em;
 }
 
@@ -382,8 +382,26 @@ p {
   display: block;
   width: 100%;
   text-align: center;
-  white-space: normal;
-  word-break: keep-all;
+  white-space: nowrap;
+  overflow-wrap: normal;
+}
+
+@media (max-width: 640px) {
+  .hero-content {
+    width: min(540px, 92vw);
+    gap: 12px;
+    padding: 0 16px;
+  }
+
+  .hero-content h1 {
+    font-size: clamp(1.75rem, 8vw, 2.6rem);
+    line-height: 1.2;
+  }
+
+  .hero-content h1 span {
+    white-space: normal;
+    word-break: break-word;
+  }
 }
 
 .hero-subtitle {
