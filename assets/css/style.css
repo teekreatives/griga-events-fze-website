@@ -779,6 +779,10 @@ p {
     padding-bottom: 80px;
   }
 
+  .hero-logo {
+    margin-top: 8px;
+  }
+
   .grid-3 {
     grid-template-columns: 1fr;
   }
