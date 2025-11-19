@@ -112,6 +112,17 @@ a {
   color: #020202;
 }
 
+.section-divider#powered {
+  background: linear-gradient(135deg, #d11f26, #0b0b0b);
+  color: #ffffff;
+  box-shadow: 0 30px 65px rgba(0, 0, 0, 0.5);
+}
+
+.section-divider#powered h2,
+.section-divider#powered p {
+  color: #ffffff;
+}
+
 .section-header {
   text-align: center;
   margin-bottom: 2rem;
