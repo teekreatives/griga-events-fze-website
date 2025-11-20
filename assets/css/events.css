@@ -197,7 +197,7 @@ a {
 
 .countdown-card {
   position: relative;
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.02));
+  background: linear-gradient(135deg, rgba(209, 31, 38, 0.95), rgba(4, 4, 4, 0.95));
   border-radius: 18px;
   border: 1px solid rgba(255, 255, 255, 0.4);
   width: 100%;
