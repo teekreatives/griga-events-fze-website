@@ -52,20 +52,28 @@
       </div>
     </section>
 
-    <section id="overview" class="section section-divider" data-aos="fade-up">
+    <section id="countdown" class="section section-divider" data-aos="fade-up">
       <div class="container">
         <header class="section-header">
-          <h2>Event Overview</h2>
-          <p>Murima Night Second Edition is a cultural experience powered by GRIGA Events FZE, Where There’s Smoke UAE, and Zebraa James.</p>
+          <h2>Countdown to Murima Night</h2>
+          <p>Live Gulf Standard Time (GMT+4) countdown until the desert celebration begins.</p>
         </header>
-        <div class="overview-grid">
-          <div class="overview-card">
-            <h3>Immersive Moments</h3>
-            <p>Expect curated gastronomy, live performances, and desert narratives that keep the energy alive until dawn.</p>
+        <div class="countdown-grid">
+          <div class="countdown-card">
+            <span class="countdown-number" data-unit="days">00</span>
+            <span class="countdown-label">Days</span>
           </div>
-          <div class="overview-card">
-            <h3>Community Love</h3>
-            <p>Celebrating the Kikuyu community in the UAE with premium hospitality, storytelling, and cultural pride.</p>
+          <div class="countdown-card">
+            <span class="countdown-number" data-unit="hours">00</span>
+            <span class="countdown-label">Hours</span>
+          </div>
+          <div class="countdown-card">
+            <span class="countdown-number" data-unit="minutes">00</span>
+            <span class="countdown-label">Minutes</span>
+          </div>
+          <div class="countdown-card">
+            <span class="countdown-number" data-unit="seconds">00</span>
+            <span class="countdown-label">Seconds</span>
           </div>
         </div>
       </div>
@@ -198,5 +206,42 @@
 
   <script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
   <script src="assets/js/main.js?v=20251117.1"></script>
+  <script>
+    (function () {
+      var targetDate = new Date('2026-04-04T18:00:00+04:00');
+      var elements = {
+        days: document.querySelector('[data-unit="days"]'),
+        hours: document.querySelector('[data-unit="hours"]'),
+        minutes: document.querySelector('[data-unit="minutes"]'),
+        seconds: document.querySelector('[data-unit="seconds"]')
+      };
+
+      function pad(value) {
+        return value.toString().padStart(2, '0');
+      }
+
+      function refreshCountdown() {
+        var now = new Date();
+        var diff = targetDate - now;
+
+        if (diff <= 0) {
+          diff = 0;
+        }
+
+        var days = Math.floor(diff / (1000 * 60 * 60 * 24));
+        var hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+        var minutes = Math.floor((diff / (1000 * 60)) % 60);
+        var seconds = Math.floor((diff / 1000) % 60);
+
+        if (elements.days) elements.days.textContent = pad(days);
+        if (elements.hours) elements.hours.textContent = pad(hours);
+        if (elements.minutes) elements.minutes.textContent = pad(minutes);
+        if (elements.seconds) elements.seconds.textContent = pad(seconds);
+      }
+
+      refreshCountdown();
+      setInterval(refreshCountdown, 1000);
+    })();
+  </script>
 </body>
 </html>
