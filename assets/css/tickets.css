@@ -1,0 +1,235 @@
+:root {
+  --ticket-gradient: linear-gradient(135deg, #d11f26, #050505);
+}
+
+body.tickets-body {
+  font-family: var(--font-body);
+  background: #ffffff;
+  color: #111;
+}
+
+.tickets-hero {
+  position: relative;
+  min-height: 70vh;
+  padding: clamp(120px, 12vw, 160px) 2vw clamp(60px, 6vw, 80px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  overflow: hidden;
+  background-image: linear-gradient(135deg, rgba(209, 31, 38, 0.85), rgba(0, 0, 0, 0.9)), url('../img/murima-night-flyer.jpg');
+  background-size: cover;
+  background-position: center;
+}
+
+.tickets-hero h1 {
+  font-family: var(--font-display);
+  font-size: clamp(2.8rem, 6vw, 4.2rem);
+  color: #fff;
+  margin-bottom: 0.6rem;
+  letter-spacing: 0.12em;
+}
+
+.tickets-hero .hero-subtitle {
+  font-size: 1.2rem;
+  max-width: 520px;
+  margin: 0 auto 1.6rem;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.tickets-hero .hero-cta a {
+  margin: 0 0.4rem;
+}
+
+.ticket-zone {
+  padding: 4rem 0;
+}
+
+.ticket-card {
+  background: var(--ticket-gradient);
+  color: #ffffff;
+  border-radius: 28px;
+  padding: 2.5rem;
+  box-shadow: 0 30px 90px rgba(0, 0, 0, 0.35);
+  position: relative;
+  overflow: hidden;
+  animation: fadeUp 0.9s ease forwards;
+}
+
+.ticket-card::after {
+  content: '';
+  position: absolute;
+  inset: 12px;
+  border-radius: 22px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  pointer-events: none;
+}
+
+.ticket-highlight {
+  font-size: 1rem;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+}
+
+.ticket-info {
+  margin: 1.4rem 0 2rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 1rem;
+}
+
+.ticket-info strong {
+  display: block;
+  font-size: 0.85rem;
+  letter-spacing: 0.25em;
+  opacity: 0.8;
+}
+
+.ticket-info span {
+  font-size: 1.2rem;
+  display: block;
+}
+
+.payment-options {
+  padding: 2rem 0 4rem;
+}
+
+.payment-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 1.2rem;
+}
+
+.payment-option {
+  background: #f7f7f7;
+  border-radius: 18px;
+  padding: 1.6rem;
+  box-shadow: 0 18px 45px rgba(0, 0, 0, 0.08);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.payment-option h3 {
+  margin-top: 0;
+  font-size: 1.2rem;
+}
+
+.payment-option p {
+  color: #555;
+  flex: 1;
+}
+
+.payment-option button {
+  margin-top: 0.8rem;
+  width: fit-content;
+}
+
+.ticket-form {
+  margin-top: 2rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 1rem;
+}
+
+.ticket-form input {
+  padding: 12px 14px;
+  border-radius: 10px;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  font-size: 0.95rem;
+}
+
+.success-panel {
+  margin-top: 3rem;
+  padding: 2.5rem;
+  border-radius: 22px;
+  background: #050505;
+  color: #fff;
+  box-shadow: 0 25px 70px rgba(0, 0, 0, 0.5);
+  display: none;
+  position: relative;
+  overflow: hidden;
+}
+
+.success-panel.is-visible {
+  display: block;
+}
+
+.success-panel::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(120deg, rgba(209, 31, 38, 0.35), rgba(0, 0, 0, 0.4));
+  pointer-events: none;
+}
+
+.success-panel-inner {
+  position: relative;
+  z-index: 1;
+}
+
+.success-panel h3 {
+  margin-top: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+}
+
+.ticket-summary {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+  gap: 1rem;
+  margin: 1.6rem 0;
+}
+
+.ticket-summary div {
+  background: rgba(255, 255, 255, 0.05);
+  padding: 1rem;
+  border-radius: 12px;
+}
+
+.ticket-summary strong {
+  display: block;
+  font-size: 0.65rem;
+  letter-spacing: 0.25em;
+  opacity: 0.7;
+}
+
+.ticket-summary span {
+  font-size: 1.2rem;
+}
+
+.ticket-qr-box {
+  padding: 1.5rem;
+  background: #fff;
+  color: #111;
+  border-radius: 18px;
+  text-align: center;
+  margin: 0 auto;
+  width: 220px;
+}
+
+.ticket-qr-box p {
+  margin-top: 0.8rem;
+  font-size: 0.9rem;
+}
+
+@keyframes fadeUp {
+  0% {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 640px) {
+  .hero-content h1 {
+    font-size: 2.4rem;
+  }
+
+  .success-panel {
+    padding: 2rem;
+  }
+}

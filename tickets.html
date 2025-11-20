@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>GRIGA Events FZE | Get Your Tickets</title>
+  <meta name="description" content="Reserve your seat for Murima Night Second Edition with seamless Stripe or M-Pesa payments." />
+  <meta property="og:title" content="Get Your Tickets | Murima Night" />
+  <meta property="og:description" content="Secure your tickets for Murima Night Second Edition with premium payment options and fast delivery." />
+  <meta property="og:url" content="https://grigaeventsfze.com/tickets.html" />
+  <meta property="og:site_name" content="GRIGA Events FZE" />
+  <meta property="og:image" content="https://grigaeventsfze.com/assets/img/murima-night-flyer.jpg" />
+  <link rel="canonical" href="https://grigaeventsfze.com/tickets.html" />
+  <link rel="stylesheet" href="https://unpkg.com/aos@2.3.4/dist/aos.css" />
+  <link rel="stylesheet" href="assets/css/style.css?v=20251117.1" />
+  <link rel="stylesheet" href="assets/css/tickets.css" />
+</head>
+<body class="tickets-body">
+  <header class="site-header" id="site-header">
+    <div class="container header-inner">
+      <a href="index.html" class="logo">GRIGA<span>Events</span></a>
+      <nav class="main-nav" aria-label="Main navigation">
+        <button class="nav-toggle" aria-label="Open menu" aria-expanded="false">
+          <span></span><span></span><span></span>
+        </button>
+        <ul class="nav-links">
+          <li><a href="index.html">Home</a></li>
+          <li><a href="events.html">Events</a></li>
+          <li><a href="tickets.html" class="active">Tickets</a></li>
+          <li><a href="admin.html">Admin</a></li>
+        </ul>
+        <a class="btn btn-secondary header-cta" href="#ticket-card">Reserve Now</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="tickets-hero" data-aos="fade-up">
+      <div class="container">
+        <h1>Get Your Tickets</h1>
+        <p class="hero-subtitle">A night for meaningful connections, curated energy, and premium Murima Night hospitality. Book securely in minutes.</p>
+        <div class="hero-cta">
+          <a href="#ticket-card" class="btn btn-secondary">View Ticket</a>
+          <a href="#payment-options" class="btn btn-secondary">Payment Options</a>
+        </div>
+      </div>
+    </section>
+
+    <section class="ticket-zone" id="ticket-card">
+      <div class="container" data-aos="fade-up" data-aos-delay="100">
+        <div class="ticket-card">
+          <p class="ticket-highlight">Murima Night Second Edition</p>
+          <h2>Experience premium Murima hospitality in Ajman</h2>
+          <div class="ticket-info">
+            <div>
+              <strong>Date</strong>
+              <span>4 April 2026</span>
+            </div>
+            <div>
+              <strong>Time</strong>
+              <span>6:00 PM Till Dawn</span>
+            </div>
+            <div>
+              <strong>Location</strong>
+              <span>Hamriya East, Ajman – Desert Oasis Camps &amp; Land Park</span>
+            </div>
+            <div>
+              <strong>Price</strong>
+              <span>150 AED</span>
+            </div>
+          </div>
+          <button class="btn btn-secondary" data-payment="stripe">Buy Ticket</button>
+          <form id="ticket-form" class="ticket-form" data-aos="fade-up" data-aos-delay="200">
+            <input type="text" name="name" placeholder="Full name" required />
+            <input type="email" name="email" placeholder="Email address" required />
+            <input type="tel" name="phone" placeholder="Phone (e.g. +9715XXXXXXX)" required />
+          </form>
+          <p class="hero-subtitle" style="margin-top: 1rem; text-transform: none;">Pay with Stripe or receive an M-Pesa STK push for instant confirmation.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="payment-options" id="payment-options">
+      <div class="container" data-aos="fade-up" data-aos-delay="150">
+        <header class="section-header">
+          <h2>Payment Options</h2>
+          <p>Choose the method that suits you and we will deliver the ticket with QR verification instantly.</p>
+        </header>
+        <div class="payment-grid">
+          <article class="payment-option" data-aos="fade-right">
+            <h3>Stripe Checkout</h3>
+            <p>Secure credit/debit payments in one click. Redirects to the hosted checkout page with fraud protection.</p>
+            <button class="btn btn-secondary" data-payment="stripe" onclick="window.open('https://buy.stripe.com/test_xxxx', '_blank')">Proceed with Stripe</button>
+          </article>
+          <article class="payment-option" data-aos="fade-left">
+            <h3>M-Pesa STK Push</h3>
+            <p>UAE residents with Safaricom roaming receive an STK push for automatic confirmation in Gulf Standard Time.</p>
+            <button class="btn btn-secondary" data-payment="mpesa">Trigger STK Push</button>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="container">
+      <div id="ticket-success" class="success-panel" data-aos="fade-up">
+        <div class="success-panel-inner">
+          <h3>Payment Success</h3>
+          <p id="payment-status">Awaiting payment...</p>
+          <div class="ticket-summary">
+            <div>
+              <strong>Ticket ID</strong>
+              <span id="ticket-id">—</span>
+            </div>
+            <div>
+              <strong>Payment</strong>
+              <span id="ticket-method">—</span>
+            </div>
+            <div>
+              <strong>Email</strong>
+              <span id="ticket-email">—</span>
+            </div>
+            <div>
+              <strong>Issued</strong>
+              <span id="ticket-timestamp">—</span>
+            </div>
+            <div>
+              <strong>Amount</strong>
+              <span id="ticket-price">—</span>
+            </div>
+          </div>
+          <div class="ticket-qr-box">
+            <div id="ticket-qr"></div>
+            <p>Your QR code will unlock contactless entry and the premium lounge.</p>
+          </div>
+          <button class="btn btn-secondary" id="download-ticket" disabled>Download Ticket</button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-inner">
+      <div>
+        <p class="footer-logo">GRIGA Events FZE</p>
+        <p class="footer-text">Premium event experiences across Dubai &amp; the UAE.</p>
+      </div>
+      <div class="footer-links">
+        <a href="#top">Back to top</a>
+        <a href="events.html">Events</a>
+        <a href="tickets.html">Tickets</a>
+        <a href="contact.html">Contact</a>
+      </div>
+      <div class="footer-meta">
+        <p>&copy; <span id="year"></span> GRIGA Events FZE. All rights reserved.</p>
+        <div class="footer-social" aria-label="Social links">
+          <a href="#" aria-label="Instagram">IG</a>
+          <a href="#" aria-label="Twitter / X">X</a>
+          <a href="#" aria-label="Facebook">FB</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Event",
+    "name": "Murima Night – Second Edition",
+    "startDate": "2026-04-04T18:00:00+04:00",
+    "endDate": "2026-04-05T06:00:00+04:00",
+    "eventAttendanceMode": "https://schema.org/OfflineEventAttendanceMode",
+    "eventStatus": "https://schema.org/EventScheduled",
+    "location": {
+      "@type": "Place",
+      "name": "Desert Oasis Camps & Land Park",
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "Hamriya East",
+        "addressLocality": "Ajman",
+        "addressRegion": "Sharjah",
+        "addressCountry": "AE"
+      }
+    },
+    "image": [
+      "https://grigaeventsfze.com/assets/img/murima-night-flyer.jpg"
+    ],
+    "description": "Premium Murima Night hospitality with live grills, culture, and charge-free bookings.",
+    "offers": {
+      "@type": "Offer",
+      "url": "https://grigaeventsfze.com/tickets.html",
+      "price": "150",
+      "priceCurrency": "AED",
+      "availability": "https://schema.org/InStock"
+    },
+    "organizer": {
+      "@type": "Organization",
+      "name": "GRIGA Events FZE"
+    }
+  }
+  </script>
+
+  <script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <script src="assets/js/main.js?v=20251117.1"></script>
+  <script src="assets/js/tickets.js"></script>
+</body>
+</html>
