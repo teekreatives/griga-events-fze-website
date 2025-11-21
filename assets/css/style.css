@@ -275,12 +275,12 @@ p {
 
 .btn-secondary {
   background: var(--color-white);
-  color: var(--color-red);
-  border-color: rgba(209,31,38,0.3);
+  color: var(--color-black);
+  border-color: rgba(0,0,0,0.2);
 }
 
 .btn-secondary:hover {
-  background: var(--color-red);
+  background: #111;
   color: var(--color-white);
 }
 
