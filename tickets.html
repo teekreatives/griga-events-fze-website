@@ -47,6 +47,27 @@
       </div>
     </section>
 
+    <section class="payment-options" id="payment-options">
+      <div class="container" data-aos="fade-up" data-aos-delay="150">
+        <header class="section-header">
+          <h2>Payment Options</h2>
+          <p>Choose the method that suits you and we will deliver the ticket with QR verification instantly.</p>
+        </header>
+        <div class="payment-grid">
+          <article class="payment-option" data-aos="fade-right">
+            <h3>Stripe Checkout</h3>
+            <p>Secure credit/debit payments in one click. Redirects to the hosted checkout page with fraud protection.</p>
+            <button class="btn btn-secondary" data-payment="stripe" onclick="window.open('https://buy.stripe.com/test_xxxx', '_blank')">Proceed with Stripe</button>
+          </article>
+          <article class="payment-option" data-aos="fade-left">
+            <h3>M-Pesa STK Push</h3>
+            <p>UAE residents with Safaricom roaming receive an STK push for automatic confirmation in Gulf Standard Time.</p>
+            <button class="btn btn-secondary" data-payment="mpesa">Trigger STK Push</button>
+          </article>
+        </div>
+      </div>
+    </section>
+
     <section class="ticket-zone" id="ticket-card">
       <div class="container" data-aos="fade-up" data-aos-delay="100">
         <div class="ticket-card">
@@ -77,27 +98,6 @@
             <input type="tel" name="phone" placeholder="Phone (e.g. +9715XXXXXXX)" required />
           </form>
           <p class="hero-subtitle" style="margin-top: 1rem; text-transform: none;">Pay with Stripe or receive an M-Pesa STK push for instant confirmation.</p>
-        </div>
-      </div>
-    </section>
-
-    <section class="payment-options" id="payment-options">
-      <div class="container" data-aos="fade-up" data-aos-delay="150">
-        <header class="section-header">
-          <h2>Payment Options</h2>
-          <p>Choose the method that suits you and we will deliver the ticket with QR verification instantly.</p>
-        </header>
-        <div class="payment-grid">
-          <article class="payment-option" data-aos="fade-right">
-            <h3>Stripe Checkout</h3>
-            <p>Secure credit/debit payments in one click. Redirects to the hosted checkout page with fraud protection.</p>
-            <button class="btn btn-secondary" data-payment="stripe" onclick="window.open('https://buy.stripe.com/test_xxxx', '_blank')">Proceed with Stripe</button>
-          </article>
-          <article class="payment-option" data-aos="fade-left">
-            <h3>M-Pesa STK Push</h3>
-            <p>UAE residents with Safaricom roaming receive an STK push for automatic confirmation in Gulf Standard Time.</p>
-            <button class="btn btn-secondary" data-payment="mpesa">Trigger STK Push</button>
-          </article>
         </div>
       </div>
     </section>
