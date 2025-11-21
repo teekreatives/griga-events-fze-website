@@ -125,6 +125,20 @@ body.tickets-body {
   width: fit-content;
 }
 
+.payment-option--stripe {
+  background: linear-gradient(135deg, #0a7bdf, #005b9c);
+  color: #fefefe;
+}
+
+.payment-option--stripe button {
+  border-color: rgba(255, 255, 255, 0.4);
+}
+
+.payment-option--mpesa {
+  background: linear-gradient(135deg, #1f8a47, #0a5b30);
+  color: #fefefe;
+}
+
 .ticket-form {
   margin-top: 2rem;
   display: grid;
