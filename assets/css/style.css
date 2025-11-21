@@ -449,6 +449,7 @@ p {
   background: radial-gradient(circle at top left, rgba(209,31,38,0.4), transparent 55%),
               linear-gradient(135deg, #111, #333);
   box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+  overflow: hidden;
 }
 .split-media-card img {
   width: 100%;
@@ -456,6 +457,15 @@ p {
   object-fit: cover;
   border-radius: inherit;
   display: block;
+}
+.split-media-cta {
+  display: none;
+  margin-top: 0.4rem;
+  text-align: center;
+}
+.split-media-cta .btn {
+  padding: 10px 16px;
+  font-size: 11px;
 }
 
 /* Stats */
@@ -806,6 +816,20 @@ p {
     grid-template-columns: 1fr;
   }
 
+}
+
+@media (max-width: 768px) {
+  .section-split-inner {
+    grid-template-columns: 1fr;
+  }
+
+  .split-media-cta {
+    display: block;
+  }
+
+  .split-text .split-text-cta {
+    display: none;
+  }
 }
 
 @media (max-width: 520px) {
