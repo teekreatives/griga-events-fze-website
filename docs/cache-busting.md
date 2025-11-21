@@ -5,8 +5,8 @@ Browsers (especially on mobile) aggressively cache static assets. If the CSS or 
 
 ## How to update the version
 1. Pick a new version token (e.g., a `YYYYMMDD.N` timestamp) whenever you deploy new UI or interaction changes.
-2. Update the `<meta name="griga:asset-version">` entry in `index.html` to the new token.
-3. Update the `?v=…` query string on both `assets/css/style.css` and `assets/js/main.js` in `index.html` so they match the new token.
+2. Update the `<meta name="griga:asset-version">` entry in `home.html` to the new token.
+3. Update the `?v=…` query string on both `assets/css/style.css` and `assets/js/main.js` in `home.html` so they match the new token.
 4. Optionally clean your build/deploy cache so the hosting platform publishes the new files.
 
 ## Bonus tip
