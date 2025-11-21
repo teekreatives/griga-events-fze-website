@@ -502,42 +502,33 @@ p {
   border-radius: 16px;
   border: 1px solid #eee;
   background: #fafafa;
+  padding: 12px 20px;
 }
 
 .partners-track {
   display: flex;
-  gap: 40px;
-  padding: 20px 40px;
+  gap: 18px;
+  justify-content: center;
+  align-items: center;
   animation: marquee 22s linear infinite;
 }
 
 .partner-logo {
-  min-width: 120px;
+  min-width: 80px;
   text-align: center;
   font-weight: 600;
   color: #666;
-}
-
-@keyframes marquee {
-  0% { transform: translateX(0); }
-  100% { transform: translateX(-50%); }
-}
-
-/* CTA band */
-
-.section-cta-inner {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 24px;
+  justify-content: center;
 }
 
-.section-cta-inner p {
-  color: rgba(255,255,255,0.86);
+.partner-logo img {
+  max-width: 120px;
+  max-height: 48px;
+  object-fit: contain;
+  filter: saturate(0.9);
 }
-
-/* Event cards */
-
 .event-card {
   background: var(--color-white);
   border-radius: 18px;
