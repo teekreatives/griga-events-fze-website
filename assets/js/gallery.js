@@ -11,7 +11,11 @@ document.addEventListener('DOMContentLoaded', () => {
     activeFilter = filter;
     galleryCards.forEach((card) => {
       const category = card.getAttribute('data-category');
-      const isVisible = filter === 'all' || category === filter;
+      const isVideo = category === 'videos';
+      const isVisible =
+        filter === 'all' ? !isVideo :
+        filter === 'videos' ? isVideo :
+        category === filter;
       card.style.display = isVisible ? 'block' : 'none';
       card.setAttribute('aria-hidden', isVisible ? 'false' : 'true');
     });
