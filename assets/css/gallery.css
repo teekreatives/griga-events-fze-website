@@ -111,6 +111,25 @@
   border: 1px solid rgba(0, 0, 0, 0.08);
 }
 
+.gallery-card--video {
+  position: relative;
+}
+
+.gallery-card--video::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.35);
+  pointer-events: none;
+}
+
+.gallery-card--video figcaption::before {
+  content: '\25B6';
+  display: inline-block;
+  margin-right: 0.4rem;
+  font-size: 0.9rem;
+}
+
 .gallery-card img {
   width: 100%;
   height: auto;
