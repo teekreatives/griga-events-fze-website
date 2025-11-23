@@ -428,7 +428,8 @@ p {
   }
 }
 
-#featured .section-header {
+#featured .section-header,
+#partners .section-header {
   margin-bottom: 2px;
   text-align: center;
 }
