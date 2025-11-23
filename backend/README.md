@@ -30,7 +30,7 @@ EMAIL_SMTP_PASS=...
 EMAIL_FROM="GRIGA Events" <tickets@grigaeventsfze.com>
 EVENT_NAME="Murima Night – Second Edition"
 EVENT_PRICE=150
-EVENT_LOCATION="Hamriya East, Ajman"
+EVENT_LOCATION="BASSATA VILLAGE - RAS AL KHAIMAH"
 ```
 
 ## Running
