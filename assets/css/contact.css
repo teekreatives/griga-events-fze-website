@@ -14,6 +14,7 @@
   font-size: clamp(2.4rem, 4vw, 3.2rem);
   line-height: 1.2;
   word-break: break-word;
+  color: #ffffff;
 }
 
 .page-hero.contact-hero .lead {
