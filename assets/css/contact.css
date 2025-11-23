@@ -1,0 +1,129 @@
+:root {
+  --contact-gradient: linear-gradient(135deg, #0b0b0b 0%, #1c1c1c 30%, #4a0e18 100%);
+}
+
+.page-hero.contact-hero {
+  padding: 6rem 0 4rem;
+  background: radial-gradient(circle at top, rgba(255, 255, 255, 0.05), transparent 45%),
+    linear-gradient(180deg, #090909 0%, #0d0d0d 58%, #120204 100%);
+  color: #f3f3f3;
+  text-align: left;
+}
+
+.page-hero.contact-hero .lead {
+  max-width: 560px;
+}
+
+.hero-cta {
+  margin-top: 2rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.section.contact-options {
+  padding: 3rem 0;
+}
+
+.contact-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 1.5rem;
+}
+
+.contact-card {
+  background: var(--contact-gradient);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 1.5rem;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+  padding: 1.75rem;
+  display: flex;
+  gap: 1.25rem;
+  align-items: flex-start;
+  transition: transform 250ms ease, box-shadow 250ms ease;
+}
+
+.contact-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 30px 45px rgba(0, 0, 0, 0.55);
+}
+
+.contact-card h3 {
+  margin: 0 0 0.4rem;
+  font-size: 1.25rem;
+}
+
+.contact-card p {
+  margin: 0 0 0.6rem;
+  color: #dcdcdc;
+  line-height: 1.5;
+}
+
+.contact-card-icon {
+  width: 72px;
+  height: 72px;
+  border-radius: 1rem;
+  background: rgba(255, 255, 255, 0.08);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.contact-card-icon svg {
+  width: 36px;
+  height: 36px;
+  color: #fff;
+  display: block;
+}
+
+.icon-link {
+  display: inline-flex;
+}
+
+.contact-note {
+  font-size: 0.85rem;
+  letter-spacing: 0.02em;
+  color: #a8a8a8;
+}
+
+
+.whatsapp-float {
+  position: fixed;
+  right: 24px;
+  bottom: 24px;
+  width: 52px;
+  height: 52px;
+  border-radius: 999px;
+  background: var(--color-red);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 20px 35px rgba(0, 0, 0, 0.35);
+  z-index: 90;
+  transition: transform 200ms ease, box-shadow 200ms ease;
+}
+
+.whatsapp-float:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 25px 40px rgba(0, 0, 0, 0.45);
+}
+
+.whatsapp-float svg {
+  width: 22px;
+  height: 22px;
+  color: #fff;
+  fill: #fff;
+}
+
+@media (max-width: 640px) {
+  .page-hero.contact-hero {
+    text-align: left;
+    padding-top: 4rem;
+  }
+
+  .contact-card {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
