@@ -156,8 +156,8 @@
 }
 
 .faq-toggle {
-  width: 44px;
-  height: 44px;
+  width: 48px;
+  height: 48px;
   border-radius: 999px;
   border: 1px solid rgba(255, 255, 255, 0.2);
   background: rgba(255, 255, 255, 0.05);
@@ -169,6 +169,10 @@
   justify-content: center;
   cursor: pointer;
   transition: transform 200ms ease, background 200ms ease;
+  padding: 0;
+  line-height: 1;
+  flex-shrink: 0;
+  box-sizing: border-box;
 }
 
 .faq-toggle:hover {
