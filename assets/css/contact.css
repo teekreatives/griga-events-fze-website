@@ -3,11 +3,17 @@
 }
 
 .page-hero.contact-hero {
-  padding: 6rem 0 4rem;
+  padding: 8rem 0 5rem;
   background: radial-gradient(circle at top, rgba(255, 255, 255, 0.05), transparent 45%),
     linear-gradient(180deg, #090909 0%, #0d0d0d 58%, #120204 100%);
   color: #f3f3f3;
   text-align: left;
+}
+
+.page-hero.contact-hero h1 {
+  font-size: clamp(2.4rem, 4vw, 3.2rem);
+  line-height: 1.2;
+  word-break: break-word;
 }
 
 .page-hero.contact-hero .lead {
@@ -207,7 +213,12 @@
 @media (max-width: 640px) {
   .page-hero.contact-hero {
     text-align: left;
-    padding-top: 4rem;
+    padding-top: 6rem;
+  }
+
+  .page-hero.contact-hero h1 {
+    font-size: clamp(2rem, 6vw, 2.6rem);
+    padding-right: 0.5rem;
   }
 
   .contact-card {
