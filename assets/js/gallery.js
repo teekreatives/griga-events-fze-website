@@ -39,10 +39,8 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!sourceImg) return;
     lightboxImage.src = sourceImg.src;
     lightboxImage.alt = sourceImg.alt;
-    const title = card.getAttribute('data-title');
-    const captionText = card.getAttribute('data-caption');
     if (lightboxCaption) {
-      lightboxCaption.textContent = title ? `${title} · ${captionText}` : captionText || '';
+      lightboxCaption.textContent = '';
     }
     lightbox.setAttribute('aria-hidden', 'false');
     lightbox.classList.add('open');
