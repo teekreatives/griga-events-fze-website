@@ -820,13 +820,14 @@ p {
     padding: 16px 0;
     border-radius: 999px;
     background: linear-gradient(135deg, var(--color-red), var(--color-black));
-    color: var(--color-white);
+    color: var(--color-white) !important;
     border: none;
     font-size: 14px;
     font-weight: 700;
     letter-spacing: 0.2em;
     text-transform: uppercase;
     margin-top: 0;
+    text-shadow: 0 1px 1px rgba(0,0,0,0.4);
   }
 
   .nav-links a::after {
