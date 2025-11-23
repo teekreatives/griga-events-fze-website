@@ -1,5 +1,5 @@
 :root {
-  --contact-gradient: linear-gradient(135deg, #0b0b0b 0%, #1c1c1c 30%, #4a0e18 100%);
+  --contact-gradient: linear-gradient(135deg, #0b0b0b 0%, #1c1c0f 40%, #4a0e18 100%);
 }
 
 .page-hero.contact-hero {
@@ -87,7 +87,6 @@
   color: #a8a8a8;
 }
 
-
 .whatsapp-float {
   position: fixed;
   right: 24px;
@@ -114,6 +113,91 @@
   height: 22px;
   color: #fff;
   fill: #fff;
+}
+
+.faq-section {
+  padding: 4rem 0;
+  background: linear-gradient(180deg, rgba(20, 20, 20, 0.85), rgba(5, 5, 5, 0.95));
+}
+
+.faq-section .section-header h2,
+.faq-section .section-header p {
+  color: #fff;
+}
+
+.faq-grid {
+  margin-top: 2rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 1.25rem;
+}
+
+.faq-card {
+  background: rgba(255, 255, 255, 0.02);
+  border-radius: 1.25rem;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 20px 30px rgba(0, 0, 0, 0.35);
+  overflow: hidden;
+}
+.faq-question {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.25rem 1.5rem;
+  gap: 1rem;
+}
+
+.faq-title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  color: #fff;
+  line-height: 1.4;
+}
+
+.faq-toggle {
+  width: 44px;
+  height: 44px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.05);
+  color: #d11f26;
+  font-size: 1.5rem;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: transform 200ms ease, background 200ms ease;
+}
+
+.faq-toggle:hover {
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.faq-toggle[aria-expanded="true"] {
+  transform: rotate(45deg);
+}
+
+.faq-panel {
+  padding: 0 1.5rem 0;
+  max-height: 0;
+  overflow: hidden;
+  opacity: 0;
+  pointer-events: none;
+  transition: max-height 260ms ease, opacity 260ms ease, padding 260ms ease;
+}
+
+.faq-card.is-open .faq-panel {
+  opacity: 1;
+  padding-bottom: 1.25rem;
+  pointer-events: auto;
+}
+
+.faq-panel p {
+  margin: 0;
+  color: #dcdcdc;
+  line-height: 1.6;
 }
 
 @media (max-width: 640px) {

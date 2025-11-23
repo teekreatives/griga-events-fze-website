@@ -110,6 +110,62 @@
       </div>
     </section>
 
+    <section class="section faq-section" data-aos="fade-up" data-aos-duration="700" data-aos-delay="280">
+      <div class="container">
+        <div class="section-header">
+          <h2>FAQ</h2>
+          <p>Quick answers before you reach out. Tap to expand.</p>
+        </div>
+        <div class="faq-grid">
+          <article class="faq-card">
+            <div class="faq-question">
+              <p class="faq-title">When is the next event?</p>
+              <button class="faq-toggle" aria-expanded="false" aria-label="Show answer">+</button>
+            </div>
+            <div class="faq-panel">
+              <p>Murima Night Second Edition returns on 4 April 2026 with doors opening at 6 PM and the experience flowing until dawn.</p>
+            </div>
+          </article>
+          <article class="faq-card">
+            <div class="faq-question">
+              <p class="faq-title">Where do I buy Tickets For the next event?</p>
+              <button class="faq-toggle" aria-expanded="false" aria-label="Show answer">+</button>
+            </div>
+            <div class="faq-panel">
+              <p>Secure your spot through the Tickets page—choose your tier, add to cart, and checkout using any of the supported payment methods.</p>
+            </div>
+          </article>
+          <article class="faq-card">
+            <div class="faq-question">
+              <p class="faq-title">How do I receive my ticket?</p>
+              <button class="faq-toggle" aria-expanded="false" aria-label="Show answer">+</button>
+            </div>
+            <div class="faq-panel">
+              <p>Tickets are emailed immediately after purchase. We can resend the link or WhatsApp a copy on request.</p>
+            </div>
+          </article>
+          <article class="faq-card">
+            <div class="faq-question">
+              <p class="faq-title">What payment methods do you accept?</p>
+              <button class="faq-toggle" aria-expanded="false" aria-label="Show answer">+</button>
+            </div>
+            <div class="faq-panel">
+              <p>We accept bank transfer, credit/debit via Stripe, and certified checks for partnerships. Every invoice includes detailed breakdowns.</p>
+            </div>
+          </article>
+          <article class="faq-card">
+            <div class="faq-question">
+              <p class="faq-title">Where are your events located?</p>
+              <button class="faq-toggle" aria-expanded="false" aria-label="Show answer">+</button>
+            </div>
+            <div class="faq-panel">
+              <p>We build shows across Dubai and Ajman with the same team, and we travel elsewhere when the brief calls for it.</p>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
   </main>
 
   <a class="whatsapp-float" href="https://wa.me/971529948589" target="_blank" rel="noreferrer" aria-label="Chat on WhatsApp">
@@ -143,6 +199,35 @@
   </footer>
 
   <script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
-  <script src="assets/js/main.js?v=20251123.1"></script>
+    <script src="assets/js/main.js?v=20251123.1"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const cards = document.querySelectorAll('.faq-card');
+      cards.forEach((card) => {
+        const toggle = card.querySelector('.faq-toggle');
+        const panel = card.querySelector('.faq-panel');
+        if (!toggle || !panel) return;
+        toggle.addEventListener('click', () => {
+          const isOpen = card.classList.contains('is-open');
+          cards.forEach((other) => {
+            const otherToggle = other.querySelector('.faq-toggle');
+            const otherPanel = other.querySelector('.faq-panel');
+            other.classList.remove('is-open');
+            if (otherToggle) {
+              otherToggle.setAttribute('aria-expanded', 'false');
+            }
+            if (otherPanel) {
+              otherPanel.style.maxHeight = null;
+            }
+          });
+          if (!isOpen) {
+            card.classList.add('is-open');
+            toggle.setAttribute('aria-expanded', 'true');
+            panel.style.maxHeight = `${panel.scrollHeight}px`;
+          }
+        });
+      });
+    });
+  </script>
 </body>
 </html>
