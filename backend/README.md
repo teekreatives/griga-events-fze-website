@@ -7,6 +7,8 @@ This lightweight Node.js backend handles Stripe webhook events, generates QR-bas
 - `stripe` for signature verification and optional Session lookup.
 - `nodemailer` (or any transactional provider SDK) for sending emails.
 - `qrcode` for generating the PNG data that gets embedded in the ticket email.
+- `jsonwebtoken` for issuing admin tokens.
+- `bcrypt` for securely verifying passwords.
 
 ## Workflow
 1. The front-end posts attendee details to `POST /stripe/session` (optional) to attach metadata to a Stripe Checkout session.
@@ -16,6 +18,7 @@ This lightweight Node.js backend handles Stripe webhook events, generates QR-bas
    - Verifies the payload using the webhook signing secret.
    - Reads customer details (`email`, `metadata.name`, `metadata.phone`).
    - Generates a unique ticket ID and renders a QR code PNG containing the ticket data.
+   - Records the ticket in an in-memory audit log so the authenticated dashboard can review it.
    - (Optional) Stores the ticket record in your preferred datastore.
    - Sends an email to the buyer with event details and the QR image.
 
@@ -31,7 +34,24 @@ EMAIL_FROM="GRIGA Events" <tickets@grigaeventsfze.com>
 EVENT_NAME="Murima Night – Second Edition"
 EVENT_PRICE=150
 EVENT_LOCATION="BASSATA VILLAGE - RAS AL KHAIMAH"
+ADMIN_EMAIL=admin@grigaeventsfze.com
+ADMIN_PASSWORD_HASH=$2b$10$xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+ADMIN_JWT_SECRET=replace-with-long-random-string
+ADMIN_TOKEN_TTL=1h
+ADMIN_BASIC_REALM=GRIGA Admin
 ```
+
+Generate `ADMIN_PASSWORD_HASH` with:
+```
+npx node -e "const bcrypt=require('bcrypt');console.log(bcrypt.hashSync('your-password',10));"
+```
+
+## Admin dashboard
+- `GET /admin` (protected by HTTP Basic auth using `ADMIN_EMAIL` + the password whose hash is stored in `ADMIN_PASSWORD_HASH`, realm defined by `ADMIN_BASIC_REALM`): returns the same dashboard HTML so you can load the login form.
+- `POST /admin/login` (JSON body: `{ email, password }`): verifies the credentials and returns a JWT signed with `ADMIN_JWT_SECRET`.
+- `GET /admin/tickets` (requires `Authorization: Bearer <token>`): returns the ticket audit log recorded by the webhook handler.
+
+The dashboard HTML is now served from the backend (`/admin`). Once you successfully pass Basic auth the page loads and stores the JWT returned by `/admin/login` in `localStorage`. If you ever host the dashboard on its own origin again, keep the `window.GRIGA_ADMIN_API_ORIGIN` assignment inside the HTML so the login form knows where to send the API calls.
 
 ## Running
 1. `npm install`

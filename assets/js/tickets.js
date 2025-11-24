@@ -54,9 +54,12 @@ document.addEventListener('DOMContentLoaded', function () {
 
   function flushPayment(method) {
     const form = document.getElementById('ticket-form');
-    const name = form.querySelector('[name="name"]').value.trim() || 'Guest Attendee';
-    const email = form.querySelector('[name="email"]').value.trim() || 'you@example.com';
-    const phone = form.querySelector('[name="phone"]').value.trim() || '971 5XX XXX XXX';
+    const nameField = form?.querySelector('[name="name"]');
+    const emailField = form?.querySelector('[name="email"]');
+    const phoneField = form?.querySelector('[name="phone"]');
+    const name = nameField?.value.trim() || 'Guest Attendee';
+    const email = emailField?.value.trim() || 'you@example.com';
+    const phone = phoneField?.value.trim() || '971 5XX XXX XXX';
     const id = randomTicketId();
     const now = new Date();
 

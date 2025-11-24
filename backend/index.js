@@ -1,14 +1,149 @@
+require('dotenv').config();
 const express = require('express');
 const Stripe = require('stripe');
 const nodemailer = require('nodemailer');
 const QRCode = require('qrcode');
+const jwt = require('jsonwebtoken');
+const bcrypt = require('bcrypt');
 const path = require('path');
 
 const app = express();
+app.use(express.json());
+app.use('/assets', express.static(path.join(__dirname, '../assets')));
 const stripe = Stripe(process.env.STRIPE_SECRET_KEY);
+
+const adminEmail = process.env.ADMIN_EMAIL;
+const adminPasswordHash = process.env.ADMIN_PASSWORD_HASH;
+const adminJwtSecret = process.env.ADMIN_JWT_SECRET;
+const adminTokenTTL = process.env.ADMIN_TOKEN_TTL || '1h';
+const adminBasicRealm = process.env.ADMIN_BASIC_REALM || 'GRIGA Admin';
+
+const ticketRecords = [
+  {
+    id: 'MNZ4H82',
+    name: 'Nia Kamau',
+    email: 'nia@murima.net',
+    phone: '+971 50 123 4567',
+    method: 'Stripe',
+    timestamp: '2025-11-19T15:24:00+04:00',
+    qr: 'MNZ4H82|Nia'
+  },
+  {
+    id: 'MNP0QW1',
+    name: 'Joseph Mwangi',
+    email: 'joseph@grigaevents.ae',
+    phone: '+971 52 345 6789',
+    method: 'M-Pesa',
+    timestamp: '2025-11-18T22:05:00+04:00',
+    qr: 'MNP0QW1|Joseph'
+  },
+  {
+    id: 'MNJ8LZ3',
+    name: 'Asha Oloo',
+    email: 'asha.culture@gmail.com',
+    phone: '+971 58 777 4321',
+    method: 'Stripe',
+    timestamp: '2025-11-18T09:12:00+04:00',
+    qr: 'MNJ8LZ3|Asha'
+  }
+];
+
+const addTicketRecord = (record) => {
+  ticketRecords.unshift(record);
+  if (ticketRecords.length > 300) {
+    ticketRecords.splice(300);
+  }
+};
+
+const resolvePaymentLabel = (method) => {
+  const normalized = (method || '').toLowerCase();
+  if (normalized.includes('mpesa')) return 'M-Pesa';
+  return 'Stripe';
+};
+
+const respondWithBasicChallenge = (res, message) => {
+  res.setHeader('WWW-Authenticate', `Basic realm="${adminBasicRealm}"`);
+  return res.status(401).send(message || 'Authentication required.');
+};
+
+const requireAdminPageAuth = async (req, res, next) => {
+  if (!adminEmail || !adminPasswordHash) {
+    return res.status(500).send('Admin authentication is not configured.');
+  }
+  const header = req.headers.authorization;
+  if (!header || !header.startsWith('Basic ')) {
+    return respondWithBasicChallenge(res);
+  }
+  const encoded = header.split(' ')[1] || '';
+  let decoded;
+  try {
+    decoded = Buffer.from(encoded, 'base64').toString();
+  } catch (err) {
+    return respondWithBasicChallenge(res);
+  }
+  const [username, password] = decoded.split(':');
+  if (!username || password === undefined) {
+    return respondWithBasicChallenge(res);
+  }
+  if (username.toLowerCase() !== adminEmail.toLowerCase()) {
+    return respondWithBasicChallenge(res);
+  }
+  const match = await bcrypt.compare(password, adminPasswordHash);
+  if (!match) {
+    return respondWithBasicChallenge(res);
+  }
+  req.adminEmail = adminEmail;
+  return next();
+};
+
+const requireAdminAuth = (req, res, next) => {
+  if (!adminEmail || !adminPasswordHash || !adminJwtSecret) {
+    return res.status(500).json({ message: 'Admin authentication is not configured.' });
+  }
+  const header = req.headers.authorization;
+  if (!header || !header.startsWith('Bearer ')) {
+    return res.status(401).json({ message: 'Missing authentication token.' });
+  }
+  const token = header.replace('Bearer ', '').trim();
+  try {
+    const payload = jwt.verify(token, adminJwtSecret);
+    req.adminEmail = payload.sub;
+    return next();
+  } catch (err) {
+    console.error('Invalid admin token', err.message);
+    return res.status(401).json({ message: 'Invalid or expired token.' });
+  }
+};
 
 // expose a health/router for other fetches
 app.get('/', (req, res) => res.send('GRIGA ticketing backend'));
+
+app.get('/admin', requireAdminPageAuth, (req, res) => {
+  return res.sendFile(path.join(__dirname, 'admin.html'));
+});
+
+app.post('/admin/login', async (req, res) => {
+  if (!adminEmail || !adminPasswordHash || !adminJwtSecret) {
+    return res.status(500).json({ message: 'Admin authentication is not configured.' });
+  }
+  const { email, password } = req.body;
+  if (!email || !password) {
+    return res.status(400).json({ message: 'Email and password are required.' });
+  }
+  if (email.toLowerCase() !== adminEmail.toLowerCase()) {
+    return res.status(401).json({ message: 'Invalid credentials.' });
+  }
+  const isMatch = await bcrypt.compare(password, adminPasswordHash);
+  if (!isMatch) {
+    return res.status(401).json({ message: 'Invalid credentials.' });
+  }
+  const token = jwt.sign({ sub: adminEmail }, adminJwtSecret, { expiresIn: adminTokenTTL });
+  res.json({ token, expiresIn: adminTokenTTL });
+});
+
+app.get('/admin/tickets', requireAdminAuth, (req, res) => {
+  return res.json(ticketRecords);
+});
 
 app.post(
   '/stripe/webhook',
@@ -66,6 +201,15 @@ app.post(
 
       await transporter.sendMail(mailOptions);
       console.log('Ticket email sent for', ticketId, attendeeEmail);
+      addTicketRecord({
+        id: ticketId,
+        name: attendeeName,
+        email: attendeeEmail,
+        phone: attendeePhone,
+        method: resolvePaymentLabel(session.payment_method_types?.[0]),
+        timestamp: new Date().toISOString(),
+        qr: qrPayload
+      });
     }
 
     res.json({ received: true });
