@@ -3,6 +3,7 @@ const express = require('express');
 const Stripe = require('stripe');
 const nodemailer = require('nodemailer');
 const QRCode = require('qrcode');
+const fs = require('fs');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const path = require('path');
@@ -17,42 +18,47 @@ const adminPasswordHash = process.env.ADMIN_PASSWORD_HASH;
 const adminJwtSecret = process.env.ADMIN_JWT_SECRET;
 const adminTokenTTL = process.env.ADMIN_TOKEN_TTL || '1h';
 const adminBasicRealm = process.env.ADMIN_BASIC_REALM || 'GRIGA Admin';
+const ticketDataDir = path.join(__dirname, process.env.TICKET_DATA_DIR || 'data');
+const ticketDataFile = process.env.TICKET_DATA_FILE || path.join(ticketDataDir, 'tickets.json');
+const ticketMemoryCap = Number(process.env.TICKET_MEMORY_CAP ?? 5000);
+const ticketLogLimit = Number(process.env.TICKET_LOG_LIMIT ?? 2000);
 
-const ticketRecords = [
-  {
-    id: 'MNZ4H82',
-    name: 'Nia Kamau',
-    email: 'nia@murima.net',
-    phone: '+971 50 123 4567',
-    method: 'Stripe',
-    timestamp: '2025-11-19T15:24:00+04:00',
-    qr: 'MNZ4H82|Nia'
-  },
-  {
-    id: 'MNP0QW1',
-    name: 'Joseph Mwangi',
-    email: 'joseph@grigaevents.ae',
-    phone: '+971 52 345 6789',
-    method: 'M-Pesa',
-    timestamp: '2025-11-18T22:05:00+04:00',
-    qr: 'MNP0QW1|Joseph'
-  },
-  {
-    id: 'MNJ8LZ3',
-    name: 'Asha Oloo',
-    email: 'asha.culture@gmail.com',
-    phone: '+971 58 777 4321',
-    method: 'Stripe',
-    timestamp: '2025-11-18T09:12:00+04:00',
-    qr: 'MNJ8LZ3|Asha'
+const ensureTicketStorage = () => {
+  if (!fs.existsSync(ticketDataDir)) {
+    fs.mkdirSync(ticketDataDir, { recursive: true });
   }
-];
+  if (!fs.existsSync(ticketDataFile)) {
+    fs.writeFileSync(ticketDataFile, '[]', 'utf8');
+  }
+};
+
+const loadTicketRecords = () => {
+  ensureTicketStorage();
+  try {
+    const raw = fs.readFileSync(ticketDataFile, 'utf8');
+    return JSON.parse(raw || '[]');
+  } catch (err) {
+    console.error('Failed to load ticket log, starting fresh', err.message);
+    return [];
+  }
+};
+
+const persistTicketRecords = () => {
+  try {
+    fs.writeFileSync(ticketDataFile, JSON.stringify(ticketRecords, null, 2), 'utf8');
+  } catch (err) {
+    console.error('Failed to persist ticket log', err.message);
+  }
+};
+
+const ticketRecords = loadTicketRecords();
 
 const addTicketRecord = (record) => {
   ticketRecords.unshift(record);
-  if (ticketRecords.length > 300) {
-    ticketRecords.splice(300);
+  if (ticketRecords.length > ticketMemoryCap) {
+    ticketRecords.splice(ticketMemoryCap);
   }
+  persistTicketRecords();
 };
 
 const resolvePaymentLabel = (method) => {
@@ -142,7 +148,7 @@ app.post('/admin/login', async (req, res) => {
 });
 
 app.get('/admin/tickets', requireAdminAuth, (req, res) => {
-  return res.json(ticketRecords);
+  return res.json(ticketRecords.slice(0, ticketLogLimit));
 });
 
 app.post(

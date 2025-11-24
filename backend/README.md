@@ -22,6 +22,8 @@ This lightweight Node.js backend handles Stripe webhook events, generates QR-bas
    - (Optional) Stores the ticket record in your preferred datastore.
    - Sends an email to the buyer with event details and the QR image.
 
+   The webhook now appends every ticket to `data/tickets.json` (configurable via `TICKET_DATA_DIR`/`TICKET_DATA_FILE`) so the dashboard can survive restarts. The endpoint still keeps only `TICKET_MEMORY_CAP` entries in memory and returns the most recent `TICKET_LOG_LIMIT` records to `/admin/tickets`.
+
 ## Environment variables
 ```
 STRIPE_SECRET_KEY=sk_live_...
@@ -39,6 +41,10 @@ ADMIN_PASSWORD_HASH=$2b$10$xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 ADMIN_JWT_SECRET=replace-with-long-random-string
 ADMIN_TOKEN_TTL=1h
 ADMIN_BASIC_REALM=GRIGA Admin
+TICKET_DATA_DIR=data
+TICKET_DATA_FILE=data/tickets.json
+TICKET_MEMORY_CAP=5000
+TICKET_LOG_LIMIT=2000
 ```
 
 Generate `ADMIN_PASSWORD_HASH` with:
