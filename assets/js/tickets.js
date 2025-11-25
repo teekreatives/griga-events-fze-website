@@ -29,7 +29,7 @@ document.addEventListener('DOMContentLoaded', function () {
       form: document.getElementById('mpesa-form'),
       nameInput: document.getElementById('mpesa-name'),
       phoneInput: document.getElementById('mpesa-phone'),
-      whatsappNumber: '9710261539',
+      whatsappNumber: '971529948589',
       amountLabel: '5,550 KSH',
       methodLabel: 'M-Pesa STK Push',
       prefix: 'MPESA'
