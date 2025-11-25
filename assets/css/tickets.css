@@ -121,6 +121,79 @@ body.tickets-body {
   }
 }
 
+.ticket-guide {
+  padding: 3rem 0;
+  background: linear-gradient(180deg, rgba(6, 12, 36, 0.95), rgba(4, 8, 20, 0.95));
+  color: #fafafa;
+}
+
+.ticket-guide .section-header h2,
+.ticket-guide .section-header p {
+  color: #fafafa;
+}
+
+.guide-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.6rem;
+  margin-top: 2rem;
+}
+
+.guide-card {
+  border-radius: 20px;
+  padding: 1.8rem;
+  background: rgba(255, 255, 255, 0.04);
+  box-shadow: 0 25px 60px rgba(10, 10, 10, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.guide-card h3 {
+  margin-top: 0;
+  margin-bottom: 0.8rem;
+  font-size: 1.3rem;
+}
+
+.guide-card ol {
+  margin: 0;
+  padding-left: 1.4rem;
+  line-height: 1.5;
+}
+
+.guide-card ol li + li {
+  margin-top: 0.6rem;
+}
+
+.guide-note {
+  margin-top: 1rem;
+  font-size: 0.95rem;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.guide-card--contact p {
+  margin-bottom: 1rem;
+}
+
+.contact-list {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 1.2rem;
+}
+
+.contact-list li {
+  margin-bottom: 0.5rem;
+  font-size: 0.95rem;
+}
+
+.contact-list span {
+  display: inline-block;
+  min-width: 90px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  font-size: 0.7rem;
+  opacity: 0.8;
+}
+
 .payment-option {
   background: #f7f7f7;
   border-radius: 18px;
