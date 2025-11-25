@@ -194,6 +194,29 @@ body.tickets-body {
   color: rgba(255, 255, 255, 0.65);
 }
 
+.manual-payment-form button {
+  transition: background 0.4s ease, box-shadow 0.4s ease, transform 0.3s ease;
+}
+
+.manual-payment-form button.ready {
+  animation: flicker-green 1.6s ease-in-out infinite;
+  background: linear-gradient(135deg, #1f9c3b, #ffffff 40%, #1db954);
+  color: #042004;
+  box-shadow: 0 10px 25px rgba(31, 156, 59, 0.4);
+}
+
+@keyframes flicker-green {
+  0% {
+    opacity: 0.8;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0.85;
+  }
+}
+
 .ticket-form {
   margin-top: 2rem;
   display: grid;

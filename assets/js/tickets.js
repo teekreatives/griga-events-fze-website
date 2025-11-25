@@ -36,6 +36,17 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   };
 
+  Object.values(manualFlows).forEach((flow) => {
+    flow.submitButton = flow.form?.querySelector('button[type="submit"]');
+    const inputs = [flow.nameInput, flow.phoneInput];
+    inputs.forEach((input) => {
+      input?.addEventListener('input', () => {
+        updateManualButtonState(flow);
+      });
+    });
+    updateManualButtonState(flow);
+  });
+
   function randomTicketId() {
     return 'MN' + Date.now().toString(36).toUpperCase() + Math.floor(Math.random() * 900 + 100);
   }
@@ -46,6 +57,13 @@ document.addEventListener('DOMContentLoaded', function () {
 
   function pad(value) {
     return value.toString().padStart(2, '0');
+  }
+
+  function updateManualButtonState(flow) {
+    const hasName = flow.nameInput?.value.trim();
+    const hasPhone = flow.phoneInput?.value.trim();
+    const ready = Boolean(hasName && hasPhone);
+    flow.submitButton?.classList.toggle('ready', ready);
   }
 
   function formatTimestamp(date) {
@@ -152,6 +170,7 @@ document.addEventListener('DOMContentLoaded', function () {
     if (flow.nameInput) flow.nameInput.value = '';
     if (flow.phoneInput) flow.phoneInput.value = '';
     flow.button?.setAttribute('aria-expanded', 'false');
+    updateManualButtonState(flow);
   }
 
   function handleManualSubmit(key, event) {
