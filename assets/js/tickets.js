@@ -130,7 +130,7 @@ document.addEventListener('DOMContentLoaded', function () {
       return;
     }
     const orderId = generateBotimOrderId();
-    const message = `Hello GRIGA Events, I have paid via BOTIM. Buyer full name: ${buyerName} Buyer phone number: ${buyerPhone} Order ID: ${orderId} Please attach proof of payment.`;
+    const message = `Hello, I have paid for my ticket via BOTIM Money.\nName: ${buyerName}\nAmount: ${botimAmount}\nOrder ID: ${orderId}\nI'm attaching a screenshot to proof the payment.\nKindly confirm and send my ticket. Thank you.`;
     const encodedMessage = encodeURIComponent(message);
     const url = `https://wa.me/${botimWhatsAppNumber}?text=${encodedMessage}`;
     window.open(url, '_blank');
