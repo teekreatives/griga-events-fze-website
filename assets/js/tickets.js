@@ -128,25 +128,25 @@ document.addEventListener('DOMContentLoaded', function () {
     }, 1200);
   }
 
-  function revealManualForm(key) {
+  function toggleManualForm(key) {
     const flow = manualFlows[key];
-    if (!flow || !flow.form || flow.form.classList.contains('is-visible')) return;
-    flow.form.classList.add('is-visible');
-    flow.button?.setAttribute('aria-expanded', 'true');
-    flow.button?.setAttribute('disabled', 'true');
-    flow.button?.setAttribute('aria-hidden', 'true');
-    flow.nameInput?.focus();
+    if (!flow || !flow.form) return;
+    const isVisible = flow.form.classList.contains('is-visible');
+    if (isVisible) {
+      flow.form.classList.remove('is-visible');
+      flow.button?.setAttribute('aria-expanded', 'false');
+    } else {
+      flow.form.classList.add('is-visible');
+      flow.button?.setAttribute('aria-expanded', 'true');
+      flow.nameInput?.focus();
+    }
   }
 
   function resetManualForm(flow) {
     flow.form?.classList.remove('is-visible');
     if (flow.nameInput) flow.nameInput.value = '';
     if (flow.phoneInput) flow.phoneInput.value = '';
-    if (flow.button) {
-      flow.button.removeAttribute('disabled');
-      flow.button.removeAttribute('aria-hidden');
-      flow.button?.setAttribute('aria-expanded', 'false');
-    }
+    flow.button?.setAttribute('aria-expanded', 'false');
   }
 
   function handleManualSubmit(key, event) {
@@ -186,7 +186,7 @@ Kindly confirm and send my ticket. Thank you.`;
   Object.keys(manualFlows).forEach(function (key) {
     const flow = manualFlows[key];
     flow.button?.addEventListener('click', function () {
-      revealManualForm(key);
+      toggleManualForm(key);
     });
     flow.form?.addEventListener('submit', function (event) {
       handleManualSubmit(key, event);
