@@ -128,18 +128,23 @@ document.addEventListener('DOMContentLoaded', function () {
     }, 1200);
   }
 
+  function closeManualForm(flow) {
+    flow.form?.classList.remove('is-visible');
+    flow.button?.setAttribute('aria-expanded', 'false');
+  }
+
   function toggleManualForm(key) {
     const flow = manualFlows[key];
     if (!flow || !flow.form) return;
     const isVisible = flow.form.classList.contains('is-visible');
     if (isVisible) {
-      flow.form.classList.remove('is-visible');
-      flow.button?.setAttribute('aria-expanded', 'false');
-    } else {
-      flow.form.classList.add('is-visible');
-      flow.button?.setAttribute('aria-expanded', 'true');
-      flow.nameInput?.focus();
+      closeManualForm(flow);
+      return;
     }
+    Object.values(manualFlows).forEach(closeManualForm);
+    flow.form.classList.add('is-visible');
+    flow.button?.setAttribute('aria-expanded', 'true');
+    flow.nameInput?.focus();
   }
 
   function resetManualForm(flow) {
