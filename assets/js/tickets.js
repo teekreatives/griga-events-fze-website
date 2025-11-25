@@ -31,7 +31,7 @@ document.addEventListener('DOMContentLoaded', function () {
       phoneInput: document.getElementById('mpesa-phone'),
       whatsappNumber: '971529948589',
       amountLabel: '5,550 KSH',
-      methodLabel: 'M-Pesa STK Push',
+      methodLabel: 'M-PESA PAYMENT',
       prefix: 'MPESA'
     }
   };
@@ -90,12 +90,12 @@ document.addEventListener('DOMContentLoaded', function () {
     const now = new Date();
 
     if (ticketIdEl) ticketIdEl.textContent = id;
-    if (ticketMethodEl) ticketMethodEl.textContent = method === 'mpesa' ? 'M-Pesa STK Push' : 'Stripe Checkout';
+    if (ticketMethodEl) ticketMethodEl.textContent = method === 'mpesa' ? 'M-PESA PAYMENT' : 'Stripe Checkout';
     if (ticketEmailEl) ticketEmailEl.textContent = email;
     if (ticketTimeEl) ticketTimeEl.textContent = formatTimestamp(now);
     if (ticketPriceEl) ticketPriceEl.textContent = '150 AED';
     if (statusLine) {
-      statusLine.textContent = `Payment success via ${method === 'mpesa' ? 'M-Pesa' : 'Stripe'}`;
+      statusLine.textContent = `Payment success via ${method === 'mpesa' ? 'M-PESA PAYMENT' : 'Stripe'}`;
     }
 
     renderQRCode(`${id}|Murima Night Second Edition|${email}`);
