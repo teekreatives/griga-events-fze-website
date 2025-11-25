@@ -13,9 +13,19 @@ document.addEventListener('DOMContentLoaded', function () {
   const qrContainer = document.getElementById('ticket-qr');
   const statusLine = document.getElementById('payment-status');
   const downloadButton = document.getElementById('download-ticket');
+  const botimWhatsAppNumber = '971529948589';
+  const botimAmount = '150 AED';
+  const botimForm = document.getElementById('botim-form');
+  const botimShowBtn = document.getElementById('botim-show-form');
+  const botimNameInput = document.getElementById('botim-name');
+  const botimPhoneInput = document.getElementById('botim-phone');
 
   function randomTicketId() {
     return 'MN' + Date.now().toString(36).toUpperCase() + Math.floor(Math.random() * 900 + 100);
+  }
+
+  function generateBotimOrderId() {
+    return 'BOTIM-' + Date.now().toString(36).toUpperCase() + Math.floor(Math.random() * 900 + 100);
   }
 
   function pad(value) {
@@ -102,9 +112,41 @@ document.addEventListener('DOMContentLoaded', function () {
     }, 1200);
   }
 
+  function revealBotimForm() {
+    if (!botimForm || botimForm.classList.contains('is-visible')) return;
+    botimForm.classList.add('is-visible');
+    botimShowBtn?.setAttribute('aria-expanded', 'true');
+    botimShowBtn?.setAttribute('disabled', 'true');
+    botimShowBtn?.setAttribute('aria-hidden', 'true');
+    botimNameInput?.focus();
+  }
+
+  function handleBotimSubmit(event) {
+    event.preventDefault();
+    const buyerName = botimNameInput?.value.trim();
+    const buyerPhone = botimPhoneInput?.value.trim();
+    if (!buyerName || !buyerPhone) {
+      window.alert('Please provide both a name and phone number.');
+      return;
+    }
+    const orderId = generateBotimOrderId();
+    const message = `Hello GRIGA Events, I have paid via BOTIM. Buyer full name: ${buyerName} Buyer phone number: ${buyerPhone} Order ID: ${orderId} Please attach proof of payment.`;
+    const encodedMessage = encodeURIComponent(message);
+    const url = `https://wa.me/${botimWhatsAppNumber}?text=${encodedMessage}`;
+    window.open(url, '_blank');
+    botimForm?.classList.remove('is-visible');
+    if (statusLine) {
+      statusLine.textContent = `BOTIM confirmation initiated (Order ID ${orderId}).`;
+    }
+    if (botimNameInput) botimNameInput.value = '';
+    if (botimPhoneInput) botimPhoneInput.value = '';
+  }
+
   paymentButtons.forEach(function (button) {
     button.addEventListener('click', handlePayment);
   });
+  botimShowBtn?.addEventListener('click', revealBotimForm);
+  botimForm?.addEventListener('submit', handleBotimSubmit);
 
   if (downloadButton) {
     downloadButton.addEventListener('click', function () {

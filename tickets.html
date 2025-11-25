@@ -83,7 +83,18 @@
                 <dd>150&nbsp;AED</dd>
               </div>
             </dl>
-            <button class="btn btn-secondary" data-payment="botim">Mark as Paid</button>
+            <button class="btn btn-secondary" id="botim-show-form" type="button">I have paid</button>
+            <form class="botim-form" id="botim-form" novalidate>
+              <label>
+                Full name
+                <input type="text" id="botim-name" name="name" placeholder="Enter buyer name" required />
+              </label>
+              <label>
+                Phone number
+                <input type="tel" id="botim-phone" name="phone" placeholder="e.g. +971 50 123 4567" required />
+              </label>
+              <button class="btn btn-secondary" type="submit">Send proof via WhatsApp</button>
+            </form>
           </article>
         </div>
       </div>

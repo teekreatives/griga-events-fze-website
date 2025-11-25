@@ -163,6 +163,37 @@ body.tickets-body {
   font-size: 1rem;
 }
 
+.botim-form {
+  margin-top: 1.2rem;
+  display: none;
+  flex-direction: column;
+  gap: 0.8rem;
+}
+
+.botim-form.is-visible {
+  display: flex;
+}
+
+.botim-form label {
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.85);
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.botim-form input {
+  padding: 0.8rem 1rem;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  background: rgba(255, 255, 255, 0.08);
+  color: #fff;
+}
+
+.botim-form input::placeholder {
+  color: rgba(255, 255, 255, 0.65);
+}
+
 .ticket-form {
   margin-top: 2rem;
   display: grid;
