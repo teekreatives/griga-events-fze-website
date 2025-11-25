@@ -63,8 +63,33 @@
           </article>
           <article class="payment-option payment-option--mpesa" data-aos="fade-left">
             <h3>M-Pesa STK Push</h3>
-            <p>UAE residents with Safaricom roaming receive an STK push for automatic confirmation in Gulf Standard Time.</p>
-            <button class="btn btn-secondary" data-payment="mpesa">Pay via M-Pesa</button>
+            <p>Send 5,550&nbsp;KSH over M-Pesa to the number below, then confirm the payment so we can deliver your ticket.</p>
+            <dl class="payment-details">
+              <div>
+                <dt>Number</dt>
+                <dd>0710 261 539</dd>
+              </div>
+              <div>
+                <dt>Name</dt>
+                <dd>Grishon Gachomo</dd>
+              </div>
+              <div>
+                <dt>Amount</dt>
+                <dd>5,550&nbsp;KSH</dd>
+              </div>
+            </dl>
+            <button class="btn btn-secondary" id="mpesa-show-form" type="button">I have paid</button>
+            <form class="manual-payment-form" id="mpesa-form" novalidate>
+              <label>
+                Full name
+                <input type="text" id="mpesa-name" name="mpesa-name" placeholder="Enter Your Full Name" required />
+              </label>
+              <label>
+                Phone number
+                <input type="tel" id="mpesa-phone" name="mpesa-phone" placeholder="e.g. +254 7XX XXX XXX" required />
+              </label>
+              <button class="btn btn-secondary" type="submit">Send proof via WhatsApp</button>
+            </form>
           </article>
           <article class="payment-option payment-option--botim" data-aos="fade-right" data-aos-delay="100">
             <h3>BOTIM Money</h3>
@@ -84,7 +109,7 @@
               </div>
             </dl>
             <button class="btn btn-secondary" id="botim-show-form" type="button">I have paid</button>
-            <form class="botim-form" id="botim-form" novalidate>
+            <form class="manual-payment-form" id="botim-form" novalidate>
               <label>
                 Full name
                 <input type="text" id="botim-name" name="name" placeholder="Enter Your Full Name" required />

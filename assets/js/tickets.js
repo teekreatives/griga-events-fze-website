@@ -13,19 +13,35 @@ document.addEventListener('DOMContentLoaded', function () {
   const qrContainer = document.getElementById('ticket-qr');
   const statusLine = document.getElementById('payment-status');
   const downloadButton = document.getElementById('download-ticket');
-  const botimWhatsAppNumber = '971529948589';
-  const botimAmount = '150 AED';
-  const botimForm = document.getElementById('botim-form');
-  const botimShowBtn = document.getElementById('botim-show-form');
-  const botimNameInput = document.getElementById('botim-name');
-  const botimPhoneInput = document.getElementById('botim-phone');
+  const manualFlows = {
+    botim: {
+      button: document.getElementById('botim-show-form'),
+      form: document.getElementById('botim-form'),
+      nameInput: document.getElementById('botim-name'),
+      phoneInput: document.getElementById('botim-phone'),
+      whatsappNumber: '971529948589',
+      amountLabel: '150 AED',
+      methodLabel: 'BOTIM Money',
+      prefix: 'BOTIM'
+    },
+    mpesa: {
+      button: document.getElementById('mpesa-show-form'),
+      form: document.getElementById('mpesa-form'),
+      nameInput: document.getElementById('mpesa-name'),
+      phoneInput: document.getElementById('mpesa-phone'),
+      whatsappNumber: '9710261539',
+      amountLabel: '5,550 KSH',
+      methodLabel: 'M-Pesa STK Push',
+      prefix: 'MPESA'
+    }
+  };
 
   function randomTicketId() {
     return 'MN' + Date.now().toString(36).toUpperCase() + Math.floor(Math.random() * 900 + 100);
   }
 
-  function generateBotimOrderId() {
-    return 'BOTIM-' + Date.now().toString(36).toUpperCase() + Math.floor(Math.random() * 900 + 100);
+  function generateManualOrderId(prefix) {
+    return `${prefix}-${Date.now().toString(36).toUpperCase()}-${Math.floor(Math.random() * 900 + 100)}`;
   }
 
   function pad(value) {
@@ -112,41 +128,70 @@ document.addEventListener('DOMContentLoaded', function () {
     }, 1200);
   }
 
-  function revealBotimForm() {
-    if (!botimForm || botimForm.classList.contains('is-visible')) return;
-    botimForm.classList.add('is-visible');
-    botimShowBtn?.setAttribute('aria-expanded', 'true');
-    botimShowBtn?.setAttribute('disabled', 'true');
-    botimShowBtn?.setAttribute('aria-hidden', 'true');
-    botimNameInput?.focus();
+  function revealManualForm(key) {
+    const flow = manualFlows[key];
+    if (!flow || !flow.form || flow.form.classList.contains('is-visible')) return;
+    flow.form.classList.add('is-visible');
+    flow.button?.setAttribute('aria-expanded', 'true');
+    flow.button?.setAttribute('disabled', 'true');
+    flow.button?.setAttribute('aria-hidden', 'true');
+    flow.nameInput?.focus();
   }
 
-  function handleBotimSubmit(event) {
+  function resetManualForm(flow) {
+    flow.form?.classList.remove('is-visible');
+    if (flow.nameInput) flow.nameInput.value = '';
+    if (flow.phoneInput) flow.phoneInput.value = '';
+    if (flow.button) {
+      flow.button.removeAttribute('disabled');
+      flow.button.removeAttribute('aria-hidden');
+      flow.button?.setAttribute('aria-expanded', 'false');
+    }
+  }
+
+  function handleManualSubmit(key, event) {
     event.preventDefault();
-    const buyerName = botimNameInput?.value.trim();
-    const buyerPhone = botimPhoneInput?.value.trim();
+    const flow = manualFlows[key];
+    if (!flow) return;
+    const buyerName = flow.nameInput?.value.trim();
+    const buyerPhone = flow.phoneInput?.value.trim();
     if (!buyerName || !buyerPhone) {
       window.alert('Please provide both a name and phone number.');
       return;
     }
-    const orderId = generateBotimOrderId();
-    const message = `Hello, I have paid for my ticket via BOTIM Money.\nName: ${buyerName}\nAmount: ${botimAmount}\nOrder ID: ${orderId}\nI'm attaching a screenshot to proof the payment.\nKindly confirm and send my ticket. Thank you.`;
+    const orderId = generateManualOrderId(flow.prefix);
+    const message = buildManualMessage(flow, buyerName, buyerPhone, orderId);
     const encodedMessage = encodeURIComponent(message);
-    const url = `https://wa.me/${botimWhatsAppNumber}?text=${encodedMessage}`;
+    const url = `https://wa.me/${flow.whatsappNumber}?text=${encodedMessage}`;
     window.open(url, '_blank');
-    botimForm?.classList.remove('is-visible');
     if (statusLine) {
-      statusLine.textContent = `BOTIM confirmation initiated (Order ID ${orderId}).`;
+      statusLine.textContent = `${flow.methodLabel} confirmation initiated (Order ID ${orderId}).`;
     }
-    if (botimNameInput) botimNameInput.value = '';
-    if (botimPhoneInput) botimPhoneInput.value = '';
+    resetManualForm(flow);
+  }
+
+  function buildManualMessage(flow, name, phone, orderId) {
+    return `Hello, I have paid for my ticket via ${flow.methodLabel}.
+Name: ${name}
+Phone: ${phone}
+Amount: ${flow.amountLabel}
+Order ID: ${orderId}
+I'm attaching a screenshot to proof the payment.
+Kindly confirm and send my ticket. Thank you.`;
   }
 
   paymentButtons.forEach(function (button) {
     button.addEventListener('click', handlePayment);
   });
-  botimShowBtn?.addEventListener('click', revealBotimForm);
-  botimForm?.addEventListener('submit', handleBotimSubmit);
+  Object.keys(manualFlows).forEach(function (key) {
+    const flow = manualFlows[key];
+    flow.button?.addEventListener('click', function () {
+      revealManualForm(key);
+    });
+    flow.form?.addEventListener('submit', function (event) {
+      handleManualSubmit(key, event);
+    });
+  });
 
   if (downloadButton) {
     downloadButton.addEventListener('click', function () {

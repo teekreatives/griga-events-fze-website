@@ -163,18 +163,18 @@ body.tickets-body {
   font-size: 1rem;
 }
 
-.botim-form {
+.manual-payment-form {
   margin-top: 1.2rem;
   display: none;
   flex-direction: column;
   gap: 0.8rem;
 }
 
-.botim-form.is-visible {
+.manual-payment-form.is-visible {
   display: flex;
 }
 
-.botim-form label {
+.manual-payment-form label {
   font-size: 0.9rem;
   color: rgba(255, 255, 255, 0.85);
   display: flex;
@@ -182,7 +182,7 @@ body.tickets-body {
   gap: 0.2rem;
 }
 
-.botim-form input {
+.manual-payment-form input {
   padding: 0.8rem 1rem;
   border-radius: 10px;
   border: 1px solid rgba(255, 255, 255, 0.4);
@@ -190,7 +190,7 @@ body.tickets-body {
   color: #fff;
 }
 
-.botim-form input::placeholder {
+.manual-payment-form input::placeholder {
   color: rgba(255, 255, 255, 0.65);
 }
 
