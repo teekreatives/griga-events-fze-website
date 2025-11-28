@@ -390,8 +390,9 @@ p {
   margin: 0;
   padding: 0;
   line-height: 1.1;
-  font-size: clamp(1.95rem, 3vw, 3.4rem);
+  font-size: clamp(2.2rem, 3.6vw, 4rem);
   letter-spacing: 0.05em;
+  font-weight: 900;
 }
 
 .hero .hero-subtitle {
@@ -431,7 +432,7 @@ p {
   }
 
   .hero .hero-content h1 {
-    font-size: clamp(1.75rem, 8vw, 2.6rem);
+    font-size: clamp(2rem, 9vw, 3rem);
     line-height: 1.2;
   }
 
@@ -450,6 +451,10 @@ p {
 
   .hero .hero-content h1 span:first-child {
     display: inline;
+  }
+
+  .hero .hero-content h1 {
+    font-weight: 1200;
   }
 }
 
