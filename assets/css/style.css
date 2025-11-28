@@ -393,6 +393,8 @@ p {
   font-size: clamp(2.2rem, 3.6vw, 4rem);
   letter-spacing: 0.05em;
   font-weight: 900;
+  color: #ffffff;
+  text-shadow: 0 6px 18px rgba(0, 0, 0, 0.65);
 }
 
 .hero .hero-subtitle {
