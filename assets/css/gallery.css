@@ -18,8 +18,8 @@
 }
 
 .gallery-hero-media {
-  background-image: linear-gradient(120deg, rgba(0, 0, 0, 0.65), rgba(17, 17, 17, 0.65)),
-    url('../media/images/smoke-7th-ed-pics/IMG-20251120-WA0055.jpg');
+  background-image: linear-gradient(120deg, rgba(0, 0, 0, 0.45), rgba(17, 17, 17, 0.35)),
+    url('../media/images/murima-night-pics/IMG-20251120-WA0055.jpg');
   background-size: cover;
   background-position: center;
   filter: saturate(1.05);
@@ -263,3 +263,4 @@
     padding: 3rem 1rem;
   }
 }
+
