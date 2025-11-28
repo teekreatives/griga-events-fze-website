@@ -135,36 +135,64 @@ onReady(function () {
 
   var heroVideo = document.querySelector('.hero-video');
   var heroContent = document.querySelector('.hero .hero-content');
-  var heroHeadingTimer = null;
+  var heroShowTimer = null;
+  var heroHideTimer = null;
+  var waitingForLoop = false;
+  var initialPlayPending = true;
 
-  function revealHeroHeading() {
-    if (heroContent) {
-      heroContent.classList.add('hero-heading-visible');
+  function showHeroHeading() {
+    if (!heroContent) return;
+    heroContent.classList.add('hero-heading-visible');
+    if (heroShowTimer) {
+      clearTimeout(heroShowTimer);
+      heroShowTimer = null;
     }
-    heroHeadingTimer = null;
+    if (heroHideTimer) {
+      clearTimeout(heroHideTimer);
+    }
+    heroHideTimer = setTimeout(hideHeroHeading, 38000);
+    waitingForLoop = false;
   }
 
-  function scheduleHeroHeading() {
-    if (heroHeadingTimer) return;
-    heroHeadingTimer = setTimeout(revealHeroHeading, 15000);
+  function hideHeroHeading() {
+    if (!heroContent) return;
+    heroContent.classList.remove('hero-heading-visible');
+    if (heroHideTimer) {
+      clearTimeout(heroHideTimer);
+      heroHideTimer = null;
+    }
+    if (heroShowTimer) {
+      clearTimeout(heroShowTimer);
+      heroShowTimer = null;
+    }
+    waitingForLoop = true;
+  }
+
+  function scheduleHeroShow(delay) {
+    if (!heroContent || heroShowTimer) return;
+    heroShowTimer = setTimeout(showHeroHeading, delay);
   }
 
   if (heroVideo) {
     function handleVideoPlay() {
-      scheduleHeroHeading();
-      heroVideo.removeEventListener('playing', handleVideoPlay);
+      var delay = waitingForLoop ? 20000 : initialPlayPending ? 15000 : null;
+      if (delay !== null) {
+        scheduleHeroShow(delay);
+        initialPlayPending = false;
+        waitingForLoop = false;
+      }
     }
 
     heroVideo.addEventListener('playing', handleVideoPlay);
     if (!heroVideo.paused && heroVideo.readyState > 2) {
-      scheduleHeroHeading();
+      handleVideoPlay();
     }
 
     heroVideo.play().catch(function () {
       heroVideo.setAttribute('data-video-error', 'true');
     });
   } else if (heroContent) {
-    scheduleHeroHeading();
+    scheduleHeroShow(15000);
   }
 
   // AOS init
