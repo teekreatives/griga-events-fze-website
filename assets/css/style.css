@@ -428,11 +428,11 @@ p {
   .hero .hero-content {
     width: min(540px, 92vw);
     gap: 12px;
-    padding: 0 16px;
+    padding: 4px 12px;
   }
 
   .hero .hero-content h1 {
-    font-size: clamp(2rem, 9vw, 3rem);
+    font-size: clamp(2.4rem, 10vw, 3.5rem);
     line-height: 1.2;
   }
 
@@ -454,7 +454,7 @@ p {
   }
 
   .hero .hero-content h1 {
-    font-weight: 1200;
+    font-weight: 1600;
   }
 }
 
