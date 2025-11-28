@@ -441,6 +441,18 @@ p {
   }
 }
 
+@media (max-width: 767px) {
+  .hero .hero-content h1 span {
+    display: inline;
+    white-space: normal;
+    overflow-wrap: anywhere;
+  }
+
+  .hero .hero-content h1 span:first-child {
+    display: inline;
+  }
+}
+
 .hero .hero-subtitle {
   color: rgba(255,255,255,0.85);
   margin-bottom: 4px;
