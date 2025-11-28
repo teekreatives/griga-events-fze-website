@@ -134,10 +134,37 @@ onReady(function () {
   animateStats();
 
   var heroVideo = document.querySelector('.hero-video');
+  var heroContent = document.querySelector('.hero .hero-content');
+  var heroHeadingTimer = null;
+
+  function revealHeroHeading() {
+    if (heroContent) {
+      heroContent.classList.add('hero-heading-visible');
+    }
+    heroHeadingTimer = null;
+  }
+
+  function scheduleHeroHeading() {
+    if (heroHeadingTimer) return;
+    heroHeadingTimer = setTimeout(revealHeroHeading, 15000);
+  }
+
   if (heroVideo) {
+    function handleVideoPlay() {
+      scheduleHeroHeading();
+      heroVideo.removeEventListener('playing', handleVideoPlay);
+    }
+
+    heroVideo.addEventListener('playing', handleVideoPlay);
+    if (!heroVideo.paused && heroVideo.readyState > 2) {
+      scheduleHeroHeading();
+    }
+
     heroVideo.play().catch(function () {
       heroVideo.setAttribute('data-video-error', 'true');
     });
+  } else if (heroContent) {
+    scheduleHeroHeading();
   }
 
   // AOS init
