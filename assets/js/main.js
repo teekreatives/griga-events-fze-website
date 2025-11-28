@@ -133,67 +133,62 @@ onReady(function () {
   window.addEventListener('scroll', animateStats);
   animateStats();
 
-  var heroVideo = document.querySelector('.hero-video');
-  var heroContent = document.querySelector('.hero .hero-content');
-  var heroShowTimer = null;
-  var heroHideTimer = null;
-  var waitingForLoop = false;
-  var initialPlayPending = true;
+  var heroSection = document.querySelector('.hero#top');
+  var heroContent = heroSection ? heroSection.querySelector('.hero-content') : null;
+  var heroVideo = heroSection ? heroSection.querySelector('.hero-video') : null;
+  var heroHeadingVisible = false;
+  var LOGO_ANIMATION_DURATION = 16;
+  var DEFAULT_VIDEO_DURATION = 60;
 
-  function showHeroHeading() {
+  function applyHeroVisibility(shouldShow) {
     if (!heroContent) return;
-    heroContent.classList.add('hero-heading-visible');
-    if (heroShowTimer) {
-      clearTimeout(heroShowTimer);
-      heroShowTimer = null;
+    if (shouldShow && !heroHeadingVisible) {
+      heroContent.classList.add('hero-heading-visible');
+      heroHeadingVisible = true;
+    } else if (!shouldShow && heroHeadingVisible) {
+      heroContent.classList.remove('hero-heading-visible');
+      heroHeadingVisible = false;
     }
-    if (heroHideTimer) {
-      clearTimeout(heroHideTimer);
-    }
-    heroHideTimer = setTimeout(hideHeroHeading, 38000);
-    waitingForLoop = false;
   }
 
-  function hideHeroHeading() {
+  function evaluateHeroVisibility() {
     if (!heroContent) return;
-    heroContent.classList.remove('hero-heading-visible');
-    if (heroHideTimer) {
-      clearTimeout(heroHideTimer);
-      heroHideTimer = null;
+
+    if (!heroVideo) {
+      applyHeroVisibility(true);
+      return;
     }
-    if (heroShowTimer) {
-      clearTimeout(heroShowTimer);
-      heroShowTimer = null;
+
+    var duration = heroVideo.duration;
+    if (!duration || !isFinite(duration)) {
+      duration = DEFAULT_VIDEO_DURATION;
     }
-    waitingForLoop = true;
+
+    var normalizedTime = heroVideo.currentTime % duration;
+    var isDuringLogo = normalizedTime < LOGO_ANIMATION_DURATION;
+
+    applyHeroVisibility(!isDuringLogo);
   }
 
-  function scheduleHeroShow(delay) {
-    if (!heroContent || heroShowTimer) return;
-    heroShowTimer = setTimeout(showHeroHeading, delay);
+  function startHeroVideoWatch() {
+    if (!heroContent) return;
+
+    evaluateHeroVisibility();
+
+    if (!heroVideo) return;
+
+    var updateVisibility = function () {
+      evaluateHeroVisibility();
+    };
+
+    heroVideo.addEventListener('timeupdate', updateVisibility);
+    heroVideo.addEventListener('playing', updateVisibility);
+    heroVideo.addEventListener('seeked', updateVisibility);
+    heroVideo.addEventListener('loadedmetadata', updateVisibility);
+    heroVideo.addEventListener('ended', updateVisibility);
   }
 
-  if (heroVideo) {
-    function handleVideoPlay() {
-      var delay = waitingForLoop ? 20000 : initialPlayPending ? 15000 : null;
-      if (delay !== null) {
-        scheduleHeroShow(delay);
-        initialPlayPending = false;
-        waitingForLoop = false;
-      }
-    }
-
-    heroVideo.addEventListener('playing', handleVideoPlay);
-    if (!heroVideo.paused && heroVideo.readyState > 2) {
-      handleVideoPlay();
-    }
-
-    heroVideo.play().catch(function () {
-      heroVideo.setAttribute('data-video-error', 'true');
-    });
-  } else if (heroContent) {
-    scheduleHeroShow(15000);
-  }
+  startHeroVideoWatch();
 
   // AOS init
   if (typeof AOS !== 'undefined') {
