@@ -133,6 +133,13 @@ onReady(function () {
   window.addEventListener('scroll', animateStats);
   animateStats();
 
+  var heroVideo = document.querySelector('.hero-video');
+  if (heroVideo) {
+    heroVideo.play().catch(function () {
+      heroVideo.setAttribute('data-video-error', 'true');
+    });
+  }
+
   // AOS init
   if (typeof AOS !== 'undefined') {
     AOS.init({
