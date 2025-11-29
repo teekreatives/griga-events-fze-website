@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="160" height="160" viewBox="0 0 160 160" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Silver badge">
+  <defs>
+    <linearGradient id="silverGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f5f6fb" />
+      <stop offset="60%" stop-color="#c9d4e4" />
+      <stop offset="100%" stop-color="#8593a6" />
+    </linearGradient>
+    <linearGradient id="silverGlow" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="rgba(255,255,255,0.9)" />
+      <stop offset="100%" stop-color="rgba(255,255,255,0)" />
+    </linearGradient>
+  </defs>
+  <circle cx="80" cy="80" r="74" fill="url(#silverGrad)" stroke="#c3c9d6" stroke-width="4" />
+  <circle cx="80" cy="80" r="64" fill="url(#silverGlow)" />
+  <rect x="50" y="40" width="60" height="80" rx="15" fill="#fff" opacity="0.4" />
+  <text x="80" y="95" font-size="26" font-family="Arial, sans-serif" fill="#2a2e37" text-anchor="middle" letter-spacing="0.2em">S</text>
+</svg>

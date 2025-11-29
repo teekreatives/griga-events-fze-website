@@ -15,6 +15,7 @@
   <meta property="og:site_name" content="GRIGA Events FZE" />
   <link rel="stylesheet" href="https://unpkg.com/aos@2.3.4/dist/aos.css" />
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&display=swap" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
   <link rel="stylesheet" href="assets/css/style.css?v=20251117.1" />
   <link rel="icon" href="assets/media/logos/fav.jpg" type="image/jpeg" />
   <style>
@@ -49,6 +50,24 @@
       flex-direction: column;
       align-items: flex-start;
       gap: 0.8rem;
+    }
+    .tier-icon {
+      font-size: 38px;
+      display: block;
+      margin: 0 auto 15px;
+      opacity: 0.9;
+    }
+    .tier-card.platinum .tier-icon {
+      color: #e5e4e2;
+    }
+    .tier-card.gold .tier-icon {
+      color: #d4af37;
+    }
+    .tier-card.silver .tier-icon {
+      color: #c0c0c0;
+    }
+    .tier-card.bronze .tier-icon {
+      color: #cd7f32;
     }
     .tier-card h3 {
       margin: 0;
@@ -130,7 +149,8 @@
           <h2>Sponsorship Tiers</h2>
         </header>
         <div class="sponsors-grid">
-          <article class="tier-card">
+          <article class="tier-card platinum">
+            <i class="tier-icon fa-solid fa-gem" aria-hidden="true"></i>
             <h3>Platinum Sponsor</h3>
             <div class="tier-price">AED 20,000</div>
             <ul>
@@ -142,7 +162,8 @@
               <li>Logo & Link on Website (Sponsors Page)</li>
             </ul>
           </article>
-          <article class="tier-card">
+          <article class="tier-card gold">
+            <i class="tier-icon fa-solid fa-crown" aria-hidden="true"></i>
             <h3>Gold Sponsor</h3>
             <div class="tier-price">AED 15,000</div>
             <ul>
@@ -154,7 +175,8 @@
               <li>Website Listing</li>
             </ul>
           </article>
-          <article class="tier-card">
+          <article class="tier-card silver">
+            <i class="tier-icon fa-solid fa-medal" aria-hidden="true"></i>
             <h3>Silver Sponsor</h3>
             <div class="tier-price">AED 10,000</div>
             <ul>
@@ -165,7 +187,8 @@
               <li>Website Listing</li>
             </ul>
           </article>
-          <article class="tier-card">
+          <article class="tier-card bronze">
+            <i class="tier-icon fa-solid fa-star" aria-hidden="true"></i>
             <h3>Bronze Sponsor</h3>
             <div class="tier-price">AED 5,000</div>
             <ul>

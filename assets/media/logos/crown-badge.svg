@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="160" height="160" viewBox="0 0 160 160" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Crown badge">
+  <defs>
+    <radialGradient id="crownGlow" cx="50%" cy="30%" r="75%">
+      <stop offset="0%" stop-color="#fff3c6" />
+      <stop offset="40%" stop-color="#f7ce5d" />
+      <stop offset="80%" stop-color="#c4880f" />
+      <stop offset="100%" stop-color="#7a4309" />
+    </radialGradient>
+    <linearGradient id="crownHighlight" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="rgba(255,255,255,0.8)" />
+      <stop offset="60%" stop-color="rgba(255,255,255,0)" />
+    </linearGradient>
+    <filter id="crownShadow" x="-60%" y="-60%" width="220%" height="220%">
+      <feDropShadow dx="0" dy="6" stdDeviation="8" flood-color="rgba(0,0,0,0.4)" />
+    </filter>
+  </defs>
+  <g filter="url(#crownShadow)">
+    <circle cx="80" cy="80" r="74" fill="url(#crownGlow)" stroke="#f0c66c" stroke-width="4" />
+  </g>
+  <circle cx="80" cy="80" r="58" fill="url(#crownHighlight)" opacity="0.85" />
+  <circle cx="80" cy="80" r="52" fill="url(#crownGlow)" opacity="0.9" />
+  <path d="M34 98 L48 48 L66 96 L82 44 L98 96 L116 48 L126 98" stroke="#fff" stroke-width="4" stroke-linecap="round" fill="none" opacity="0.7" />
+  <circle cx="42" cy="78" r="6" fill="#fff" opacity="0.9" />
+  <circle cx="80" cy="62" r="6" fill="#fff" opacity="0.9" />
+  <circle cx="118" cy="78" r="6" fill="#fff" opacity="0.9" />
+  <text x="80" y="112" font-size="26" font-family="'Playfair Display', serif" fill="#3c1d02" text-anchor="middle" letter-spacing="0.2em">C</text>
+</svg>

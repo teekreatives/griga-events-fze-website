@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="160" height="160" viewBox="0 0 160 160" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Star badge">
+  <defs>
+    <radialGradient id="starGlow" cx="50%" cy="30%" r="70%">
+      <stop offset="0%" stop-color="#fff3d9" />
+      <stop offset="40%" stop-color="#f5ae56" />
+      <stop offset="80%" stop-color="#a5551b" />
+    </radialGradient>
+    <linearGradient id="starSpark" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="rgba(255,255,255,0.85)" />
+      <stop offset="50%" stop-color="rgba(255,255,255,0)" />
+    </linearGradient>
+    <filter id="starShadow" x="-60%" y="-60%" width="220%" height="220%">
+      <feDropShadow dx="0" dy="6" stdDeviation="8" flood-color="rgba(0,0,0,0.35)" />
+    </filter>
+  </defs>
+  <g filter="url(#starShadow)">
+    <circle cx="80" cy="80" r="74" fill="url(#starGlow)" stroke="#f5c28d" stroke-width="4" />
+  </g>
+  <circle cx="80" cy="80" r="58" fill="url(#starSpark)" opacity="0.7" />
+  <circle cx="80" cy="80" r="50" fill="url(#starGlow)" opacity="0.9" />
+  <polygon points="80,36 92,70 128,76 98,102 104,138 80,118 56,138 62,102 32,76 68,70" fill="#fff" opacity="0.8" />
+  <polygon points="80,46 90,70 120,76 96,100 100,132 80,116 60,132 64,100 40,76 70,70" fill="url(#starSpark)" opacity="0.8" />
+  <text x="80" y="120" font-size="26" font-family="'Playfair Display', serif" fill="#481c04" text-anchor="middle" letter-spacing="0.2em">S</text>
+</svg>

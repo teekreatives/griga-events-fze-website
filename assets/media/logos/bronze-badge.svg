@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="160" height="160" viewBox="0 0 160 160" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Bronze badge">
+  <defs>
+    <linearGradient id="bronzeGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffe9d4" />
+      <stop offset="60%" stop-color="#e0a267" />
+      <stop offset="100%" stop-color="#8e4a18" />
+    </linearGradient>
+    <radialGradient id="bronzeGlow" cx="50%" cy="35%" r="60%">
+      <stop offset="0%" stop-color="rgba(255,255,255,0.9)" />
+      <stop offset="100%" stop-color="rgba(255,255,255,0)" />
+    </radialGradient>
+  </defs>
+  <circle cx="80" cy="80" r="74" fill="url(#bronzeGrad)" stroke="#d39a58" stroke-width="4" />
+  <circle cx="80" cy="80" r="60" fill="url(#bronzeGlow)" />
+  <path d="M42 56h76v56c0 8.8-7.2 16-16 16H58c-8.8 0-16-7.2-16-16V56Z" fill="#fff" opacity="0.35" />
+  <text x="80" y="96" font-size="26" font-family="Arial, sans-serif" fill="#3e1c0f" text-anchor="middle" letter-spacing="0.2em">B</text>
+</svg>

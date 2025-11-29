@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="160" height="160" viewBox="0 0 160 160" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Medal badge">
+  <defs>
+    <radialGradient id="medalGlow" cx="50%" cy="40%" r="70%">
+      <stop offset="0%" stop-color="#ffffff" />
+      <stop offset="40%" stop-color="#d1d7e0" />
+      <stop offset="80%" stop-color="#7c8597" />
+    </radialGradient>
+    <linearGradient id="medalRibbon" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#f04f48" />
+      <stop offset="100%" stop-color="#a51b1b" />
+    </linearGradient>
+    <filter id="medalShadow" x="-60%" y="-60%" width="220%" height="220%">
+      <feDropShadow dx="0" dy="5" stdDeviation="6" flood-color="rgba(0,0,0,0.35)" />
+    </filter>
+  </defs>
+  <g filter="url(#medalShadow)">
+    <circle cx="80" cy="80" r="74" fill="url(#medalGlow)" stroke="#c5cbd6" stroke-width="4" />
+  </g>
+  <circle cx="80" cy="80" r="58" fill="#f7f9fd" opacity="0.9" />
+  <circle cx="80" cy="80" r="48" fill="url(#medalGlow)" opacity="0.95" />
+  <path d="M62 36c0-6 4-10 11-10h14c7 0 11 4 11 10v36l-18 5-18-5V36z" fill="url(#medalRibbon)" />
+  <path d="M60 82h40v38c0 9-7 16-16 16H76c-9 0-16-7-16-16V82z" fill="#d5dae4" opacity="0.8" />
+  <text x="80" y="116" font-size="26" font-family="'Playfair Display', serif" fill="#2b2b2b" text-anchor="middle" letter-spacing="0.25em">M</text>
+</svg>
