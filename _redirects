@@ -2,3 +2,5 @@
 /home.html / 301!
 /gallery /gallery.html 200
 /gallery.html /gallery 301!
+/contact /contact.html 200
+/contact.html /contact 301!
