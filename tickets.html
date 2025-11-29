@@ -81,7 +81,10 @@
                 <dd>5,550&nbsp;KSH</dd>
               </div>
             </dl>
-            <button class="btn btn-secondary" id="mpesa-show-form" type="button">I have paid</button>
+            <div class="payment-actions">
+              <button class="btn btn-secondary" id="mpesa-show-form" type="button">I have paid</button>
+              <button class="btn btn-secondary copy-payment" type="button" data-payment-info="M-PESA PAYMENT • Number: 0710 261 539 • Name: Grishon Gachomo • Amount: 5,550 KSH">COPY DETAILS</button>
+            </div>
             <form class="manual-payment-form" id="mpesa-form" novalidate>
               <label>
                 Full name
@@ -111,7 +114,10 @@
                 <dd>150&nbsp;AED</dd>
               </div>
             </dl>
-            <button class="btn btn-secondary" id="botim-show-form" type="button">I have paid</button>
+            <div class="payment-actions">
+              <button class="btn btn-secondary" id="botim-show-form" type="button">I have paid</button>
+              <button class="btn btn-secondary copy-payment" type="button" data-payment-info="BOTIM Money • Number: +971 52 994 8589 • Name: Grishon Gachomo • Amount: 150 AED">COPY DETAILS</button>
+            </div>
             <form class="manual-payment-form" id="botim-form" novalidate>
               <label>
                 Full name
@@ -261,5 +267,47 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <script src="assets/js/main.js?v=20251128.12"></script>
   <script src="assets/js/tickets.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const copyButtons = document.querySelectorAll('.copy-payment');
+      if (!copyButtons.length) return;
+
+      copyButtons.forEach((button) => {
+        const originalLabel = button.textContent;
+        button.addEventListener('click', async () => {
+          const payload = button.dataset.paymentInfo;
+          if (!payload) return;
+          try {
+            await navigator.clipboard.writeText(payload);
+            showCopiedState(button, originalLabel);
+          } catch (error) {
+            fallbackCopy(payload);
+            showCopiedState(button, originalLabel);
+          }
+        });
+      });
+
+      function showCopiedState(button, original) {
+        button.textContent = 'Copied';
+        button.classList.add('copied');
+        setTimeout(() => {
+          button.textContent = original;
+          button.classList.remove('copied');
+        }, 2000);
+      }
+
+      function fallbackCopy(value) {
+        const temp = document.createElement('textarea');
+        temp.value = value;
+        temp.setAttribute('readonly', '');
+        temp.style.position = 'absolute';
+        temp.style.left = '-9999px';
+        document.body.appendChild(temp);
+        temp.select();
+        document.execCommand('copy');
+        document.body.removeChild(temp);
+      }
+    });
+  </script>
 </body>
 </html>

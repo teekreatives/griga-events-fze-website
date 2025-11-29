@@ -219,6 +219,22 @@ body.tickets-body {
   width: fit-content;
 }
 
+.payment-actions {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  max-width: 360px;
+  gap: 0.5rem;
+  margin: 0.8rem 0 0;
+  align-items: center;
+}
+
+.payment-actions button {
+  flex: 1 1 0;
+  min-width: 0;
+  white-space: nowrap;
+}
+
 .payment-option--stripe {
   background: linear-gradient(135deg, #0a7bdf, #005b9c);
   color: #fefefe;
