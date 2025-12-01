@@ -141,7 +141,7 @@ p {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 14px 0;
+  padding: 15px 0;
 }
 
 .site-header.shrink .header-inner {
@@ -163,6 +163,19 @@ p {
 
 .logo span {
   color: var(--color-red);
+}
+
+.logo-branding {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.logo-branding img {
+  height: 62px;
+  width: auto;
+  display: block;
+  object-fit: contain;
 }
 
 .main-nav {
