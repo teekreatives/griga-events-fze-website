@@ -209,6 +209,37 @@ body.tickets-body {
   font-size: 1.2rem;
 }
 
+.payment-option__logo {
+  width: 54px;
+  height: auto;
+  margin-bottom: 0.75rem;
+  border-radius: 0;
+}
+
+.payment-option__heading {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  margin-bottom: 0.5rem;
+  flex-wrap: nowrap;
+}
+
+.payment-option__title {
+  font-size: 0.95rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  font-weight: 600;
+  color: inherit;
+  white-space: nowrap;
+}
+
+.payment-option--bank .payment-option__logo {
+  align-self: flex-start;
+  width: 48px;
+  margin-top: 0;
+  margin-bottom: 0.5rem;
+}
+
 .payment-option p {
   color: #fff;
   flex: 1;
@@ -217,6 +248,24 @@ body.tickets-body {
 .payment-option button {
   margin-top: 0.8rem;
   width: fit-content;
+}
+
+.payment-option--bank {
+  background: #ffffff;
+  color: #d11f26;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.payment-option--bank p {
+  color: #d11f26;
+}
+
+.payment-option--bank .payment-details dt {
+  color: #d11f26;
+}
+
+.payment-option--bank .payment-details dd {
+  color: #111;
 }
 
 .payment-actions {

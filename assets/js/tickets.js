@@ -33,6 +33,16 @@ document.addEventListener('DOMContentLoaded', function () {
       amountLabel: '5,550 KSH',
       methodLabel: 'M-PESA PAYMENT',
       prefix: 'MPESA'
+    },
+    bank: {
+      button: document.getElementById('bank-show-form'),
+      form: document.getElementById('bank-form'),
+      nameInput: document.getElementById('bank-name'),
+      phoneInput: document.getElementById('bank-phone'),
+      whatsappNumber: '971529948589',
+      amountLabel: '150 AED',
+      methodLabel: 'Bank Transfer',
+      prefix: 'BANK'
     }
   };
 

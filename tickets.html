@@ -133,6 +133,47 @@
               <button class="btn btn-secondary" type="submit">Send proof via WhatsApp</button>
             </form>
           </article>
+
+          <article class="payment-option payment-option--bank" data-aos="fade-left" data-aos-delay="200">
+            <div class="payment-option__heading">
+              <img class="payment-option__logo" src="/assets/media/logos/whizmo.jpg" alt="Whizmo logo" />
+              <span class="payment-option__title">Whizmo</span>
+            </div>
+            <p>Pay 150&nbsp;AED via Whizmo using the details below, then confirm the payment so we can deliver your ticket.</p>
+            <dl class="payment-details">
+              <div>
+                <dt>Bank Name</dt>
+                <dd>Commercial Bank of Dubai</dd>
+              </div>
+              <div>
+                <dt>Account Name</dt>
+                <dd>GRIGA EVENT'S FZE</dd>
+              </div>
+              <div>
+                <dt>IBAN</dt>
+                <dd>AE350230093054000044584</dd>
+              </div>
+              <div>
+                <dt>Amount</dt>
+                <dd>150&nbsp;AED</dd>
+              </div>
+            </dl>
+            <div class="payment-actions">
+              <button class="btn btn-secondary" id="bank-show-form" type="button">I have paid</button>
+              <button class="btn btn-secondary copy-payment" type="button" data-payment-info="Bank Transfer • Bank Name: Commercial Bank of Dubai • Account Name: GRIGA EVENT'S FZE • IBAN: AE350230093054000044584">COPY DETAILS</button>
+            </div>
+            <form class="manual-payment-form" id="bank-form" novalidate>
+              <label>
+                Full name
+                <input type="text" id="bank-name" name="name" placeholder="Enter Your Full Name" required />
+              </label>
+              <label>
+                Phone number
+                <input type="tel" id="bank-phone" name="phone" placeholder="e.g. +971 50 123 4567" required />
+              </label>
+              <button class="btn btn-secondary" type="submit">Send proof via WhatsApp</button>
+            </form>
+          </article>
         </div>
       </div>
     </section>
