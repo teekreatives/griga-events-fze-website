@@ -41,8 +41,18 @@ document.addEventListener('DOMContentLoaded', function () {
       phoneInput: document.getElementById('bank-phone'),
       whatsappNumber: '971529948589',
       amountLabel: '150 AED',
-      methodLabel: 'Bank Transfer',
+      methodLabel: 'Whizmo Bank Transfer',
       prefix: 'BANK'
+    },
+    adcb: {
+      button: document.getElementById('adcb-show-form'),
+      form: document.getElementById('adcb-form'),
+      nameInput: document.getElementById('adcb-name'),
+      phoneInput: document.getElementById('adcb-phone'),
+      whatsappNumber: '971529948589',
+      amountLabel: '150 AED',
+      methodLabel: 'ADCB Bank Transfer',
+      prefix: 'ADCB'
     }
   };
 

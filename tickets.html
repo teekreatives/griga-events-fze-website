@@ -174,6 +174,50 @@
               <button class="btn btn-secondary" type="submit">Send proof via WhatsApp</button>
             </form>
           </article>
+          <article class="payment-option payment-option--bank payment-option--adcb" data-aos="fade-up" data-aos-delay="200">
+            <div class="payment-option__heading">
+              <img class="payment-option__logo" src="/assets/media/logos/ADCB.png" alt="ADCB logo" />
+              <span class="payment-option__title">ADCB</span>
+            </div>
+            <p>Pay 150&nbsp;AED via ADCB using the details below, then confirm the payment so we can deliver your ticket.</p>
+            <dl class="payment-details">
+              <div>
+                <dt>Bank Name</dt>
+                <dd>Abu Dhabi Commercial Bank PJSC</dd>
+              </div>
+              <div>
+                <dt>Account Name</dt>
+                <dd>GRISHON GITHINJI GACHOMO</dd>
+              </div>
+              <div>
+                <dt>Account Number</dt>
+                <dd>10085351920001</dd>
+              </div>
+              <div>
+                <dt>IBAN</dt>
+                <dd>AE570030010085351920001</dd>
+              </div>
+              <div>
+                <dt>Amount</dt>
+                <dd>150&nbsp;AED</dd>
+              </div>
+            </dl>
+            <div class="payment-actions">
+              <button class="btn btn-secondary" id="adcb-show-form" type="button">I have paid</button>
+              <button class="btn btn-secondary copy-payment" type="button" data-payment-info="Bank Transfer • Bank Name: Abu Dhabi Commercial Bank PJSC • Account Name: GRISHON GITHINJI GACHOMO • Account Number: 10085351920001 • IBAN: AE570030010085351920001 • Amount: 150 AED">COPY DETAILS</button>
+            </div>
+            <form class="manual-payment-form" id="adcb-form" novalidate>
+              <label>
+                Full name
+                <input type="text" id="adcb-name" name="name" placeholder="Enter Your Full Name" required />
+              </label>
+              <label>
+                Phone number
+                <input type="tel" id="adcb-phone" name="phone" placeholder="e.g. +971 50 123 4567" required />
+              </label>
+              <button class="btn btn-secondary" type="submit">Send proof via WhatsApp</button>
+            </form>
+          </article>
         </div>
       </div>
     </section>
