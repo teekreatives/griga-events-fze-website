@@ -256,6 +256,18 @@ body.tickets-body {
   border: 1px solid rgba(0, 0, 0, 0.08);
 }
 
+.payment-option--bank.payment-option--whizmo {
+  background: linear-gradient(135deg, #ff8d25, #d11f26);
+  color: #111;
+  box-shadow: 0 18px 45px rgba(209, 31, 38, 0.3);
+}
+
+.payment-option--bank.payment-option--whizmo p,
+.payment-option--bank.payment-option--whizmo .payment-option__title,
+.payment-option--bank.payment-option--whizmo .payment-details dt {
+  color: #fff;
+}
+
 .payment-option--bank p {
   color: #d11f26;
 }
