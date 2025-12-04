@@ -53,6 +53,16 @@ document.addEventListener('DOMContentLoaded', function () {
       amountLabel: '150 AED',
       methodLabel: 'ADCB Bank Transfer',
       prefix: 'ADCB'
+    },
+    nbd: {
+      button: document.getElementById('nbd-show-form'),
+      form: document.getElementById('nbd-form'),
+      nameInput: document.getElementById('nbd-name'),
+      phoneInput: document.getElementById('nbd-phone'),
+      whatsappNumber: '971529948589',
+      amountLabel: '150 AED',
+      methodLabel: 'NBD Bank Transfer',
+      prefix: 'NBD'
     }
   };
 

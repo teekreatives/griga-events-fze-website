@@ -218,6 +218,50 @@
               <button class="btn btn-secondary" type="submit">Send proof via WhatsApp</button>
             </form>
           </article>
+          <article class="payment-option payment-option--bank payment-option--nbd" data-aos="fade-up" data-aos-delay="250">
+            <div class="payment-option__heading">
+              <img class="payment-option__logo" src="/assets/media/logos/NBD.png" alt="NBD logo" />
+              <span class="payment-option__title">NBD</span>
+            </div>
+            <p>Pay 150&nbsp;AED via NBD using the details below, then confirm the payment so we can deliver your ticket.</p>
+            <dl class="payment-details">
+              <div>
+                <dt>Bank Name</dt>
+                <dd>Emirates NBD</dd>
+              </div>
+              <div>
+                <dt>Account Name</dt>
+                <dd>Grishon Githinji Gachomo</dd>
+              </div>
+              <div>
+                <dt>Account Number</dt>
+                <dd>1014091695801</dd>
+              </div>
+              <div>
+                <dt>IBAN</dt>
+                <dd>AE060260001014091695801</dd>
+              </div>
+              <div>
+                <dt>Amount</dt>
+                <dd>150&nbsp;AED</dd>
+              </div>
+            </dl>
+            <div class="payment-actions">
+              <button class="btn btn-secondary" id="nbd-show-form" type="button">I have paid</button>
+              <button class="btn btn-secondary copy-payment" type="button" data-payment-info="Bank Transfer • Bank Name: Emirates NBD • Account Name: Grishon Githinji Gachomo • Account Number: 1014091695801 • IBAN: AE06 0260 0010 1409 1695 801 • Amount: 150 AED">COPY DETAILS</button>
+            </div>
+            <form class="manual-payment-form" id="nbd-form" novalidate>
+              <label>
+                Full name
+                <input type="text" id="nbd-name" name="name" placeholder="Enter Your Full Name" required />
+              </label>
+              <label>
+                Phone number
+                <input type="tel" id="nbd-phone" name="phone" placeholder="e.g. +971 50 123 4567" required />
+              </label>
+              <button class="btn btn-secondary" type="submit">Send proof via WhatsApp</button>
+            </form>
+          </article>
         </div>
       </div>
     </section>
