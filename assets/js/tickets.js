@@ -30,7 +30,7 @@ document.addEventListener('DOMContentLoaded', function () {
       nameInput: document.getElementById('mpesa-name'),
       phoneInput: document.getElementById('mpesa-phone'),
       whatsappNumber: '971529948589',
-      amountLabel: '5,550 KSH',
+      amountLabel: '5,500 KSH',
       methodLabel: 'M-PESA PAYMENT',
       prefix: 'MPESA'
     },
