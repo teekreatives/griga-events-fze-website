@@ -435,6 +435,21 @@ body.tickets-body {
   box-shadow: 0 10px 25px rgba(31, 156, 59, 0.4);
 }
 
+.manual-form-feedback {
+  margin: 0;
+  padding-top: 0.2rem;
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: #d11f26;
+  min-height: 1.1rem;
+  opacity: 0;
+  transition: opacity 0.25s ease;
+}
+
+.manual-form-feedback.is-visible {
+  opacity: 1;
+}
+
 @keyframes flicker-green {
   0% {
     opacity: 0.8;

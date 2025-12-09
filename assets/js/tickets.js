@@ -20,6 +20,7 @@ document.addEventListener('DOMContentLoaded', function () {
       nameInput: document.getElementById('botim-name'),
       phoneInput: document.getElementById('botim-phone'),
       emailInput: document.getElementById('botim-email'),
+      feedback: document.querySelector('#botim-form .manual-form-feedback'),
       whatsappNumber: '971529948589',
       amountLabel: '150 AED',
       methodLabel: 'BOTIM Money',
@@ -31,6 +32,7 @@ document.addEventListener('DOMContentLoaded', function () {
       nameInput: document.getElementById('mpesa-name'),
       phoneInput: document.getElementById('mpesa-phone'),
       emailInput: document.getElementById('mpesa-email'),
+      feedback: document.querySelector('#mpesa-form .manual-form-feedback'),
       whatsappNumber: '971529948589',
       amountLabel: '5,500 KSH',
       methodLabel: 'M-PESA PAYMENT',
@@ -42,6 +44,7 @@ document.addEventListener('DOMContentLoaded', function () {
       nameInput: document.getElementById('bank-name'),
       phoneInput: document.getElementById('bank-phone'),
       emailInput: document.getElementById('bank-email'),
+      feedback: document.querySelector('#bank-form .manual-form-feedback'),
       whatsappNumber: '971529948589',
       amountLabel: '150 AED',
       methodLabel: 'Whizmo Bank Transfer',
@@ -53,6 +56,7 @@ document.addEventListener('DOMContentLoaded', function () {
       nameInput: document.getElementById('adcb-name'),
       phoneInput: document.getElementById('adcb-phone'),
       emailInput: document.getElementById('adcb-email'),
+      feedback: document.querySelector('#adcb-form .manual-form-feedback'),
       whatsappNumber: '971529948589',
       amountLabel: '150 AED',
       methodLabel: 'ADCB Bank Transfer',
@@ -64,6 +68,7 @@ document.addEventListener('DOMContentLoaded', function () {
       nameInput: document.getElementById('nbd-name'),
       phoneInput: document.getElementById('nbd-phone'),
       emailInput: document.getElementById('nbd-email'),
+      feedback: document.querySelector('#nbd-form .manual-form-feedback'),
       whatsappNumber: '971529948589',
       amountLabel: '150 AED',
       methodLabel: 'NBD Bank Transfer',
@@ -190,6 +195,7 @@ document.addEventListener('DOMContentLoaded', function () {
   function closeManualForm(flow) {
     flow.form?.classList.remove('is-visible');
     flow.button?.setAttribute('aria-expanded', 'false');
+    clearManualFeedback(flow);
   }
 
   function toggleManualForm(key) {
@@ -204,6 +210,7 @@ document.addEventListener('DOMContentLoaded', function () {
     flow.form.classList.add('is-visible');
     flow.button?.setAttribute('aria-expanded', 'true');
     flow.nameInput?.focus();
+    clearManualFeedback(flow);
   }
 
   function resetManualForm(flow) {
@@ -213,6 +220,7 @@ document.addEventListener('DOMContentLoaded', function () {
     if (flow.emailInput) flow.emailInput.value = '';
     flow.button?.setAttribute('aria-expanded', 'false');
     updateManualButtonState(flow);
+    clearManualFeedback(flow);
   }
 
   function handleManualSubmit(key, event) {
@@ -222,16 +230,12 @@ document.addEventListener('DOMContentLoaded', function () {
     const buyerName = flow.nameInput?.value.trim();
     const buyerPhone = flow.phoneInput?.value.trim();
     const buyerEmail = flow.emailInput?.value.trim();
-    if (!buyerName || !buyerPhone) {
-      window.alert('Please provide both a name and phone number.');
-      return;
-    }
-    if (!buyerEmail) {
-      window.alert('Please provide your email address.');
+    if (!buyerName || !buyerPhone || !buyerEmail) {
+      showManualFeedback(flow, 'Please fill all the details below.');
       return;
     }
     if (flow.emailInput && !flow.emailInput.checkValidity()) {
-      window.alert('Please put a valid email.');
+      showManualFeedback(flow, 'Please put a valid email.');
       return;
     }
     const orderId = generateManualOrderId(flow.prefix);
@@ -254,6 +258,22 @@ Amount: ${flow.amountLabel}
 Order ID: ${orderId}
 I'm attaching a screenshot to proof the payment.
 Kindly confirm and send my ticket. Thank you.`;
+  }
+
+  function showManualFeedback(flow, message) {
+    if (flow.feedback) {
+      flow.feedback.textContent = message;
+      flow.feedback.classList.add('is-visible');
+    } else {
+      window.alert(message);
+    }
+  }
+
+  function clearManualFeedback(flow) {
+    if (flow.feedback) {
+      flow.feedback.textContent = '';
+      flow.feedback.classList.remove('is-visible');
+    }
   }
 
   paymentButtons.forEach(function (button) {
