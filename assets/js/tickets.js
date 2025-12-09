@@ -231,7 +231,7 @@ document.addEventListener('DOMContentLoaded', function () {
       return;
     }
     if (flow.emailInput && !flow.emailInput.checkValidity()) {
-      window.alert('Please provide a valid email address.');
+      window.alert('Please put a valid email.');
       return;
     }
     const orderId = generateManualOrderId(flow.prefix);
