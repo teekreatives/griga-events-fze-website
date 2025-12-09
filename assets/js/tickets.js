@@ -19,6 +19,7 @@ document.addEventListener('DOMContentLoaded', function () {
       form: document.getElementById('botim-form'),
       nameInput: document.getElementById('botim-name'),
       phoneInput: document.getElementById('botim-phone'),
+      emailInput: document.getElementById('botim-email'),
       whatsappNumber: '971529948589',
       amountLabel: '150 AED',
       methodLabel: 'BOTIM Money',
@@ -29,6 +30,7 @@ document.addEventListener('DOMContentLoaded', function () {
       form: document.getElementById('mpesa-form'),
       nameInput: document.getElementById('mpesa-name'),
       phoneInput: document.getElementById('mpesa-phone'),
+      emailInput: document.getElementById('mpesa-email'),
       whatsappNumber: '971529948589',
       amountLabel: '5,500 KSH',
       methodLabel: 'M-PESA PAYMENT',
@@ -39,6 +41,7 @@ document.addEventListener('DOMContentLoaded', function () {
       form: document.getElementById('bank-form'),
       nameInput: document.getElementById('bank-name'),
       phoneInput: document.getElementById('bank-phone'),
+      emailInput: document.getElementById('bank-email'),
       whatsappNumber: '971529948589',
       amountLabel: '150 AED',
       methodLabel: 'Whizmo Bank Transfer',
@@ -49,6 +52,7 @@ document.addEventListener('DOMContentLoaded', function () {
       form: document.getElementById('adcb-form'),
       nameInput: document.getElementById('adcb-name'),
       phoneInput: document.getElementById('adcb-phone'),
+      emailInput: document.getElementById('adcb-email'),
       whatsappNumber: '971529948589',
       amountLabel: '150 AED',
       methodLabel: 'ADCB Bank Transfer',
@@ -59,6 +63,7 @@ document.addEventListener('DOMContentLoaded', function () {
       form: document.getElementById('nbd-form'),
       nameInput: document.getElementById('nbd-name'),
       phoneInput: document.getElementById('nbd-phone'),
+      emailInput: document.getElementById('nbd-email'),
       whatsappNumber: '971529948589',
       amountLabel: '150 AED',
       methodLabel: 'NBD Bank Transfer',
@@ -68,9 +73,12 @@ document.addEventListener('DOMContentLoaded', function () {
 
   Object.values(manualFlows).forEach((flow) => {
     flow.submitButton = flow.form?.querySelector('button[type="submit"]');
-    const inputs = [flow.nameInput, flow.phoneInput];
+    const inputs = [flow.nameInput, flow.phoneInput, flow.emailInput];
     inputs.forEach((input) => {
       input?.addEventListener('input', () => {
+        updateManualButtonState(flow);
+      });
+      input?.addEventListener('blur', () => {
         updateManualButtonState(flow);
       });
     });
@@ -92,7 +100,10 @@ document.addEventListener('DOMContentLoaded', function () {
   function updateManualButtonState(flow) {
     const hasName = flow.nameInput?.value.trim();
     const hasPhone = flow.phoneInput?.value.trim();
-    const ready = Boolean(hasName && hasPhone);
+    const emailElement = flow.emailInput;
+    const hasEmail = emailElement?.value.trim();
+    const validEmail = emailElement ? emailElement.checkValidity() : true;
+    const ready = Boolean(hasName && hasPhone && hasEmail && validEmail);
     flow.submitButton?.classList.toggle('ready', ready);
   }
 
@@ -199,6 +210,7 @@ document.addEventListener('DOMContentLoaded', function () {
     flow.form?.classList.remove('is-visible');
     if (flow.nameInput) flow.nameInput.value = '';
     if (flow.phoneInput) flow.phoneInput.value = '';
+    if (flow.emailInput) flow.emailInput.value = '';
     flow.button?.setAttribute('aria-expanded', 'false');
     updateManualButtonState(flow);
   }
@@ -209,12 +221,21 @@ document.addEventListener('DOMContentLoaded', function () {
     if (!flow) return;
     const buyerName = flow.nameInput?.value.trim();
     const buyerPhone = flow.phoneInput?.value.trim();
+    const buyerEmail = flow.emailInput?.value.trim();
     if (!buyerName || !buyerPhone) {
       window.alert('Please provide both a name and phone number.');
       return;
     }
+    if (!buyerEmail) {
+      window.alert('Please provide your email address.');
+      return;
+    }
+    if (flow.emailInput && !flow.emailInput.checkValidity()) {
+      window.alert('Please provide a valid email address.');
+      return;
+    }
     const orderId = generateManualOrderId(flow.prefix);
-    const message = buildManualMessage(flow, buyerName, buyerPhone, orderId);
+    const message = buildManualMessage(flow, buyerName, buyerPhone, buyerEmail, orderId);
     const encodedMessage = encodeURIComponent(message);
     const url = `https://wa.me/${flow.whatsappNumber}?text=${encodedMessage}`;
     window.open(url, '_blank');
@@ -224,10 +245,11 @@ document.addEventListener('DOMContentLoaded', function () {
     resetManualForm(flow);
   }
 
-  function buildManualMessage(flow, name, phone, orderId) {
+  function buildManualMessage(flow, name, phone, email, orderId) {
     return `Hello, I have paid for my ticket via ${flow.methodLabel}.
 Name: ${name}
 Phone: ${phone}
+Email: ${email}
 Amount: ${flow.amountLabel}
 Order ID: ${orderId}
 I'm attaching a screenshot to proof the payment.
