@@ -450,6 +450,14 @@ body.tickets-body {
   opacity: 1;
 }
 
+.payment-option--whizmo .manual-form-feedback {
+  color: #ff8d25;
+}
+
+.payment-option--nbd .manual-form-feedback {
+  color: #072a64;
+}
+
 @keyframes flicker-green {
   0% {
     opacity: 0.8;

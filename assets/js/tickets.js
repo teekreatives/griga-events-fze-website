@@ -45,6 +45,7 @@ document.addEventListener('DOMContentLoaded', function () {
       phoneInput: document.getElementById('bank-phone'),
       emailInput: document.getElementById('bank-email'),
       feedback: document.querySelector('#bank-form .manual-form-feedback'),
+      feedbackColor: '#ff8d25',
       whatsappNumber: '971529948589',
       amountLabel: '150 AED',
       methodLabel: 'Whizmo Bank Transfer',
@@ -69,6 +70,7 @@ document.addEventListener('DOMContentLoaded', function () {
       phoneInput: document.getElementById('nbd-phone'),
       emailInput: document.getElementById('nbd-email'),
       feedback: document.querySelector('#nbd-form .manual-form-feedback'),
+      feedbackColor: '#072a64',
       whatsappNumber: '971529948589',
       amountLabel: '150 AED',
       methodLabel: 'NBD Bank Transfer',
@@ -261,18 +263,26 @@ Kindly confirm and send my ticket. Thank you.`;
   }
 
   function showManualFeedback(flow, message) {
-    if (flow.feedback) {
-      flow.feedback.textContent = message;
-      flow.feedback.classList.add('is-visible');
+    const feedback = flow.feedback || flow.form?.querySelector('.manual-form-feedback');
+    if (feedback) {
+      feedback.textContent = message;
+      feedback.classList.add('is-visible');
+      if (flow.feedbackColor) {
+        feedback.style.color = flow.feedbackColor;
+      } else {
+        feedback.style.removeProperty('color');
+      }
     } else {
       window.alert(message);
     }
   }
 
   function clearManualFeedback(flow) {
-    if (flow.feedback) {
-      flow.feedback.textContent = '';
-      flow.feedback.classList.remove('is-visible');
+    const feedback = flow.feedback || flow.form?.querySelector('.manual-form-feedback');
+    if (feedback) {
+      feedback.textContent = '';
+      feedback.classList.remove('is-visible');
+      feedback.style.removeProperty('color');
     }
   }
 
