@@ -47,6 +47,8 @@ TICKET_MEMORY_CAP=5000
 TICKET_LOG_LIMIT=2000
 ```
 
+Copy these values into a local `.env` file before running the backend. A sample with placeholder values is available as `.env.example`, and `.env` is already excluded in `.gitignore`, so your secrets can stay private. Never commit the real `.env` file—only the example file should be tracked.
+
 Generate `ADMIN_PASSWORD_HASH` with:
 ```
 npx node -e "const bcrypt=require('bcrypt');console.log(bcrypt.hashSync('your-password',10));"

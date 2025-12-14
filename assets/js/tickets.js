@@ -21,7 +21,7 @@ document.addEventListener('DOMContentLoaded', function () {
       phoneInput: document.getElementById('botim-phone'),
       emailInput: document.getElementById('botim-email'),
       feedback: document.querySelector('#botim-form .manual-form-feedback'),
-      whatsappNumber: '971529948589',
+      whatsappNumber: '971522184531',
       amountLabel: '150 AED',
       methodLabel: 'BOTIM Money',
       prefix: 'BOTIM'
@@ -33,7 +33,7 @@ document.addEventListener('DOMContentLoaded', function () {
       phoneInput: document.getElementById('mpesa-phone'),
       emailInput: document.getElementById('mpesa-email'),
       feedback: document.querySelector('#mpesa-form .manual-form-feedback'),
-      whatsappNumber: '971529948589',
+      whatsappNumber: '971522184531',
       amountLabel: '5,500 KSH',
       methodLabel: 'M-PESA PAYMENT',
       prefix: 'MPESA'
@@ -46,7 +46,7 @@ document.addEventListener('DOMContentLoaded', function () {
       emailInput: document.getElementById('bank-email'),
       feedback: document.querySelector('#bank-form .manual-form-feedback'),
       feedbackColor: '#ff8d25',
-      whatsappNumber: '971529948589',
+      whatsappNumber: '971522184531',
       amountLabel: '150 AED',
       methodLabel: 'Whizmo Bank Transfer',
       prefix: 'BANK'
@@ -58,7 +58,7 @@ document.addEventListener('DOMContentLoaded', function () {
       phoneInput: document.getElementById('adcb-phone'),
       emailInput: document.getElementById('adcb-email'),
       feedback: document.querySelector('#adcb-form .manual-form-feedback'),
-      whatsappNumber: '971529948589',
+      whatsappNumber: '971522184531',
       amountLabel: '150 AED',
       methodLabel: 'ADCB Bank Transfer',
       prefix: 'ADCB'
@@ -71,7 +71,7 @@ document.addEventListener('DOMContentLoaded', function () {
       emailInput: document.getElementById('nbd-email'),
       feedback: document.querySelector('#nbd-form .manual-form-feedback'),
       feedbackColor: '#072a64',
-      whatsappNumber: '971529948589',
+      whatsappNumber: '971522184531',
       amountLabel: '150 AED',
       methodLabel: 'NBD Bank Transfer',
       prefix: 'NBD'
