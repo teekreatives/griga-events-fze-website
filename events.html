@@ -252,20 +252,6 @@
       setInterval(refreshCountdown, 1000);
     })();
   </script>
-  <!--
-    POSTPONED OVERLAY
-    - Remove this entire block to restore normal site behaviour
-    - Self-contained: inline styles + markup only (no JS).
-  -->
-  <style>
-    /* POSTPONED overlay styles (single removable block) */
-    #postponed-overlay{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,0.36);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);z-index:9999999;pointer-events:auto}
-    #postponed-overlay .stamp{background:#d11f26;color:#ffffff;font-weight:800;padding:1.2rem 2rem;border-radius:6px;transform:rotate(-8deg);box-shadow:0 30px 60px rgba(0,0,0,0.65),0 10px 20px rgba(0,0,0,0.45);text-shadow:0 4px 14px rgba(0,0,0,0.6);font-size:clamp(28px,9vw,120px);letter-spacing:0.12em;text-transform:uppercase;display:inline-block;line-height:1;white-space:nowrap}
-    @media (max-width:640px){#postponed-overlay .stamp{padding:0.6rem 1rem;font-size:clamp(20px,14vw,56px);transform:rotate(-6deg);border-radius:4px}}
-  </style>
-
-  <div id="postponed-overlay" role="status" aria-live="polite" aria-label="Event postponed">
-    <div class="stamp">POSTPONED</div>
-  </div>
+  
 </body>
 </html>
