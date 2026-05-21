@@ -43,8 +43,8 @@
 
   <!-- Hero -->
   <section class="hero" id="top">
-    <video class="hero-video" autoplay muted loop playsinline preload="metadata" poster="assets/media/images/where there's smoke edition 8.jpeg">
-      <source src="assets/media/videos/hero-bg.mp4" type="video/mp4" />
+    <video class="hero-video" autoplay muted loop playsinline preload="none" poster="assets/media/images/where there's smoke edition 8.jpeg" data-src="assets/media/videos/hero-bg.mp4">
+      <!-- Source is injected when the video enters the viewport to avoid downloading on first paint -->
     </video>
     <div class="hero-bg-layer hero-bg-overlay"></div>
     <div class="hero-content">
@@ -173,6 +173,55 @@
 
   <script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
   <script src="https://unpkg.com/swiper@9/swiper-bundle.min.js"></script>
+  <script>
+    (function(){
+      document.addEventListener('DOMContentLoaded', function(){
+        var vid = document.querySelector('.hero-video');
+        if (!vid) return;
+        function loadVideo(){
+          if (vid.dataset.loaded) return;
+          var opt = vid.dataset.src;
+          var fallback = vid.dataset.fallback;
+          if (!opt && !fallback) return;
+          var source = document.createElement('source');
+          source.src = opt || fallback;
+          source.type = 'video/mp4';
+          vid.appendChild(source);
+          vid.load();
+          vid.dataset.loaded = 'true';
+          var playPromise = vid.play();
+          if (playPromise !== undefined) playPromise.catch(function(){ });
+          // If optimized file fails, try fallback
+          vid.addEventListener('error', function onVidError(){
+            vid.removeEventListener('error', onVidError);
+            if (opt && fallback && source.src !== fallback) {
+              vid.innerHTML = '';
+              var s2 = document.createElement('source');
+              s2.src = fallback;
+              s2.type = 'video/mp4';
+              vid.appendChild(s2);
+              vid.load();
+              var p2 = vid.play(); if (p2) p2.catch(function(){});
+            }
+          });
+        }
+        if ('IntersectionObserver' in window) {
+          var io = new IntersectionObserver(function(entries, observer){
+            entries.forEach(function(entry){
+              if (entry.isIntersecting) {
+                loadVideo();
+                observer.disconnect();
+              }
+            });
+          }, {rootMargin: '200px'});
+          io.observe(vid);
+        } else {
+          // fallback: load after short delay
+          setTimeout(loadVideo, 1500);
+        }
+      });
+    })();
+  </script>
   <script src="assets/js/main.js?v=20251128.12"></script>
 </body>
 </html>
