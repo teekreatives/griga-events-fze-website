@@ -689,7 +689,7 @@
         amount +
         '</dd></div></dl>' +
         '<div class="payment-actions">' +
-        '<button type="button" class="btn btn-secondary" id="shop-stripe-pay">Pay via Card</button>' +
+        '<button type="button" class="btn btn-secondary shop-stripe-pay-btn" id="shop-stripe-pay">Pay via Card</button>' +
         '</div>' +
         '<p class="shop-payment-panel-note">Complete payment on Stripe, then click <strong>Send proof via WhatsApp</strong> below with your Stripe confirmation so we can process your jersey order.</p>' +
         '</article>';
