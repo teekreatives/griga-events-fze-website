@@ -98,6 +98,23 @@
     window.scrollTo({ top: Math.max(0, top), behavior: 'smooth' });
   }
 
+  function scrollToPaymentDetails() {
+    if (!window.matchMedia('(max-width: 768px)').matches) return;
+
+    var panel = $('shop-payment-detail-panel');
+    var scrollContainer = document.querySelector('.shop-checkout-panel');
+    if (!panel || panel.hidden || !scrollContainer) return;
+
+    requestAnimationFrame(function () {
+      setTimeout(function () {
+        var containerRect = scrollContainer.getBoundingClientRect();
+        var panelRect = panel.getBoundingClientRect();
+        var target = panelRect.top - containerRect.top + scrollContainer.scrollTop - 20;
+        scrollContainer.scrollTo({ top: Math.max(0, target), behavior: 'smooth' });
+      }, 120);
+    });
+  }
+
   function showToast(message) {
     var toast = els.toast;
     if (!toast) {
@@ -574,6 +591,18 @@
     state.checkoutStep = 1;
     state.paymentMethod = null;
     state.order = null;
+    state.customer = null;
+    var panel = $('shop-payment-detail-panel');
+    if (panel) {
+      panel.innerHTML = '';
+      panel.hidden = true;
+    }
+    document.querySelectorAll('.shop-payment-card input').forEach(function (input) {
+      input.checked = false;
+    });
+    document.querySelectorAll('.shop-payment-card').forEach(function (card) {
+      card.classList.remove('is-selected');
+    });
     renderCheckoutStep();
     els.checkout.classList.add('is-open');
     document.body.classList.add('shop-checkout-open');
@@ -597,19 +626,180 @@
     });
 
     if (state.checkoutStep === 2) renderOrderReview();
+    if (state.checkoutStep === 3) renderPaymentPanel();
     if (state.checkoutStep === 4) renderConfirmation();
 
     var backBtn = $('shop-checkout-back');
     var nextBtn = $('shop-checkout-next');
     if (backBtn) backBtn.style.visibility = state.checkoutStep === 1 ? 'hidden' : 'visible';
     if (nextBtn) {
-      if (state.checkoutStep === 3) nextBtn.textContent = 'Place Order';
-      else if (state.checkoutStep >= 4) nextBtn.style.display = 'none';
-      else {
+      if (state.checkoutStep === 3) {
+        nextBtn.style.display = '';
+        if (state.paymentMethod === 'stripe') {
+          nextBtn.textContent = 'Pay via Card';
+        } else if (state.paymentMethod) {
+          nextBtn.textContent = 'Send proof via WhatsApp';
+        } else {
+          nextBtn.textContent = 'Place Order';
+        }
+      } else if (state.checkoutStep >= 4) {
+        nextBtn.style.display = 'none';
+      } else {
         nextBtn.style.display = '';
         nextBtn.textContent = 'Continue';
       }
     }
+  }
+
+  function getCheckoutAmountLabel() {
+    if (window.SHOP_PAYMENTS && SHOP_PAYMENTS.formatAmount) {
+      return SHOP_PAYMENTS.formatAmount(cartSubtotal(), state.product ? state.product.currency : 'AED');
+    }
+    return formatPrice(cartSubtotal());
+  }
+
+  function renderPaymentPanel() {
+    var panel = $('shop-payment-detail-panel');
+    if (!panel || !window.SHOP_PAYMENTS) return;
+
+    if (!state.paymentMethod) {
+      panel.innerHTML = '';
+      panel.hidden = true;
+      return;
+    }
+
+    var method = SHOP_PAYMENTS.getMethod(state.paymentMethod);
+    if (!method) {
+      panel.innerHTML = '';
+      panel.hidden = true;
+      return;
+    }
+
+    var amount = getCheckoutAmountLabel();
+    panel.hidden = false;
+
+    if (method.type === 'stripe') {
+      panel.innerHTML =
+        '<article class="payment-option payment-option--stripe shop-checkout-payment">' +
+        '<h3>Stripe Checkout</h3>' +
+        '<p>' +
+        method.description +
+        '</p>' +
+        '<dl class="payment-details"><div><dt>Order Total</dt><dd>' +
+        amount +
+        '</dd></div></dl>' +
+        '<p class="shop-payment-panel-note">Click <strong>Pay via Card</strong> below to open Stripe in a new tab, then complete payment for this order.</p>' +
+        '</article>';
+      scrollToPaymentDetails();
+      return;
+    }
+
+    var details = method.details ? method.details() : [];
+    var detailsHtml = details
+      .map(function (row) {
+        return '<div><dt>' + row.dt + '</dt><dd>' + row.dd + '</dd></div>';
+      })
+      .join('');
+
+    if (method.amountDetail) {
+      detailsHtml += '<div><dt>Amount</dt><dd>' + amount + '</dd></div>';
+    }
+
+    var heading = '<h3>' + method.label + '</h3>';
+    if (method.logo && method.title) {
+      heading =
+        '<div class="payment-option__heading">' +
+        '<img class="payment-option__logo" src="' +
+        method.logo +
+        '" alt="' +
+        (method.logoAlt || '') +
+        '" />' +
+        '<span class="payment-option__title">' +
+        method.title +
+        '</span></div>';
+    } else if (method.logo) {
+      heading =
+        '<div class="payment-option__heading">' +
+        '<img class="payment-option__logo" src="' +
+        method.logo +
+        '" alt="' +
+        (method.logoAlt || '') +
+        '" />' +
+        '<h3>' +
+        method.label +
+        '</h3></div>';
+    }
+
+    var copyInfo = method.copyInfo ? method.copyInfo(amount) : '';
+
+    panel.innerHTML =
+      '<article class="payment-option ' +
+      method.cardClass +
+      ' shop-checkout-payment">' +
+      heading +
+      '<p>' +
+      method.intro(amount) +
+      '</p>' +
+      '<dl class="payment-details">' +
+      detailsHtml +
+      '</dl>' +
+      '<div class="payment-actions">' +
+      '<button type="button" class="btn btn-secondary" id="shop-copy-payment" data-payment-info="' +
+      copyInfo.replace(/"/g, '&quot;') +
+      '">Copy Details</button>' +
+      '</div>' +
+      '<p class="shop-payment-panel-note">After paying, click <strong>Send proof via WhatsApp</strong> below. We will verify and confirm your order.</p>' +
+      '</article>';
+
+    bindCopyPaymentButton();
+    scrollToPaymentDetails();
+  }
+
+  function bindCopyPaymentButton() {
+    var copyBtn = $('shop-copy-payment');
+    if (!copyBtn) return;
+
+    copyBtn.addEventListener('click', function () {
+      var payload = copyBtn.getAttribute('data-payment-info');
+      if (!payload) return;
+
+      var original = copyBtn.textContent;
+      var onCopied = function () {
+        copyBtn.textContent = 'Copied';
+        copyBtn.classList.add('copied');
+        setTimeout(function () {
+          copyBtn.textContent = original;
+          copyBtn.classList.remove('copied');
+        }, 2000);
+      };
+
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(payload).then(onCopied).catch(function () {
+          fallbackCopy(payload);
+          onCopied();
+        });
+      } else {
+        fallbackCopy(payload);
+        onCopied();
+      }
+    });
+  }
+
+  function fallbackCopy(value) {
+    var temp = document.createElement('textarea');
+    temp.value = value;
+    temp.setAttribute('readonly', '');
+    temp.style.position = 'absolute';
+    temp.style.left = '-9999px';
+    document.body.appendChild(temp);
+    temp.select();
+    document.execCommand('copy');
+    document.body.removeChild(temp);
+  }
+
+  function getPaymentMethodLabel(methodId) {
+    var method = window.SHOP_PAYMENTS ? SHOP_PAYMENTS.getMethod(methodId) : null;
+    return method ? method.label : methodId;
   }
 
   function renderOrderReview() {
@@ -620,19 +810,29 @@
     var total = cartSubtotal();
 
     container.innerHTML =
-      '<div class="shop-order-review-row"><span>Product</span><span>' +
+      '<div class="shop-order-review-row shop-order-review-row--product">' +
+      '<span class="shop-order-review-label">Product</span>' +
+      '<span class="shop-order-review-value">' +
       item.name +
       '</span></div>' +
-      '<div class="shop-order-review-row"><span>Variant</span><span>' +
+      '<div class="shop-order-review-row">' +
+      '<span class="shop-order-review-label">Variant</span>' +
+      '<span class="shop-order-review-value">' +
       item.variantLabel +
       '</span></div>' +
-      '<div class="shop-order-review-row"><span>Size</span><span>' +
+      '<div class="shop-order-review-row">' +
+      '<span class="shop-order-review-label">Size</span>' +
+      '<span class="shop-order-review-value">' +
       item.size +
       '</span></div>' +
-      '<div class="shop-order-review-row"><span>Quantity</span><span>' +
+      '<div class="shop-order-review-row">' +
+      '<span class="shop-order-review-label">Quantity</span>' +
+      '<span class="shop-order-review-value">' +
       item.quantity +
       '</span></div>' +
-      '<div class="shop-order-review-row"><span>Total</span><span>' +
+      '<div class="shop-order-review-row">' +
+      '<span class="shop-order-review-label">Total</span>' +
+      '<span class="shop-order-review-value">' +
       formatPrice(total) +
       '</span></div>';
   }
@@ -643,11 +843,18 @@
     var container = $('shop-confirmation-content');
     if (!container) return;
 
+    var isStripe = o.paymentMethod === 'stripe';
+    var lead = isStripe
+      ? 'Your order has been recorded. Complete payment on the Stripe checkout page, then keep your confirmation email.'
+      : 'Your payment proof has been sent via WhatsApp. Our team will verify and confirm your order shortly.';
+
     container.innerHTML =
       '<div class="shop-confirmation">' +
       '<div class="shop-confirmation-icon" aria-hidden="true">✓</div>' +
       '<h3>Thank You For Your Order</h3>' +
-      '<p>Your order has been received and is awaiting payment confirmation.</p>' +
+      '<p>' +
+      lead +
+      '</p>' +
       '<div class="shop-confirmation-summary">' +
       '<div><strong>Order Number</strong><span>' +
       o.orderId +
@@ -658,6 +865,14 @@
       '<div><strong>Product</strong><span>' +
       o.productName +
       '</span></div>' +
+      '<div><strong>Variant</strong><span>' +
+      o.variant +
+      ' · Size ' +
+      o.size +
+      '</span></div>' +
+      '<div><strong>Payment</strong><span>' +
+      getPaymentMethodLabel(o.paymentMethod) +
+      '</span></div>' +
       '<div><strong>Total</strong><span>' +
       formatPrice(o.total) +
       '</span></div>' +
@@ -666,8 +881,13 @@
       o.email +
       '</strong> once payment is verified.</p>' +
       '<div class="shop-confirmation-actions">' +
+      (isStripe
+        ? '<a href="' +
+          (window.SHOP_PAYMENTS ? SHOP_PAYMENTS.stripeUrl : '#') +
+          '" class="btn btn-primary" target="_blank" rel="noopener noreferrer">Open Stripe Again</a>'
+        : '') +
       '<a href="#product-showcase" class="btn btn-secondary" id="shop-continue-shopping">Continue Shopping</a>' +
-      '<a href="home.html" class="btn btn-primary">Go Home</a>' +
+      '<a href="home.html" class="btn btn-secondary">Go Home</a>' +
       '</div>' +
       '</div>';
 
@@ -699,10 +919,10 @@
     return { name: name, email: email, phone: phone };
   }
 
-  function placeOrder(customer) {
+  function finalizeOrder(customer, paymentMethod, orderId) {
     var item = state.cart[0];
     state.order = {
-      orderId: generateOrderId(),
+      orderId: orderId || generateOrderId(),
       customerName: customer.name,
       email: customer.email,
       phone: customer.phone,
@@ -711,18 +931,68 @@
       size: item.size,
       quantity: item.quantity,
       total: cartSubtotal(),
-      paymentMethod: state.paymentMethod,
+      currency: item.currency || 'AED',
+      paymentMethod: paymentMethod,
       createdAt: new Date().toISOString()
     };
 
-    /* Backend integration point */
-    console.info('[GRIGA Shop] Order ready for backend:', state.order);
+    console.info('[GRIGA Shop] Order submitted:', state.order);
 
     state.cart = [];
     saveCart();
     updateCartUI();
     state.checkoutStep = 4;
     renderCheckoutStep();
+  }
+
+  function processPayment() {
+    if (!state.paymentMethod) {
+      showToast('Please select a payment method.');
+      return;
+    }
+    if (!state.customer) {
+      showToast('Please complete your customer details.');
+      state.checkoutStep = 1;
+      renderCheckoutStep();
+      return;
+    }
+
+    var item = state.cart[0];
+    if (!item) {
+      showToast('Your cart is empty.');
+      return;
+    }
+
+    var orderPayload = {
+      orderId: generateOrderId(),
+      customerName: state.customer.name,
+      email: state.customer.email,
+      phone: state.customer.phone,
+      productName: item.name,
+      variant: item.variantLabel,
+      size: item.size,
+      quantity: item.quantity,
+      total: cartSubtotal(),
+      currency: item.currency || 'AED'
+    };
+
+    if (state.paymentMethod === 'stripe') {
+      if (window.SHOP_PAYMENTS && SHOP_PAYMENTS.stripeUrl) {
+        window.open(SHOP_PAYMENTS.stripeUrl, '_blank', 'noopener,noreferrer');
+      }
+      finalizeOrder(state.customer, 'stripe', orderPayload.orderId);
+      return;
+    }
+
+    if (!window.SHOP_PAYMENTS) {
+      showToast('Payment configuration unavailable.');
+      return;
+    }
+
+    var message = SHOP_PAYMENTS.buildWhatsAppMessage(state.paymentMethod, orderPayload);
+    var url = 'https://wa.me/' + SHOP_PAYMENTS.whatsappNumber + '?text=' + encodeURIComponent(message);
+    window.open(url, '_blank', 'noopener,noreferrer');
+    finalizeOrder(state.customer, state.paymentMethod, orderPayload.orderId);
   }
 
   function handleCheckoutNext() {
@@ -742,11 +1012,7 @@
     }
 
     if (state.checkoutStep === 3) {
-      if (!state.paymentMethod) {
-        showToast('Please select a payment method.');
-        return;
-      }
-      placeOrder(state.customer);
+      processPayment();
     }
   }
 
@@ -848,6 +1114,10 @@
         document.querySelectorAll('.shop-payment-card').forEach(function (card) {
           card.classList.toggle('is-selected', card.contains(input));
         });
+        if (state.checkoutStep === 3) {
+          renderPaymentPanel();
+          renderCheckoutStep();
+        }
       });
     });
 

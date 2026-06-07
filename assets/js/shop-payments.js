@@ -1,0 +1,226 @@
+/**
+ * GRIGA Events FZE – Shop payment configuration
+ * Mirrors tickets.html payment logic with shop order amounts.
+ */
+(function (global) {
+  var STRIPE_CHECKOUT_URL = 'https://buy.stripe.com/cNi4gBgiS25c6dUaWu3oA02';
+  var WHATSAPP_NUMBER = '971522184531';
+
+  var METHODS = {
+    stripe: {
+      id: 'stripe',
+      type: 'stripe',
+      label: 'Stripe Checkout',
+      cardClass: 'payment-option--stripe',
+      description:
+        'Secure credit/debit payments in one click. You will be redirected to the same hosted Stripe checkout used for tickets.'
+    },
+    mpesa: {
+      id: 'mpesa',
+      type: 'manual',
+      label: 'M-PESA PAYMENT',
+      prefix: 'MPESA',
+      cardClass: 'payment-option--mpesa',
+      logo: '/assets/media/logos/m-pesa-logo.png',
+      logoAlt: 'M-PESA logo',
+      intro: function (amount) {
+        return (
+          'Send ' +
+          amount +
+          ' over M-Pesa to the number below, then confirm the payment so we can process your jersey order.'
+        );
+      },
+      details: function () {
+        return [
+          { dt: 'Number', dd: '0710 261 539' },
+          { dt: 'Name', dd: 'Grishon Gachomo' }
+        ];
+      },
+      amountDetail: true,
+      copyInfo: function (amount) {
+        return 'M-PESA PAYMENT • Number: 0710 261 539 • Name: Grishon Gachomo • Amount: ' + amount;
+      }
+    },
+    botim: {
+      id: 'botim',
+      type: 'manual',
+      label: 'BOTIM Money',
+      prefix: 'BOTIM',
+      cardClass: 'payment-option--botim',
+      logo: '/assets/media/logos/botim-money.jpg',
+      logoAlt: 'BOTIM logo',
+      intro: function (amount) {
+        return (
+          'Pay ' +
+          amount +
+          ' via BOTIM Money using the number below, then confirm the payment so we can process your order.'
+        );
+      },
+      details: function () {
+        return [
+          { dt: 'Number', dd: '+971 52 994 8589' },
+          { dt: 'Name', dd: 'Grishon Gachomo' }
+        ];
+      },
+      amountDetail: true,
+      copyInfo: function (amount) {
+        return 'BOTIM Money • Number: +971 52 994 8589 • Name: Grishon Gachomo • Amount: ' + amount;
+      }
+    },
+    whizmo: {
+      id: 'whizmo',
+      type: 'manual',
+      label: 'Whizmo Bank Transfer',
+      prefix: 'BANK',
+      cardClass: 'payment-option--bank payment-option--whizmo',
+      logo: '/assets/media/logos/whizmo.jpg',
+      logoAlt: 'Whizmo logo',
+      title: 'Whizmo',
+      intro: function (amount) {
+        return (
+          'Pay ' +
+          amount +
+          ' via Whizmo using the details below, then confirm the payment so we can process your order.'
+        );
+      },
+      details: function () {
+        return [
+          { dt: 'Bank Name', dd: 'Abu Dhabi Commercial Bank' },
+          { dt: 'Account Name', dd: "GRIGA EVENT'S FZE" },
+          { dt: 'IBAN', dd: 'AE700030077195013990091' }
+        ];
+      },
+      amountDetail: true,
+      copyInfo: function (amount) {
+        return (
+          'Bank Transfer • Bank Name: Abu Dhabi Commercial Bank • Account Name: GRIGA EVENT\'S FZE • IBAN: AE700030077195013990091 • Amount: ' +
+          amount
+        );
+      }
+    },
+    adcb: {
+      id: 'adcb',
+      type: 'manual',
+      label: 'ADCB Bank Transfer',
+      prefix: 'ADCB',
+      cardClass: 'payment-option--bank payment-option--adcb',
+      logo: '/assets/media/logos/ADCB.png',
+      logoAlt: 'ADCB logo',
+      title: 'ADCB',
+      intro: function (amount) {
+        return (
+          'Pay ' +
+          amount +
+          ' via ADCB using the details below, then confirm the payment so we can process your order.'
+        );
+      },
+      details: function () {
+        return [
+          { dt: 'Bank Name', dd: 'Abu Dhabi Commercial Bank PJSC' },
+          { dt: 'Account Name', dd: 'GRISHON GITHINJI GACHOMO' },
+          { dt: 'Account Number', dd: '10085351920001' },
+          { dt: 'IBAN', dd: 'AE570030010085351920001' }
+        ];
+      },
+      amountDetail: true,
+      copyInfo: function (amount) {
+        return (
+          'Bank Transfer • Bank Name: Abu Dhabi Commercial Bank PJSC • Account Name: GRISHON GITHINJI GACHOMO • Account Number: 10085351920001 • IBAN: AE570030010085351920001 • Amount: ' +
+          amount
+        );
+      }
+    },
+    nbd: {
+      id: 'nbd',
+      type: 'manual',
+      label: 'NBD Bank Transfer',
+      prefix: 'NBD',
+      cardClass: 'payment-option--bank payment-option--nbd',
+      logo: '/assets/media/logos/NBD.png',
+      logoAlt: 'NBD logo',
+      title: 'NBD',
+      intro: function (amount) {
+        return (
+          'Pay ' +
+          amount +
+          ' via NBD using the details below, then confirm the payment so we can process your order.'
+        );
+      },
+      details: function () {
+        return [
+          { dt: 'Bank Name', dd: 'Emirates NBD' },
+          { dt: 'Account Name', dd: 'Grishon Githinji Gachomo' },
+          { dt: 'Account Number', dd: '1014091695801' },
+          { dt: 'IBAN', dd: 'AE060260001014091695801' }
+        ];
+      },
+      amountDetail: true,
+      copyInfo: function (amount) {
+        return (
+          'Bank Transfer • Bank Name: Emirates NBD • Account Name: Grishon Githinji Gachomo • Account Number: 1014091695801 • IBAN: AE06 0260 0010 1409 1695 801 • Amount: ' +
+          amount
+        );
+      }
+    }
+  };
+
+  function getMethod(id) {
+    return METHODS[id] || null;
+  }
+
+  function formatAmount(total, currency) {
+    return (currency || 'AED') + ' ' + Number(total).toLocaleString('en-AE');
+  }
+
+  function buildWhatsAppMessage(methodId, order) {
+    var method = getMethod(methodId);
+    var amount = formatAmount(order.total, order.currency || 'AED');
+    return (
+      'Hello, I have paid for my merchandise order via ' +
+      (method ? method.label : methodId) +
+      '.\n' +
+      'Name: ' +
+      order.customerName +
+      '\n' +
+      'Phone: ' +
+      order.phone +
+      '\n' +
+      'Email: ' +
+      order.email +
+      '\n' +
+      'Product: ' +
+      order.productName +
+      '\n' +
+      'Variant: ' +
+      order.variant +
+      '\n' +
+      'Size: ' +
+      order.size +
+      '\n' +
+      'Quantity: ' +
+      order.quantity +
+      '\n' +
+      'Amount: ' +
+      amount +
+      '\n' +
+      'Order ID: ' +
+      order.orderId +
+      "\nI'm attaching a screenshot to proof the payment.\n" +
+      'Kindly confirm and send my order details. Thank you.'
+    );
+  }
+
+  function generateManualOrderId(prefix) {
+    return prefix + '-' + Date.now().toString(36).toUpperCase() + '-' + Math.floor(Math.random() * 900 + 100);
+  }
+
+  global.SHOP_PAYMENTS = {
+    stripeUrl: STRIPE_CHECKOUT_URL,
+    whatsappNumber: WHATSAPP_NUMBER,
+    methods: METHODS,
+    getMethod: getMethod,
+    formatAmount: formatAmount,
+    buildWhatsAppMessage: buildWhatsAppMessage,
+    generateManualOrderId: generateManualOrderId
+  };
+})(typeof window !== 'undefined' ? window : this);

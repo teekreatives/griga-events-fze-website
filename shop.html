@@ -20,7 +20,8 @@
   <link rel="stylesheet" href="https://unpkg.com/aos@2.3.4/dist/aos.css" />
   <link rel="stylesheet" href="https://unpkg.com/swiper@9/swiper-bundle.min.css" />
   <link rel="stylesheet" href="assets/css/style.css?v=20251117.1" />
-  <link rel="stylesheet" href="assets/css/shop.css?v=20250607.6" />
+  <link rel="stylesheet" href="assets/css/tickets.css" />
+  <link rel="stylesheet" href="assets/css/shop.css?v=20250607.9" />
   <link rel="icon" href="assets/media/logos/fav.jpg" type="image/jpeg" />
 </head>
 <body class="shop-body">
@@ -256,7 +257,8 @@
               <p>Bank transfer via NBD</p>
             </label>
           </div>
-          <p class="shop-payment-note">Payment processing will be connected to your chosen provider. No charges are made on this screen yet.</p>
+          <div id="shop-payment-detail-panel" class="shop-payment-detail-panel" hidden></div>
+          <p class="shop-payment-note">Choose a payment method above. Stripe opens the same secure checkout link used for tickets. Other methods use WhatsApp payment confirmation.</p>
         </div>
         <!-- Step 4: Confirmation -->
         <div class="shop-checkout-step" data-step="4">
@@ -326,6 +328,7 @@
   <script src="https://unpkg.com/swiper@9/swiper-bundle.min.js"></script>
   <script src="assets/js/main.js?v=20251128.12"></script>
   <script src="assets/js/shop-products.js?v=20250607.6"></script>
-  <script src="assets/js/shop.js?v=20250607.6"></script>
+  <script src="assets/js/shop-payments.js?v=20250607.7"></script>
+  <script src="assets/js/shop.js?v=20250607.8"></script>
 </body>
 </html>

@@ -957,9 +957,29 @@ body.shop-body {
 .shop-order-review-row {
   display: flex;
   justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
   padding: 0.5rem 0;
   font-size: 0.95rem;
   border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+.shop-order-review-label {
+  flex: 0 0 auto;
+  color: #666;
+  min-width: 5.25rem;
+}
+
+.shop-order-review-value {
+  flex: 1 1 auto;
+  min-width: 0;
+  text-align: right;
+  word-break: break-word;
+}
+
+.shop-order-review-row--product .shop-order-review-value {
+  font-weight: 600;
+  line-height: 1.35;
 }
 
 .shop-order-review-row:last-child {
@@ -1049,6 +1069,46 @@ body.shop-body {
   text-align: center;
 }
 
+.shop-payment-detail-panel {
+  margin-top: 1.25rem;
+}
+
+.shop-payment-detail-panel[hidden] {
+  display: none !important;
+}
+
+.shop-checkout-payment {
+  margin: 0;
+}
+
+.shop-checkout-payment .payment-actions {
+  margin-top: 0.8rem;
+}
+
+.shop-payment-panel-note {
+  margin: 1rem 0 0;
+  font-size: 0.88rem;
+  line-height: 1.55;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.payment-option--bank .shop-payment-panel-note,
+.payment-option--stripe .shop-payment-panel-note {
+  color: #555;
+}
+
+.payment-option--stripe .shop-payment-panel-note {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.shop-checkout .payment-option {
+  box-shadow: none;
+}
+
+.shop-checkout .manual-payment-form {
+  display: none;
+}
+
 .shop-checkout-footer {
   display: flex;
   justify-content: space-between;
@@ -1097,13 +1157,24 @@ body.shop-body {
 .shop-confirmation-summary div {
   display: flex;
   justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
   padding: 0.4rem 0;
   font-size: 0.92rem;
 }
 
 .shop-confirmation-summary strong {
+  flex: 0 0 auto;
   color: #666;
   font-weight: 500;
+  min-width: 5.25rem;
+}
+
+.shop-confirmation-summary div span {
+  flex: 1 1 auto;
+  min-width: 0;
+  text-align: right;
+  word-break: break-word;
 }
 
 .shop-confirmation-notice {
@@ -1226,6 +1297,48 @@ body.shop-checkout-open {
 
   .shop-payment-grid {
     grid-template-columns: 1fr;
+  }
+
+  .shop-order-review-row {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.3rem;
+    padding: 0.65rem 0;
+  }
+
+  .shop-order-review-label {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    font-weight: 600;
+    min-width: 0;
+  }
+
+  .shop-order-review-value {
+    text-align: left;
+    font-size: 1rem;
+  }
+
+  .shop-order-review-row--product .shop-order-review-value {
+    font-size: 1.05rem;
+  }
+
+  .shop-confirmation-summary div {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.25rem;
+  }
+
+  .shop-confirmation-summary strong {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    min-width: 0;
+  }
+
+  .shop-confirmation-summary div span {
+    text-align: left;
+    font-size: 0.98rem;
   }
 
   .shop-steps {
