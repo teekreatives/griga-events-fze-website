@@ -633,11 +633,11 @@
     var nextBtn = $('shop-checkout-next');
     if (backBtn) backBtn.style.visibility = state.checkoutStep === 1 ? 'hidden' : 'visible';
     if (nextBtn) {
+      nextBtn.classList.add('btn-primary');
+      nextBtn.classList.remove('btn-secondary');
       if (state.checkoutStep === 3) {
         nextBtn.style.display = '';
-        if (state.paymentMethod === 'stripe') {
-          nextBtn.textContent = 'Pay via Card';
-        } else if (state.paymentMethod) {
+        if (state.paymentMethod) {
           nextBtn.textContent = 'Send proof via WhatsApp';
         } else {
           nextBtn.textContent = 'Place Order';
@@ -688,8 +688,12 @@
         '<dl class="payment-details"><div><dt>Order Total</dt><dd>' +
         amount +
         '</dd></div></dl>' +
-        '<p class="shop-payment-panel-note">Click <strong>Pay via Card</strong> below to open Stripe in a new tab, then complete payment for this order.</p>' +
+        '<div class="payment-actions">' +
+        '<button type="button" class="btn btn-secondary" id="shop-stripe-pay">Pay via Card</button>' +
+        '</div>' +
+        '<p class="shop-payment-panel-note">Complete payment on Stripe, then click <strong>Send proof via WhatsApp</strong> below with your Stripe confirmation so we can process your jersey order.</p>' +
         '</article>';
+      bindStripePayButton();
       scrollToPaymentDetails();
       return;
     }
@@ -753,6 +757,13 @@
 
     bindCopyPaymentButton();
     scrollToPaymentDetails();
+  }
+
+  function bindStripePayButton() {
+    var payBtn = $('shop-stripe-pay');
+    if (!payBtn) return;
+
+    payBtn.addEventListener('click', openStripeCheckout);
   }
 
   function bindCopyPaymentButton() {
@@ -845,7 +856,7 @@
 
     var isStripe = o.paymentMethod === 'stripe';
     var lead = isStripe
-      ? 'Your order has been recorded. Complete payment on the Stripe checkout page, then keep your confirmation email.'
+      ? 'Your order details have been sent via WhatsApp. Our team will verify your Stripe payment and confirm your order shortly.'
       : 'Your payment proof has been sent via WhatsApp. Our team will verify and confirm your order shortly.';
 
     container.innerHTML =
@@ -945,25 +956,11 @@
     renderCheckoutStep();
   }
 
-  function processPayment() {
-    if (!state.paymentMethod) {
-      showToast('Please select a payment method.');
-      return;
-    }
-    if (!state.customer) {
-      showToast('Please complete your customer details.');
-      state.checkoutStep = 1;
-      renderCheckoutStep();
-      return;
-    }
-
+  function buildOrderPayload() {
     var item = state.cart[0];
-    if (!item) {
-      showToast('Your cart is empty.');
-      return;
-    }
+    if (!item) return null;
 
-    var orderPayload = {
+    return {
       orderId: generateOrderId(),
       customerName: state.customer.name,
       email: state.customer.email,
@@ -975,17 +972,44 @@
       total: cartSubtotal(),
       currency: item.currency || 'AED'
     };
+  }
 
-    if (state.paymentMethod === 'stripe') {
-      if (window.SHOP_PAYMENTS && SHOP_PAYMENTS.stripeUrl) {
-        window.open(SHOP_PAYMENTS.stripeUrl, '_blank', 'noopener,noreferrer');
-      }
-      finalizeOrder(state.customer, 'stripe', orderPayload.orderId);
+  function validateCheckoutReady() {
+    if (!state.paymentMethod) {
+      showToast('Please select a payment method.');
+      return false;
+    }
+    if (!state.customer) {
+      showToast('Please complete your customer details.');
+      state.checkoutStep = 1;
+      renderCheckoutStep();
+      return false;
+    }
+    if (!state.cart.length) {
+      showToast('Your cart is empty.');
+      return false;
+    }
+    return true;
+  }
+
+  function openStripeCheckout() {
+    if (!validateCheckoutReady()) return;
+    if (window.SHOP_PAYMENTS && SHOP_PAYMENTS.stripeUrl) {
+      window.open(SHOP_PAYMENTS.stripeUrl, '_blank', 'noopener,noreferrer');
+      showToast('Complete payment on Stripe, then send proof via WhatsApp.');
+    }
+  }
+
+  function sendPaymentProofViaWhatsApp() {
+    if (!validateCheckoutReady()) return;
+    if (!window.SHOP_PAYMENTS) {
+      showToast('Payment configuration unavailable.');
       return;
     }
 
-    if (!window.SHOP_PAYMENTS) {
-      showToast('Payment configuration unavailable.');
+    var orderPayload = buildOrderPayload();
+    if (!orderPayload) {
+      showToast('Your cart is empty.');
       return;
     }
 
@@ -993,6 +1017,10 @@
     var url = 'https://wa.me/' + SHOP_PAYMENTS.whatsappNumber + '?text=' + encodeURIComponent(message);
     window.open(url, '_blank', 'noopener,noreferrer');
     finalizeOrder(state.customer, state.paymentMethod, orderPayload.orderId);
+  }
+
+  function processPayment() {
+    sendPaymentProofViaWhatsApp();
   }
 
   function handleCheckoutNext() {

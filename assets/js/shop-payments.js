@@ -175,6 +175,10 @@
   function buildWhatsAppMessage(methodId, order) {
     var method = getMethod(methodId);
     var amount = formatAmount(order.total, order.currency || 'AED');
+    var proofLine =
+      methodId === 'stripe'
+        ? "I'm attaching my Stripe payment confirmation.\n"
+        : "I'm attaching a screenshot to proof the payment.\n";
     return (
       'Hello, I have paid for my merchandise order via ' +
       (method ? method.label : methodId) +
@@ -205,7 +209,8 @@
       '\n' +
       'Order ID: ' +
       order.orderId +
-      "\nI'm attaching a screenshot to proof the payment.\n" +
+      '\n' +
+      proofLine +
       'Kindly confirm and send my order details. Thank you.'
     );
   }

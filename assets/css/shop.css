@@ -1043,6 +1043,17 @@ body.shop-body {
   margin-top: 0.8rem;
 }
 
+.payment-option--stripe .payment-actions .btn {
+  background: rgba(255, 255, 255, 0.95);
+  color: #005b9c;
+  border-color: transparent;
+  font-weight: 600;
+}
+
+.payment-option--stripe .payment-actions .btn:hover {
+  background: #fff;
+}
+
 .shop-payment-panel-note {
   margin: 1rem 0 0;
   font-size: 0.88rem;
