@@ -118,85 +118,49 @@
     return encodeURI(path).replace(/#/g, '%23');
   }
 
-  function renderGallery() {
-    var images = getVariantImages();
-    if (!images.length) return;
-
-    if (state.galleryIndex >= images.length) {
-      state.galleryIndex = 0;
-    }
-
-    var current = images[state.galleryIndex];
-
-    if (els.galleryMainImg) {
-      els.galleryMainImg.src = encodeSrc(current.src);
-      els.galleryMainImg.alt = current.alt;
-    }
-
-    renderThumbs(images);
-    ensureMobileSwiper(images);
+  function getThumbSrc(img) {
+    return img.thumb || img.src;
   }
 
-  function renderThumbs(images) {
-    if (!els.thumbsContainer) return;
+  function loadSlideImage(index) {
+    var wrapper = $('shop-gallery-swiper-wrapper');
+    if (!wrapper || index < 0 || index >= wrapper.children.length) return;
 
-    els.thumbsContainer.innerHTML = images
-      .map(function (img, i) {
-        return (
-          '<button type="button" class="shop-thumb' +
-          (i === state.galleryIndex ? ' is-active' : '') +
-          '" data-index="' +
-          i +
-          '" aria-label="View image ' +
-          (i + 1) +
-          '">' +
-          '<img src="' +
-          encodeSrc(img.src) +
-          '" alt="" loading="lazy" decoding="async" width="72" height="72" />' +
-          '</button>'
-        );
-      })
-      .join('');
+    var imgEl = wrapper.children[index].querySelector('img');
+    if (!imgEl || imgEl.getAttribute('src')) return;
 
-    els.thumbsContainer.querySelectorAll('.shop-thumb').forEach(function (btn) {
-      btn.addEventListener('click', function () {
-        state.galleryIndex = parseInt(btn.dataset.index, 10);
-        renderGalleryThumbsOnly();
-        if (els.galleryMainImg) {
-          var img = getVariantImages()[state.galleryIndex];
-          els.galleryMainImg.src = encodeSrc(img.src);
-          els.galleryMainImg.alt = img.alt;
-        }
-        syncSwiper();
-      });
-    });
+    var src = imgEl.getAttribute('data-src');
+    if (src) imgEl.setAttribute('src', src);
   }
 
-  function renderGalleryThumbsOnly() {
-    if (!els.thumbsContainer) return;
-    els.thumbsContainer.querySelectorAll('.shop-thumb').forEach(function (btn, i) {
-      btn.classList.toggle('is-active', i === state.galleryIndex);
-    });
-  }
-
-  function syncSwiper() {
-    if (state.gallerySwiper && typeof state.gallerySwiper.slideTo === 'function') {
-      state.gallerySwiper.slideTo(state.galleryIndex, 300);
-    }
+  function preloadNearbySlides(activeIndex) {
+    loadSlideImage(activeIndex);
+    loadSlideImage(activeIndex + 1);
+    loadSlideImage(activeIndex - 1);
   }
 
   function buildSlidesHtml(images) {
     return images
       .map(function (img, i) {
+        var alt = img.alt.replace(/"/g, '&quot;');
+        if (i === 0) {
+          return (
+            '<div class="swiper-slide">' +
+            '<img src="' +
+            encodeSrc(img.src) +
+            '" alt="' +
+            alt +
+            '" decoding="async" fetchpriority="high" />' +
+            '</div>'
+          );
+        }
         return (
           '<div class="swiper-slide">' +
-          '<img src="' +
+          '<img data-src="' +
           encodeSrc(img.src) +
           '" alt="' +
-          img.alt.replace(/"/g, '&quot;') +
-          '" ' +
-          (i === 0 ? '' : 'loading="lazy" ') +
-          'decoding="async" />' +
+          alt +
+          '" decoding="async" class="shop-slide-lazy" />' +
           '</div>'
         );
       })
@@ -222,9 +186,13 @@
       observer: true,
       observeParents: true,
       on: {
+        init: function (sw) {
+          preloadNearbySlides(sw.activeIndex);
+        },
         slideChange: function (sw) {
           state.galleryIndex = sw.activeIndex;
           renderGalleryThumbsOnly();
+          preloadNearbySlides(sw.activeIndex);
           if (els.galleryMainImg) {
             var img = getVariantImages()[state.galleryIndex];
             if (img) {
@@ -244,6 +212,60 @@
     wrapper.innerHTML = buildSlidesHtml(images);
     initMobileSwiper();
     syncSwiper();
+    preloadNearbySlides(state.galleryIndex);
+  }
+
+  function renderThumbs(images) {
+    if (!els.thumbsContainer) return;
+
+    els.thumbsContainer.innerHTML = images
+      .map(function (img, i) {
+        var isActive = i === state.galleryIndex;
+        var isFirst = i === 0;
+        return (
+          '<button type="button" class="shop-thumb' +
+          (isActive ? ' is-active' : '') +
+          '" data-index="' +
+          i +
+          '" aria-label="View image ' +
+          (i + 1) +
+          '">' +
+          '<img src="' +
+          encodeSrc(getThumbSrc(img)) +
+          '" alt="" ' +
+          (isFirst ? 'decoding="async"' : 'loading="lazy" decoding="async"') +
+          ' width="72" height="72" />' +
+          '</button>'
+        );
+      })
+      .join('');
+
+    els.thumbsContainer.querySelectorAll('.shop-thumb').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        state.galleryIndex = parseInt(btn.dataset.index, 10);
+        renderGalleryThumbsOnly();
+        preloadNearbySlides(state.galleryIndex);
+        if (els.galleryMainImg) {
+          var img = getVariantImages()[state.galleryIndex];
+          els.galleryMainImg.src = encodeSrc(img.src);
+          els.galleryMainImg.alt = img.alt;
+        }
+        syncSwiper();
+      });
+    });
+  }
+
+  function renderGalleryThumbsOnly() {
+    if (!els.thumbsContainer) return;
+    els.thumbsContainer.querySelectorAll('.shop-thumb').forEach(function (btn, i) {
+      btn.classList.toggle('is-active', i === state.galleryIndex);
+    });
+  }
+
+  function syncSwiper() {
+    if (state.gallerySwiper && typeof state.gallerySwiper.slideTo === 'function') {
+      state.gallerySwiper.slideTo(state.galleryIndex, 300);
+    }
   }
 
   /* ── Product UI ── */
@@ -263,7 +285,7 @@
       encodeSrc(getCurrentImage().src) +
       '" alt="' +
       getCurrentImage().alt.replace(/"/g, '&quot;') +
-      '" decoding="async" />' +
+      '" decoding="async" fetchpriority="high" width="1200" height="1200" />' +
       '</div>' +
       '<div class="swiper shop-gallery-swiper shop-gallery-mobile">' +
       '<div class="swiper-wrapper" id="shop-gallery-swiper-wrapper">' +
@@ -349,6 +371,7 @@
     bindProductEvents();
     renderThumbs(images);
     initMobileSwiper();
+    preloadNearbySlides(state.galleryIndex);
   }
 
   function bindProductEvents() {

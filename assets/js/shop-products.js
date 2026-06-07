@@ -1,9 +1,22 @@
 /**
  * GRIGA Events FZE – Shop Product Catalog
  * Add new products to this array without changing page structure.
+ *
+ * Image folders:
+ *   jerseys/optimized/  – WebP gallery images (~80–120 KB)
+ *   jerseys/thumbs/     – WebP thumbnails (~3–8 KB)
+ *   jerseys/*.png       – Original masters (not served on the shop page)
  */
 (function (global) {
   var JERSEY_BASE = 'assets/media/shop/jerseys/';
+
+  function jerseyImg(fileBase, alt) {
+    return {
+      src: JERSEY_BASE + 'optimized/' + fileBase + '.webp',
+      thumb: JERSEY_BASE + 'thumbs/' + fileBase + '.webp',
+      alt: alt
+    };
+  }
 
   var SHOP_PRODUCTS = [
     {
@@ -17,31 +30,32 @@
       inStock: true,
       sizes: ['S', 'M', 'L', 'XL', 'XXL', 'XXXL'],
       defaultVariant: 'men',
+      heroImage: jerseyImg('jersey men 1', "Where There's Smoke official jersey").src,
       variants: [
         {
           id: 'men',
           label: 'Men',
           images: [
-            { src: JERSEY_BASE + 'jersey men 1.png', alt: "Where There's Smoke official jersey – men's fit front view" },
-            { src: JERSEY_BASE + 'jersey 2.png', alt: "Where There's Smoke official jersey – men's fit side view" },
-            { src: JERSEY_BASE + 'jersey 3.png', alt: "Where There's Smoke official jersey – men's fit detail" },
-            { src: JERSEY_BASE + 'jersey 4.png', alt: "Where There's Smoke official jersey – men's fit back view" },
-            { src: JERSEY_BASE + 'jersey 5.png', alt: "Where There's Smoke official jersey – men's fit lifestyle" },
-            { src: JERSEY_BASE + 'jersey 6.png', alt: "Where There's Smoke official jersey – men's fit close-up" },
-            { src: JERSEY_BASE + 'jersey 7.png', alt: "Where There's Smoke official jersey – men's fit alternate angle" },
-            { src: JERSEY_BASE + 'jersey 8.png', alt: "Where There's Smoke official jersey – men's fit studio shot" },
-            { src: JERSEY_BASE + 'jersey 9.png', alt: "Where There's Smoke official jersey – men's fit full view" }
+            jerseyImg('jersey men 1', "Where There's Smoke official jersey – men's fit front view"),
+            jerseyImg('jersey 2', "Where There's Smoke official jersey – men's fit side view"),
+            jerseyImg('jersey 3', "Where There's Smoke official jersey – men's fit detail"),
+            jerseyImg('jersey 4', "Where There's Smoke official jersey – men's fit back view"),
+            jerseyImg('jersey 5', "Where There's Smoke official jersey – men's fit lifestyle"),
+            jerseyImg('jersey 6', "Where There's Smoke official jersey – men's fit close-up"),
+            jerseyImg('jersey 7', "Where There's Smoke official jersey – men's fit alternate angle"),
+            jerseyImg('jersey 8', "Where There's Smoke official jersey – men's fit studio shot"),
+            jerseyImg('jersey 9', "Where There's Smoke official jersey – men's fit full view")
           ]
         },
         {
           id: 'women',
           label: 'Women',
           images: [
-            { src: JERSEY_BASE + 'jersey 1 ladies.png', alt: "Where There's Smoke official jersey – women's fit front view" },
-            { src: JERSEY_BASE + 'jersey 2 ladies.png', alt: "Where There's Smoke official jersey – women's fit side view" },
-            { src: JERSEY_BASE + 'jersey 3.png', alt: "Where There's Smoke official jersey – women's fit detail" },
-            { src: JERSEY_BASE + 'jersey 4.png', alt: "Where There's Smoke official jersey – women's fit back view" },
-            { src: JERSEY_BASE + 'jersey 5.png', alt: "Where There's Smoke official jersey – women's fit lifestyle" }
+            jerseyImg('jersey 1 ladies', "Where There's Smoke official jersey – women's fit front view"),
+            jerseyImg('jersey 2 ladies', "Where There's Smoke official jersey – women's fit side view"),
+            jerseyImg('jersey 3', "Where There's Smoke official jersey – women's fit detail"),
+            jerseyImg('jersey 4', "Where There's Smoke official jersey – women's fit back view"),
+            jerseyImg('jersey 5', "Where There's Smoke official jersey – women's fit lifestyle")
           ]
         }
       ],

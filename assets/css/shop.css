@@ -18,7 +18,7 @@ body.shop-body {
   overflow: hidden;
   background-image:
     linear-gradient(135deg, rgba(209, 31, 38, 0.88), rgba(0, 0, 0, 0.92)),
-    url("../media/shop/jerseys/jersey men 1.png");
+    url("../media/shop/jerseys/optimized/jersey men 1.webp");
   background-size: cover;
   background-position: center 30%;
 }
@@ -294,11 +294,16 @@ body.shop-body {
   background: var(--color-grey-light);
 }
 
+.shop-gallery-swiper .swiper-slide img.shop-slide-lazy:not([src]) {
+  opacity: 0;
+}
+
 .shop-gallery-swiper .swiper-slide img {
   width: 100%;
   height: 100%;
   object-fit: contain;
   border-radius: 0;
+  transition: opacity 0.3s ease;
 }
 
 .shop-gallery-thumbs {
