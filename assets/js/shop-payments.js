@@ -3,7 +3,7 @@
  * Mirrors tickets.html payment logic with shop order amounts.
  */
 (function (global) {
-  var STRIPE_CHECKOUT_URL = 'https://buy.stripe.com/cNi4gBgiS25c6dUaWu3oA02';
+  var STRIPE_CHECKOUT_URL = 'https://buy.stripe.com/4gM4gBaYyeRYbyee8G3oA03';
   var WHATSAPP_NUMBER = '971522184531';
 
   var METHODS = {
@@ -13,7 +13,7 @@
       label: 'Stripe Checkout',
       cardClass: 'payment-option--stripe',
       description:
-        'Secure credit/debit payments in one click. You will be redirected to the same hosted Stripe checkout used for tickets.'
+        'Secure credit/debit payments in one click. You will be redirected to our hosted Stripe checkout for shop orders.'
     },
     mpesa: {
       id: 'mpesa',
