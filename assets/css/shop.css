@@ -119,37 +119,6 @@ body.shop-body {
 }
 
 @media (max-width: 768px) {
-  .shop-body .site-header .header-inner {
-    padding-right: max(18px, env(safe-area-inset-right, 18px));
-    padding-left: max(16px, env(safe-area-inset-left, 16px));
-    gap: 8px;
-  }
-
-  .shop-body .logo-branding {
-    flex: 1 1 auto;
-    min-width: 0;
-    gap: 0.25rem;
-  }
-
-  .shop-body .logo-branding img {
-    height: 46px;
-    max-width: 46px;
-    object-fit: contain;
-  }
-
-  .shop-body .logo {
-    font-size: 15px;
-    letter-spacing: 0.06em;
-  }
-
-  .shop-body .main-nav {
-    flex: 0 0 auto;
-    flex-direction: row;
-    align-items: center;
-    gap: 8px;
-    margin-left: auto;
-  }
-
   .shop-cart-toggle {
     width: 40px;
     height: 40px;
@@ -174,17 +143,6 @@ body.shop-body {
 
   .shop-cart-count.is-visible {
     transform: scale(1);
-  }
-}
-
-@media (max-width: 380px) {
-  .shop-body .logo-branding img {
-    height: 38px;
-    max-width: 38px;
-  }
-
-  .shop-body .logo {
-    font-size: 13px;
   }
 }
 

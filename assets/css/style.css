@@ -828,12 +828,40 @@ p {
 }
 
 @media (max-width: 768px) {
+  .site-header .header-inner {
+    gap: 10px;
+    padding-left: max(16px, env(safe-area-inset-left, 16px));
+    padding-right: max(18px, env(safe-area-inset-right, 18px));
+  }
+
+  .logo-branding {
+    flex: 1 1 auto;
+    min-width: 0;
+    gap: 0.3rem;
+  }
+
+  .logo-branding img {
+    height: 48px;
+    max-width: 48px;
+    object-fit: contain;
+  }
+
+  .logo {
+    font-size: clamp(13px, 3.8vw, 16px);
+    letter-spacing: 0.05em;
+  }
+
   .main-nav {
-    gap: 12px;
+    flex: 0 0 auto;
+    flex-shrink: 0;
+    margin-left: auto;
+    gap: 8px;
   }
 
   .nav-toggle {
     display: inline-flex;
+    flex-shrink: 0;
+    margin-right: 2px;
   }
 
   .nav-links {
@@ -950,6 +978,15 @@ p {
 }
 
 @media (max-width: 520px) {
+  .logo-branding img {
+    height: 40px;
+    max-width: 40px;
+  }
+
+  .logo {
+    font-size: 13px;
+  }
+
   .section {
     padding: 32px 0;
   }
