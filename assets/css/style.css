@@ -141,11 +141,12 @@ p {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 15px 0;
+  padding-block: 15px;
 }
 
 .site-header.shrink .header-inner {
-  padding: 8px 0;
+  padding-top: 8px;
+  padding-bottom: 8px;
 }
 
 .site-header.shrink {
@@ -831,7 +832,12 @@ p {
   .site-header .header-inner {
     gap: 10px;
     padding-left: max(16px, env(safe-area-inset-left, 16px));
-    padding-right: max(18px, env(safe-area-inset-right, 18px));
+    padding-right: max(20px, env(safe-area-inset-right, 20px));
+  }
+
+  .site-header.shrink .header-inner {
+    padding-left: max(16px, env(safe-area-inset-left, 16px));
+    padding-right: max(20px, env(safe-area-inset-right, 20px));
   }
 
   .logo-branding {
@@ -861,7 +867,7 @@ p {
   .nav-toggle {
     display: inline-flex;
     flex-shrink: 0;
-    margin-right: 2px;
+    margin-right: 0;
   }
 
   .nav-links {

@@ -298,12 +298,7 @@ a {
 
 @media (max-width: 960px) {
   .header-inner {
-    flex-wrap: wrap;
-  }
-
-  .main-nav {
-    flex-direction: column;
-    align-items: flex-end;
+    flex-wrap: nowrap;
   }
 
   .btn {
