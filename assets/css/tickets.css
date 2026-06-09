@@ -43,6 +43,7 @@ body.tickets-body {
 
 .ticket-zone {
   padding: 4rem 0;
+  scroll-margin-top: 96px;
 }
 
 .ticket-card {
@@ -69,6 +70,15 @@ body.tickets-body {
   font-size: 1rem;
   letter-spacing: 0.3em;
   text-transform: uppercase;
+  position: relative;
+  z-index: 1;
+}
+
+.ticket-card-title {
+  margin: 0.5rem 0 0;
+  font-size: clamp(1.6rem, 4vw, 2.2rem);
+  position: relative;
+  z-index: 1;
 }
 
 .ticket-info {
@@ -90,14 +100,130 @@ body.tickets-body {
   display: block;
 }
 
-.payment-options {
-  padding: 2rem 0 4rem;
+.ticket-qty-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  position: relative;
+  z-index: 1;
 }
 
-.payment-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-  gap: 1.2rem;
+.ticket-qty-label {
+  font-size: 0.85rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  opacity: 0.85;
+}
+
+.ticket-qty-control {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: rgba(255, 255, 255, 0.12);
+  border-radius: 999px;
+  padding: 0.35rem;
+}
+
+.ticket-qty-btn {
+  width: 36px;
+  height: 36px;
+  border: none;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.18);
+  color: #fff;
+  font-size: 1.25rem;
+  line-height: 1;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.ticket-qty-btn:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.ticket-qty-control input {
+  width: 2.5rem;
+  text-align: center;
+  border: none;
+  background: transparent;
+  color: #fff;
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.ticket-buy-btn {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 320px;
+  overflow: hidden;
+  isolation: isolate;
+  border: none;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  animation: ticketCheckoutPulse 2.3s ease-in-out infinite;
+}
+
+.ticket-buy-btn::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -130%;
+  width: 60%;
+  height: 100%;
+  background: linear-gradient(
+    105deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.12) 35%,
+    rgba(255, 255, 255, 0.55) 50%,
+    rgba(255, 255, 255, 0.12) 65%,
+    transparent 100%
+  );
+  transform: skewX(-20deg);
+  animation: ticketCheckoutShimmer 2.6s ease-in-out infinite;
+  pointer-events: none;
+}
+
+.ticket-buy-btn:hover,
+.ticket-buy-btn:focus-visible {
+  animation-play-state: paused;
+}
+
+.ticket-buy-btn:hover::after,
+.ticket-buy-btn:focus-visible::after {
+  animation-play-state: paused;
+}
+
+@keyframes ticketCheckoutPulse {
+  0%,
+  100% {
+    transform: scale(1) translateY(0);
+    box-shadow:
+      0 0 0 0 rgba(255, 255, 255, 0.35),
+      0 6px 18px rgba(0, 0, 0, 0.28),
+      0 0 18px rgba(209, 31, 38, 0.55);
+  }
+
+  50% {
+    transform: scale(1.045) translateY(-1px);
+    box-shadow:
+      0 0 0 9px rgba(255, 255, 255, 0.1),
+      0 14px 32px rgba(0, 0, 0, 0.34),
+      0 0 36px rgba(255, 255, 255, 0.22);
+  }
+}
+
+@keyframes ticketCheckoutShimmer {
+  0% {
+    left: -130%;
+  }
+
+  40%,
+  100% {
+    left: 160%;
+  }
 }
 
 .section-header {
@@ -113,12 +239,6 @@ body.tickets-body {
   margin: 0;
   text-align: center;
   max-width: 100%;
-}
-
-@media (min-width: 1024px) {
-  .payment-options .section-header p {
-    white-space: nowrap;
-  }
 }
 
 .ticket-guide {
@@ -569,6 +689,99 @@ body.tickets-body {
   }
 }
 
+@media (max-width: 768px) {
+  .ticket-zone {
+    padding: 2rem 0 2.5rem;
+  }
+
+  .ticket-card {
+    padding: 1.25rem 1.1rem;
+    border-radius: 20px;
+    box-shadow: 0 18px 48px rgba(0, 0, 0, 0.24);
+  }
+
+  .ticket-card::after {
+    inset: 8px;
+    border-radius: 14px;
+  }
+
+  .ticket-highlight {
+    font-size: 0.72rem;
+    letter-spacing: 0.16em;
+  }
+
+  .ticket-card-title {
+    font-size: 1.3rem;
+    margin-top: 0.35rem;
+  }
+
+  .ticket-info {
+    margin: 0.9rem 0 1.15rem;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.7rem 0.6rem;
+  }
+
+  .ticket-info > div:nth-child(3) {
+    grid-column: 1 / -1;
+  }
+
+  .ticket-info strong {
+    font-size: 0.65rem;
+    letter-spacing: 0.12em;
+    margin-bottom: 0.12rem;
+  }
+
+  .ticket-info span {
+    font-size: 0.88rem;
+    line-height: 1.35;
+  }
+
+  .ticket-qty-row {
+    margin-bottom: 1rem;
+  }
+
+  .ticket-qty-label {
+    font-size: 0.72rem;
+  }
+
+  .ticket-qty-btn {
+    width: 32px;
+    height: 32px;
+    font-size: 1.1rem;
+  }
+
+  .ticket-buy-btn {
+    display: block;
+    width: calc(100% - 1.25rem);
+    max-width: 260px;
+    margin: 0 auto;
+    padding: 0.65rem 0.75rem;
+    font-size: 0.75rem;
+    letter-spacing: 0.07em;
+    transform-origin: center center;
+    animation-name: ticketCheckoutPulseMobile;
+  }
+}
+
+@keyframes ticketCheckoutPulseMobile {
+  0%,
+  100% {
+    transform: scale(1) translateY(0);
+    box-shadow:
+      0 0 0 0 rgba(255, 255, 255, 0.28),
+      0 4px 12px rgba(0, 0, 0, 0.22),
+      0 0 12px rgba(209, 31, 38, 0.45);
+  }
+
+  50% {
+    transform: scale(1.02) translateY(-1px);
+    box-shadow:
+      0 0 0 5px rgba(255, 255, 255, 0.08),
+      0 8px 20px rgba(0, 0, 0, 0.26),
+      0 0 20px rgba(255, 255, 255, 0.16);
+  }
+}
+
 @media (max-width: 640px) {
   .hero-content h1 {
     font-size: 2.4rem;
@@ -576,5 +789,34 @@ body.tickets-body {
 
   .success-panel {
     padding: 2rem;
+  }
+
+  .ticket-zone .container {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+
+  .ticket-card {
+    padding: 1.1rem 0.95rem;
+  }
+
+  .ticket-card-title {
+    font-size: 1.2rem;
+  }
+
+  .ticket-info span {
+    font-size: 0.82rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ticket-buy-btn {
+    animation: none;
+    transform: none;
+  }
+
+  .ticket-buy-btn::after {
+    animation: none;
+    display: none;
   }
 }

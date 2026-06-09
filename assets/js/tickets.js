@@ -1,316 +1,637 @@
-document.addEventListener('DOMContentLoaded', function () {
-  if (typeof AOS !== 'undefined') {
-    AOS.init({ duration: 800, once: true, offset: 80 });
-  }
+/**
+ * GRIGA Events FZE – Tickets checkout
+ * Multi-step checkout with Stripe + WhatsApp proof (mirrors shop flow).
+ */
+(function () {
+  'use strict';
 
-  const paymentButtons = document.querySelectorAll('[data-payment]');
-  const successPanel = document.getElementById('ticket-success');
-  const ticketIdEl = document.getElementById('ticket-id');
-  const ticketMethodEl = document.getElementById('ticket-method');
-  const ticketEmailEl = document.getElementById('ticket-email');
-  const ticketTimeEl = document.getElementById('ticket-timestamp');
-  const ticketPriceEl = document.getElementById('ticket-price');
-  const qrContainer = document.getElementById('ticket-qr');
-  const statusLine = document.getElementById('payment-status');
-  const downloadButton = document.getElementById('download-ticket');
-  const manualFlows = {
-    botim: {
-      button: document.getElementById('botim-show-form'),
-      form: document.getElementById('botim-form'),
-      nameInput: document.getElementById('botim-name'),
-      phoneInput: document.getElementById('botim-phone'),
-      emailInput: document.getElementById('botim-email'),
-      feedback: document.querySelector('#botim-form .manual-form-feedback'),
-      whatsappNumber: '971522184531',
-      amountLabel: '150 AED',
-      methodLabel: 'BOTIM Money',
-      prefix: 'BOTIM'
-    },
-    mpesa: {
-      button: document.getElementById('mpesa-show-form'),
-      form: document.getElementById('mpesa-form'),
-      nameInput: document.getElementById('mpesa-name'),
-      phoneInput: document.getElementById('mpesa-phone'),
-      emailInput: document.getElementById('mpesa-email'),
-      feedback: document.querySelector('#mpesa-form .manual-form-feedback'),
-      whatsappNumber: '971522184531',
-      amountLabel: '5,500 KSH',
-      methodLabel: 'M-PESA PAYMENT',
-      prefix: 'MPESA'
-    },
-    bank: {
-      button: document.getElementById('bank-show-form'),
-      form: document.getElementById('bank-form'),
-      nameInput: document.getElementById('bank-name'),
-      phoneInput: document.getElementById('bank-phone'),
-      emailInput: document.getElementById('bank-email'),
-      feedback: document.querySelector('#bank-form .manual-form-feedback'),
-      feedbackColor: '#ff8d25',
-      whatsappNumber: '971522184531',
-      amountLabel: '150 AED',
-      methodLabel: 'Whizmo Bank Transfer',
-      prefix: 'BANK'
-    },
-    adcb: {
-      button: document.getElementById('adcb-show-form'),
-      form: document.getElementById('adcb-form'),
-      nameInput: document.getElementById('adcb-name'),
-      phoneInput: document.getElementById('adcb-phone'),
-      emailInput: document.getElementById('adcb-email'),
-      feedback: document.querySelector('#adcb-form .manual-form-feedback'),
-      whatsappNumber: '971522184531',
-      amountLabel: '150 AED',
-      methodLabel: 'ADCB Bank Transfer',
-      prefix: 'ADCB'
-    },
-    nbd: {
-      button: document.getElementById('nbd-show-form'),
-      form: document.getElementById('nbd-form'),
-      nameInput: document.getElementById('nbd-name'),
-      phoneInput: document.getElementById('nbd-phone'),
-      emailInput: document.getElementById('nbd-email'),
-      feedback: document.querySelector('#nbd-form .manual-form-feedback'),
-      feedbackColor: '#072a64',
-      whatsappNumber: '971522184531',
-      amountLabel: '150 AED',
-      methodLabel: 'NBD Bank Transfer',
-      prefix: 'NBD'
-    }
+  var state = {
+    quantity: 1,
+    checkoutStep: 1,
+    paymentMethod: null,
+    order: null,
+    customer: null
   };
 
-  Object.values(manualFlows).forEach((flow) => {
-    flow.submitButton = flow.form?.querySelector('button[type="submit"]');
-    const inputs = [flow.nameInput, flow.phoneInput, flow.emailInput];
-    inputs.forEach((input) => {
-      input?.addEventListener('input', () => {
-        updateManualButtonState(flow);
-      });
-      input?.addEventListener('blur', () => {
-        updateManualButtonState(flow);
-      });
+  function $(id) {
+    return document.getElementById(id);
+  }
+
+  function formatPriceAed(amount) {
+    if (window.TICKET_PAYMENTS) {
+      return TICKET_PAYMENTS.formatAmount(amount, 'AED');
+    }
+    return 'AED ' + amount;
+  }
+
+  function getDefaultTotal() {
+    return state.quantity * (window.TICKET_PAYMENTS ? TICKET_PAYMENTS.priceAed : 150);
+  }
+
+  function getCheckoutAmountLabel() {
+    if (!window.TICKET_PAYMENTS) {
+      return formatPriceAed(getDefaultTotal());
+    }
+    return TICKET_PAYMENTS.formatAmountForMethod(state.paymentMethod || 'stripe', state.quantity);
+  }
+
+  function generateOrderId() {
+    if (window.TICKET_PAYMENTS) {
+      var method = TICKET_PAYMENTS.getMethod(state.paymentMethod);
+      return TICKET_PAYMENTS.generateOrderId(method && method.prefix ? method.prefix : 'TKT');
+    }
+    return 'TKT-' + Date.now().toString(36).toUpperCase();
+  }
+
+  function showToast(message) {
+    var toast = $('ticket-toast');
+    if (!toast) return;
+    toast.textContent = message;
+    toast.classList.add('is-visible');
+    clearTimeout(showToast._timer);
+    showToast._timer = setTimeout(function () {
+      toast.classList.remove('is-visible');
+    }, 3200);
+  }
+
+  function scrollToPaymentDetails() {
+    if (!window.matchMedia('(max-width: 768px)').matches) return;
+
+    var checkout = $('ticket-checkout');
+    var panel = $('ticket-payment-detail-panel');
+    var footer = $('ticket-checkout-footer');
+    var scrollContainer = checkout ? checkout.querySelector('.shop-checkout-panel') : null;
+    if (!panel || panel.hidden || !scrollContainer || !footer) return;
+
+    requestAnimationFrame(function () {
+      setTimeout(function () {
+        var detailCard = panel.querySelector('.shop-checkout-payment') || panel;
+        var padding = 16;
+        var maxScroll = scrollContainer.scrollHeight - scrollContainer.clientHeight;
+        var containerTop = scrollContainer.getBoundingClientRect().top;
+        var cardTop = detailCard.getBoundingClientRect().top - containerTop + scrollContainer.scrollTop;
+        var footerBottom = footer.getBoundingClientRect().bottom - containerTop + scrollContainer.scrollTop;
+        var blockHeight = footerBottom - cardTop + padding;
+        var viewport = scrollContainer.clientHeight;
+        var target = blockHeight <= viewport ? cardTop - padding : footerBottom - viewport + padding;
+
+        scrollContainer.scrollTo({
+          top: Math.max(0, Math.min(target, maxScroll)),
+          behavior: 'smooth'
+        });
+      }, 180);
     });
-    updateManualButtonState(flow);
-  });
-
-  function randomTicketId() {
-    return 'MN' + Date.now().toString(36).toUpperCase() + Math.floor(Math.random() * 900 + 100);
   }
 
-  function generateManualOrderId(prefix) {
-    return `${prefix}-${Date.now().toString(36).toUpperCase()}-${Math.floor(Math.random() * 900 + 100)}`;
+  function syncQuantityUI() {
+    var qtyInput = $('ticket-quantity');
+    if (qtyInput) qtyInput.value = state.quantity;
+    var totalEl = $('ticket-card-total');
+    if (totalEl) totalEl.textContent = formatPriceAed(getDefaultTotal());
   }
 
-  function pad(value) {
-    return value.toString().padStart(2, '0');
-  }
+  function openCheckoutModal(preselectedMethod) {
+    state.checkoutStep = 1;
+    state.order = null;
+    state.customer = null;
+    state.paymentMethod = preselectedMethod || null;
 
-  function updateManualButtonState(flow) {
-    const hasName = flow.nameInput?.value.trim();
-    const hasPhone = flow.phoneInput?.value.trim();
-    const emailElement = flow.emailInput;
-    const hasEmail = emailElement?.value.trim();
-    const validEmail = emailElement ? emailElement.checkValidity() : true;
-    const ready = Boolean(hasName && hasPhone && hasEmail && validEmail);
-    flow.submitButton?.classList.toggle('ready', ready);
-  }
-
-  function formatTimestamp(date) {
-    return date.toLocaleString('en-GB', {
-      hour: '2-digit',
-      minute: '2-digit',
-      day: 'numeric',
-      month: 'short',
-      year: 'numeric'
+    ['ticket-customer-name', 'ticket-customer-email', 'ticket-customer-phone'].forEach(function (id) {
+      var field = $(id);
+      if (field) field.value = '';
     });
-  }
+    var err = $('ticket-form-error');
+    if (err) err.textContent = '';
 
-  function clearQRCode() {
-    if (qrContainer) {
-      qrContainer.innerHTML = '';
-    }
-  }
-
-  function renderQRCode(content) {
-    clearQRCode();
-    if (typeof QRCode !== 'undefined') {
-      new QRCode(qrContainer, {
-        text: content,
-        width: 160,
-        height: 160,
-        colorDark: '#d11f26',
-        colorLight: '#ffffff',
-        correctLevel: QRCode.CorrectLevel.L
-      });
-    }
-  }
-
-  function flushPayment(method) {
-    const form = document.getElementById('ticket-form');
-    const nameField = form?.querySelector('[name="name"]');
-    const emailField = form?.querySelector('[name="email"]');
-    const phoneField = form?.querySelector('[name="phone"]');
-    const name = nameField?.value.trim() || 'Guest Attendee';
-    const email = emailField?.value.trim() || 'you@example.com';
-    const phone = phoneField?.value.trim() || '971 5XX XXX XXX';
-    const id = randomTicketId();
-    const now = new Date();
-
-    if (ticketIdEl) ticketIdEl.textContent = id;
-    if (ticketMethodEl) ticketMethodEl.textContent = method === 'mpesa' ? 'M-PESA PAYMENT' : 'Stripe Checkout';
-    if (ticketEmailEl) ticketEmailEl.textContent = email;
-    if (ticketTimeEl) ticketTimeEl.textContent = formatTimestamp(now);
-    if (ticketPriceEl) ticketPriceEl.textContent = '150 AED';
-    if (statusLine) {
-      statusLine.textContent = `Payment success via ${method === 'mpesa' ? 'M-PESA PAYMENT' : 'Stripe'}`;
+    var panel = $('ticket-payment-detail-panel');
+    if (panel) {
+      panel.innerHTML = '';
+      panel.hidden = true;
     }
 
-    renderQRCode(`${id}|Murima Night Second Edition|${email}`);
-
-    successPanel.classList.add('is-visible');
-    successPanel.scrollIntoView({ behavior: 'smooth', block: 'start' });
-
-    console.info('Ticket record', {
-      ticketId: id,
-      name,
-      email,
-      phone,
-      paymentMethod: method,
-      timestamp: now
+    document.querySelectorAll('#ticket-checkout .shop-payment-card input').forEach(function (input) {
+      input.checked = input.value === state.paymentMethod;
+    });
+    document.querySelectorAll('#ticket-checkout .shop-payment-card').forEach(function (card) {
+      var input = card.querySelector('input');
+      card.classList.toggle('is-selected', input && input.value === state.paymentMethod);
     });
 
-    if (downloadButton) {
-      downloadButton.disabled = false;
+    renderCheckoutStep();
+
+    var checkout = $('ticket-checkout');
+    if (checkout) {
+      checkout.classList.add('is-open');
+      checkout.setAttribute('aria-hidden', 'false');
     }
+    document.body.classList.add('shop-checkout-open');
   }
 
-  function handlePayment(event) {
-    event.preventDefault();
-    const method = event.currentTarget.dataset.payment;
-    if (statusLine) {
-      statusLine.textContent = 'Processing payment...';
+  function closeCheckoutModal() {
+    var checkout = $('ticket-checkout');
+    if (checkout) {
+      checkout.classList.remove('is-open');
+      checkout.setAttribute('aria-hidden', 'true');
     }
-    setTimeout(function () {
-      flushPayment(method);
-    }, 1200);
+    document.body.classList.remove('shop-checkout-open');
   }
 
-  function closeManualForm(flow) {
-    flow.form?.classList.remove('is-visible');
-    flow.button?.setAttribute('aria-expanded', 'false');
-    clearManualFeedback(flow);
-  }
+  function renderCheckoutStep() {
+    document.querySelectorAll('#ticket-checkout .shop-step').forEach(function (step) {
+      var n = parseInt(step.dataset.step, 10);
+      step.classList.toggle('is-active', n === state.checkoutStep);
+      step.classList.toggle('is-complete', n < state.checkoutStep);
+    });
 
-  function toggleManualForm(key) {
-    const flow = manualFlows[key];
-    if (!flow || !flow.form) return;
-    const isVisible = flow.form.classList.contains('is-visible');
-    if (isVisible) {
-      closeManualForm(flow);
-      return;
-    }
-    Object.values(manualFlows).forEach(closeManualForm);
-    flow.form.classList.add('is-visible');
-    flow.button?.setAttribute('aria-expanded', 'true');
-    flow.nameInput?.focus();
-    clearManualFeedback(flow);
-  }
+    document.querySelectorAll('#ticket-checkout .shop-checkout-step').forEach(function (panel) {
+      panel.classList.toggle('is-active', parseInt(panel.dataset.step, 10) === state.checkoutStep);
+    });
 
-  function resetManualForm(flow) {
-    flow.form?.classList.remove('is-visible');
-    if (flow.nameInput) flow.nameInput.value = '';
-    if (flow.phoneInput) flow.phoneInput.value = '';
-    if (flow.emailInput) flow.emailInput.value = '';
-    flow.button?.setAttribute('aria-expanded', 'false');
-    updateManualButtonState(flow);
-    clearManualFeedback(flow);
-  }
+    if (state.checkoutStep === 2) renderOrderReview();
+    if (state.checkoutStep === 3) renderPaymentPanel();
+    if (state.checkoutStep === 4) renderConfirmation();
 
-  function handleManualSubmit(key, event) {
-    event.preventDefault();
-    const flow = manualFlows[key];
-    if (!flow) return;
-    const buyerName = flow.nameInput?.value.trim();
-    const buyerPhone = flow.phoneInput?.value.trim();
-    const buyerEmail = flow.emailInput?.value.trim();
-    if (!buyerName || !buyerPhone || !buyerEmail) {
-      showManualFeedback(flow, 'Please fill all the details below.');
-      return;
-    }
-    if (flow.emailInput && !flow.emailInput.checkValidity()) {
-      showManualFeedback(flow, 'Please put a valid email.');
-      return;
-    }
-    const orderId = generateManualOrderId(flow.prefix);
-    const message = buildManualMessage(flow, buyerName, buyerPhone, buyerEmail, orderId);
-    const encodedMessage = encodeURIComponent(message);
-    const url = `https://wa.me/${flow.whatsappNumber}?text=${encodedMessage}`;
-    window.open(url, '_blank');
-    if (statusLine) {
-      statusLine.textContent = `${flow.methodLabel} confirmation initiated (Order ID ${orderId}).`;
-    }
-    resetManualForm(flow);
-  }
-
-  function buildManualMessage(flow, name, phone, email, orderId) {
-    return `Hello, I have paid for my ticket via ${flow.methodLabel}.
-Name: ${name}
-Phone: ${phone}
-Email: ${email}
-Amount: ${flow.amountLabel}
-Order ID: ${orderId}
-I'm attaching a screenshot to proof the payment.
-Kindly confirm and send my ticket. Thank you.`;
-  }
-
-  function showManualFeedback(flow, message) {
-    const feedback = flow.feedback || flow.form?.querySelector('.manual-form-feedback');
-    if (feedback) {
-      feedback.textContent = message;
-      feedback.classList.add('is-visible');
-      if (flow.feedbackColor) {
-        feedback.style.color = flow.feedbackColor;
+    var backBtn = $('ticket-checkout-back');
+    var nextBtn = $('ticket-checkout-next');
+    if (backBtn) backBtn.style.visibility = state.checkoutStep === 1 ? 'hidden' : 'visible';
+    if (nextBtn) {
+      nextBtn.classList.add('btn-primary');
+      nextBtn.classList.remove('btn-secondary');
+      var showWhatsAppProof = state.checkoutStep === 3 && !!state.paymentMethod;
+      nextBtn.classList.toggle('shop-whatsapp-proof-btn', showWhatsAppProof);
+      if (state.checkoutStep === 3) {
+        nextBtn.style.display = '';
+        nextBtn.textContent = state.paymentMethod ? 'Send proof via WhatsApp' : 'Place Order';
+      } else if (state.checkoutStep >= 4) {
+        nextBtn.style.display = 'none';
       } else {
-        feedback.style.removeProperty('color');
+        nextBtn.style.display = '';
+        nextBtn.textContent = 'Continue';
       }
-    } else {
-      window.alert(message);
     }
   }
 
-  function clearManualFeedback(flow) {
-    const feedback = flow.feedback || flow.form?.querySelector('.manual-form-feedback');
-    if (feedback) {
-      feedback.textContent = '';
-      feedback.classList.remove('is-visible');
-      feedback.style.removeProperty('color');
+  function renderPaymentPanel() {
+    var panel = $('ticket-payment-detail-panel');
+    if (!panel || !window.TICKET_PAYMENTS) return;
+
+    if (!state.paymentMethod) {
+      panel.innerHTML = '';
+      panel.hidden = true;
+      return;
+    }
+
+    var method = TICKET_PAYMENTS.getMethod(state.paymentMethod);
+    if (!method) {
+      panel.innerHTML = '';
+      panel.hidden = true;
+      return;
+    }
+
+    var amount = getCheckoutAmountLabel();
+    panel.hidden = false;
+
+    if (method.type === 'stripe') {
+      panel.innerHTML =
+        '<article class="payment-option payment-option--stripe shop-checkout-payment">' +
+        '<h3>Stripe Checkout</h3>' +
+        '<p>' +
+        method.description +
+        '</p>' +
+        '<dl class="payment-details"><div><dt>Order Total</dt><dd>' +
+        amount +
+        '</dd></div></dl>' +
+        '<div class="payment-actions">' +
+        '<button type="button" class="btn btn-secondary shop-stripe-pay-btn" id="ticket-stripe-pay">Pay via Card</button>' +
+        '</div>' +
+        '<p class="shop-payment-panel-note">Complete payment on Stripe, then click <strong>Send proof via WhatsApp</strong> below with your Stripe confirmation so we can deliver your ticket.</p>' +
+        '</article>';
+      bindStripePayButton();
+      scrollToPaymentDetails();
+      return;
+    }
+
+    var details = method.details ? method.details() : [];
+    var detailsHtml = details
+      .map(function (row) {
+        return '<div><dt>' + row.dt + '</dt><dd>' + row.dd + '</dd></div>';
+      })
+      .join('');
+
+    if (method.amountDetail) {
+      detailsHtml += '<div><dt>Amount</dt><dd>' + amount + '</dd></div>';
+    }
+
+    var heading = '<h3>' + method.label + '</h3>';
+    if (method.logo && method.title) {
+      heading =
+        '<div class="payment-option__heading">' +
+        '<img class="payment-option__logo" src="' +
+        method.logo +
+        '" alt="' +
+        (method.logoAlt || '') +
+        '" />' +
+        '<span class="payment-option__title">' +
+        method.title +
+        '</span></div>';
+    } else if (method.logo) {
+      heading =
+        '<div class="payment-option__heading">' +
+        '<img class="payment-option__logo" src="' +
+        method.logo +
+        '" alt="' +
+        (method.logoAlt || '') +
+        '" />' +
+        '<h3>' +
+        method.label +
+        '</h3></div>';
+    }
+
+    var copyInfo = method.copyInfo ? method.copyInfo(amount) : '';
+
+    panel.innerHTML =
+      '<article class="payment-option ' +
+      method.cardClass +
+      ' shop-checkout-payment">' +
+      heading +
+      '<p>' +
+      method.intro(amount) +
+      '</p>' +
+      '<dl class="payment-details">' +
+      detailsHtml +
+      '</dl>' +
+      '<div class="payment-actions">' +
+      '<button type="button" class="btn btn-secondary" id="ticket-copy-payment" data-payment-info="' +
+      copyInfo.replace(/"/g, '&quot;') +
+      '">Copy Details</button>' +
+      '</div>' +
+      '<p class="shop-payment-panel-note">After paying, click <strong>Send proof via WhatsApp</strong> below. We will verify and confirm your ticket.</p>' +
+      '</article>';
+
+    bindCopyPaymentButton();
+    scrollToPaymentDetails();
+  }
+
+  function bindStripePayButton() {
+    var payBtn = $('ticket-stripe-pay');
+    if (!payBtn) return;
+    payBtn.addEventListener('click', openStripeCheckout);
+  }
+
+  function bindCopyPaymentButton() {
+    var copyBtn = $('ticket-copy-payment');
+    if (!copyBtn) return;
+
+    copyBtn.addEventListener('click', function () {
+      var payload = copyBtn.getAttribute('data-payment-info');
+      if (!payload) return;
+
+      var original = copyBtn.textContent;
+      var onCopied = function () {
+        copyBtn.textContent = 'Copied';
+        copyBtn.classList.add('copied');
+        setTimeout(function () {
+          copyBtn.textContent = original;
+          copyBtn.classList.remove('copied');
+        }, 2000);
+      };
+
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(payload).then(onCopied).catch(function () {
+          fallbackCopy(payload);
+          onCopied();
+        });
+      } else {
+        fallbackCopy(payload);
+        onCopied();
+      }
+    });
+  }
+
+  function fallbackCopy(value) {
+    var temp = document.createElement('textarea');
+    temp.value = value;
+    temp.setAttribute('readonly', '');
+    temp.style.position = 'absolute';
+    temp.style.left = '-9999px';
+    document.body.appendChild(temp);
+    temp.select();
+    document.execCommand('copy');
+    document.body.removeChild(temp);
+  }
+
+  function getPaymentMethodLabel(methodId) {
+    var method = window.TICKET_PAYMENTS ? TICKET_PAYMENTS.getMethod(methodId) : null;
+    return method ? method.label : methodId;
+  }
+
+  function renderOrderReview() {
+    var container = $('ticket-order-review');
+    if (!container || !window.TICKET_PAYMENTS) return;
+
+    var total = TICKET_PAYMENTS.getOrderTotal(state.paymentMethod || 'stripe', state.quantity);
+
+    container.innerHTML =
+      '<div class="shop-order-review-row shop-order-review-row--product">' +
+      '<span class="shop-order-review-label">Event</span>' +
+      '<span class="shop-order-review-value">' +
+      TICKET_PAYMENTS.eventName +
+      '</span></div>' +
+      '<div class="shop-order-review-row">' +
+      '<span class="shop-order-review-label">Quantity</span>' +
+      '<span class="shop-order-review-value">' +
+      state.quantity +
+      '</span></div>' +
+      '<div class="shop-order-review-row">' +
+      '<span class="shop-order-review-label">Price (AED)</span>' +
+      '<span class="shop-order-review-value">' +
+      TICKET_PAYMENTS.formatAmount(getDefaultTotal(), 'AED') +
+      '</span></div>' +
+      '<div class="shop-order-review-row">' +
+      '<span class="shop-order-review-label">M-Pesa equivalent</span>' +
+      '<span class="shop-order-review-value">' +
+      TICKET_PAYMENTS.formatAmount(TICKET_PAYMENTS.priceMpesaKsh * state.quantity, 'KSH') +
+      '</span></div>' +
+      '<div class="shop-order-review-row">' +
+      '<span class="shop-order-review-label">Checkout amount</span>' +
+      '<span class="shop-order-review-value">' +
+      TICKET_PAYMENTS.formatAmount(total.amount, total.currency) +
+      ' <span style="font-size:0.85em;opacity:0.75;">(based on payment method)</span></span></div>';
+  }
+
+  function renderConfirmation() {
+    if (!state.order) return;
+    var o = state.order;
+    var container = $('ticket-confirmation-content');
+    if (!container) return;
+
+    var isStripe = o.paymentMethod === 'stripe';
+    var lead = isStripe
+      ? 'Your ticket details have been sent via WhatsApp. Our team will verify your Stripe payment and confirm your ticket shortly.'
+      : 'Your payment proof has been sent via WhatsApp. Our team will verify and confirm your ticket shortly.';
+
+    container.innerHTML =
+      '<div class="shop-confirmation">' +
+      '<div class="shop-confirmation-icon" aria-hidden="true">✓</div>' +
+      '<h3>Thank You</h3>' +
+      '<p>' +
+      lead +
+      '</p>' +
+      '<div class="shop-confirmation-summary">' +
+      '<div><strong>Order Number</strong><span>' +
+      o.orderId +
+      '</span></div>' +
+      '<div><strong>Customer</strong><span>' +
+      o.customerName +
+      '</span></div>' +
+      '<div><strong>Event</strong><span>' +
+      o.eventName +
+      '</span></div>' +
+      '<div><strong>Tickets</strong><span>' +
+      o.quantity +
+      '</span></div>' +
+      '<div><strong>Payment</strong><span>' +
+      getPaymentMethodLabel(o.paymentMethod) +
+      '</span></div>' +
+      '<div><strong>Total</strong><span>' +
+      TICKET_PAYMENTS.formatAmount(o.total, o.currency) +
+      '</span></div>' +
+      '</div>' +
+      '<p class="shop-confirmation-notice">Your ticket with QR verification will be sent to <strong>' +
+      o.email +
+      '</strong> once payment is verified.</p>' +
+      '<div class="shop-confirmation-actions">' +
+      (isStripe
+        ? '<a href="' +
+          TICKET_PAYMENTS.stripeUrl +
+          '" class="btn btn-primary" target="_blank" rel="noopener noreferrer">Open Stripe Again</a>'
+        : '') +
+      '<a href="#ticket-card" class="btn btn-secondary" id="ticket-continue-browsing">Back to Tickets</a>' +
+      '<a href="home.html" class="btn btn-secondary">Go Home</a>' +
+      '</div>' +
+      '</div>';
+
+    var contBtn = $('ticket-continue-browsing');
+    if (contBtn) {
+      contBtn.addEventListener('click', function (e) {
+        e.preventDefault();
+        closeCheckoutModal();
+        var card = document.getElementById('ticket-card');
+        if (card) card.scrollIntoView({ behavior: 'smooth' });
+      });
     }
   }
 
-  paymentButtons.forEach(function (button) {
-    button.addEventListener('click', handlePayment);
-  });
-  Object.keys(manualFlows).forEach(function (key) {
-    const flow = manualFlows[key];
-    flow.button?.addEventListener('click', function () {
-      toggleManualForm(key);
-    });
-    flow.form?.addEventListener('submit', function (event) {
-      handleManualSubmit(key, event);
-    });
-  });
+  function validateStep1() {
+    var name = $('ticket-customer-name').value.trim();
+    var email = $('ticket-customer-email').value.trim();
+    var phone = $('ticket-customer-phone').value.trim();
+    var err = $('ticket-form-error');
 
-  if (downloadButton) {
-    downloadButton.addEventListener('click', function () {
-      const ticketId = ticketIdEl ? ticketIdEl.textContent : 'MN000';
-      const now = formatTimestamp(new Date());
-      const csv = `Ticket ID,${ticketId}\nStatus,Confirmed\nTimestamp,${now}`;
-      const blob = new Blob([csv], { type: 'text/csv' });
-      const url = URL.createObjectURL(blob);
-      const link = document.createElement('a');
-      link.href = url;
-      link.download = `${ticketId}-ticket.txt`;
-      link.click();
-      URL.revokeObjectURL(url);
+    if (!name || !email || !phone) {
+      if (err) err.textContent = 'Please complete all fields.';
+      return null;
+    }
+    if (!$('ticket-customer-email').checkValidity()) {
+      if (err) err.textContent = 'Please enter a valid email address.';
+      return null;
+    }
+    if (err) err.textContent = '';
+    return { name: name, email: email, phone: phone };
+  }
+
+  function buildOrderPayload() {
+    if (!state.customer || !window.TICKET_PAYMENTS) return null;
+    var total = TICKET_PAYMENTS.getOrderTotal(state.paymentMethod, state.quantity);
+    return {
+      orderId: generateOrderId(),
+      customerName: state.customer.name,
+      email: state.customer.email,
+      phone: state.customer.phone,
+      eventName: TICKET_PAYMENTS.eventName,
+      quantity: state.quantity,
+      total: total.amount,
+      currency: total.currency
+    };
+  }
+
+  function finalizeOrder(customer, paymentMethod, orderId) {
+    if (!window.TICKET_PAYMENTS) return;
+    var total = TICKET_PAYMENTS.getOrderTotal(paymentMethod, state.quantity);
+
+    state.order = {
+      orderId: orderId || generateOrderId(),
+      customerName: customer.name,
+      email: customer.email,
+      phone: customer.phone,
+      eventName: TICKET_PAYMENTS.eventName,
+      quantity: state.quantity,
+      total: total.amount,
+      currency: total.currency,
+      paymentMethod: paymentMethod,
+      createdAt: new Date().toISOString()
+    };
+
+    console.info('[GRIGA Tickets] Order submitted:', state.order);
+
+    state.checkoutStep = 4;
+    renderCheckoutStep();
+  }
+
+  function validateCheckoutReady() {
+    if (!state.paymentMethod) {
+      showToast('Please select a payment method.');
+      return false;
+    }
+    if (!state.customer) {
+      showToast('Please complete your customer details.');
+      state.checkoutStep = 1;
+      renderCheckoutStep();
+      return false;
+    }
+    return true;
+  }
+
+  function openStripeCheckout() {
+    if (!validateCheckoutReady()) return;
+    if (window.TICKET_PAYMENTS && TICKET_PAYMENTS.stripeUrl) {
+      window.open(TICKET_PAYMENTS.stripeUrl, '_blank', 'noopener,noreferrer');
+      showToast('Complete payment on Stripe, then send proof via WhatsApp.');
+    }
+  }
+
+  function sendPaymentProofViaWhatsApp() {
+    if (!validateCheckoutReady()) return;
+    if (!window.TICKET_PAYMENTS) {
+      showToast('Payment configuration unavailable.');
+      return;
+    }
+
+    var orderPayload = buildOrderPayload();
+    if (!orderPayload) return;
+
+    var message = TICKET_PAYMENTS.buildWhatsAppMessage(state.paymentMethod, orderPayload);
+    var url = 'https://wa.me/' + TICKET_PAYMENTS.whatsappNumber + '?text=' + encodeURIComponent(message);
+    window.open(url, '_blank', 'noopener,noreferrer');
+    finalizeOrder(state.customer, state.paymentMethod, orderPayload.orderId);
+  }
+
+  function handleCheckoutNext() {
+    if (state.checkoutStep === 1) {
+      var customer = validateStep1();
+      if (!customer) return;
+      state.customer = customer;
+      state.checkoutStep = 2;
+      renderCheckoutStep();
+      return;
+    }
+
+    if (state.checkoutStep === 2) {
+      state.checkoutStep = 3;
+      renderCheckoutStep();
+      return;
+    }
+
+    if (state.checkoutStep === 3) {
+      sendPaymentProofViaWhatsApp();
+    }
+  }
+
+  function handleCheckoutBack() {
+    if (state.checkoutStep > 1 && state.checkoutStep < 4) {
+      state.checkoutStep -= 1;
+      renderCheckoutStep();
+    }
+  }
+
+  function changeQuantity(delta) {
+    state.quantity = Math.min(10, Math.max(1, state.quantity + delta));
+    syncQuantityUI();
+    if (state.checkoutStep === 2) renderOrderReview();
+    if (state.checkoutStep === 3) renderPaymentPanel();
+  }
+
+  function bindPaymentMethodInputs() {
+    document.querySelectorAll('#ticket-checkout .shop-payment-card input').forEach(function (input) {
+      input.addEventListener('change', function () {
+        state.paymentMethod = input.value;
+        document.querySelectorAll('#ticket-checkout .shop-payment-card').forEach(function (card) {
+          card.classList.toggle('is-selected', card.contains(input));
+        });
+        if (state.checkoutStep === 3) {
+          renderPaymentPanel();
+          renderCheckoutStep();
+        }
+      });
     });
   }
-});
+
+  function scrollToTicketCard(behavior) {
+    var card = document.getElementById('ticket-card');
+    if (!card) return;
+
+    var header = document.getElementById('site-header');
+    var offset = header ? header.offsetHeight + 16 : 96;
+    var top = card.getBoundingClientRect().top + window.pageYOffset - offset;
+
+    window.scrollTo({
+      top: Math.max(0, top),
+      behavior: behavior || 'smooth'
+    });
+  }
+
+  function scrollToTicketCardOnLoad() {
+    var hash = window.location.hash;
+    if (hash && hash !== '#ticket-card') return;
+
+    window.requestAnimationFrame(function () {
+      scrollToTicketCard('smooth');
+    });
+  }
+
+  function init() {
+    if (typeof AOS !== 'undefined') {
+      AOS.init({ duration: 800, once: true, offset: 80 });
+    }
+
+    scrollToTicketCardOnLoad();
+
+    syncQuantityUI();
+
+    var qtyMinus = $('ticket-qty-minus');
+    var qtyPlus = $('ticket-qty-plus');
+    if (qtyMinus) qtyMinus.addEventListener('click', function () { changeQuantity(-1); });
+    if (qtyPlus) qtyPlus.addEventListener('click', function () { changeQuantity(1); });
+
+    document.querySelectorAll('[data-ticket-checkout-open]').forEach(function (btn) {
+      btn.addEventListener('click', function (e) {
+        e.preventDefault();
+        openCheckoutModal();
+      });
+    });
+
+    if ($('ticket-checkout-close')) {
+      $('ticket-checkout-close').addEventListener('click', closeCheckoutModal);
+    }
+    if ($('ticket-checkout-backdrop')) {
+      $('ticket-checkout-backdrop').addEventListener('click', closeCheckoutModal);
+    }
+    if ($('ticket-checkout-next')) {
+      $('ticket-checkout-next').addEventListener('click', handleCheckoutNext);
+    }
+    if ($('ticket-checkout-back')) {
+      $('ticket-checkout-back').addEventListener('click', handleCheckoutBack);
+    }
+
+    bindPaymentMethodInputs();
+
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape') {
+        var checkout = $('ticket-checkout');
+        if (checkout && checkout.classList.contains('is-open')) closeCheckoutModal();
+      }
+    });
+  }
+
+  document.addEventListener('DOMContentLoaded', init);
+})();

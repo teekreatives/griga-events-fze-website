@@ -5,16 +5,17 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>GRIGA Events FZE | Get Your Tickets</title>
-  <meta name="description" content="Reserve your seat for Where There's Smoke Edition 8 with seamless Stripe or M-Pesa payments at HAMRIYA EAST AJMAN - DESERT OASIS CAMPS &amp; LAND PARK." />
+  <meta name="description" content="Reserve your seat for Where There's Smoke Edition 8 on Saturday, 7 November 2026 at HAMRIYA EAST AJMAN - DESERT OASIS CAMPS &amp; LAND PARK. Stripe and M-Pesa payments available." />
   <meta property="og:title" content="Get Your Tickets | Where There's Smoke Edition 8" />
-  <meta property="og:description" content="Secure your tickets for Where There's Smoke Edition 8 with premium payment options and fast delivery at HAMRIYA EAST AJMAN - DESERT OASIS CAMPS &amp; LAND PARK." />
+  <meta property="og:description" content="Secure your tickets for Where There's Smoke Edition 8 on 7 November 2026 at HAMRIYA EAST AJMAN - DESERT OASIS CAMPS &amp; LAND PARK." />
   <meta property="og:url" content="https://grigaeventsfze.com/tickets.html" />
   <meta property="og:site_name" content="GRIGA Events FZE" />
   <meta property="og:image" content="https://grigaeventsfze.com/assets/media/images/where there's smoke edition 8.jpeg" />
   <link rel="canonical" href="https://grigaeventsfze.com/tickets.html" />
   <link rel="stylesheet" href="https://unpkg.com/aos@2.3.4/dist/aos.css" />
   <link rel="stylesheet" href="assets/css/style.css?v=20250608.1" />
-  <link rel="stylesheet" href="assets/css/tickets.css" />
+  <link rel="stylesheet" href="assets/css/tickets.css?v=20250607.6" />
+  <link rel="stylesheet" href="assets/css/shop.css?v=20250607.14" />
   <link rel="icon" href="assets/media/logos/fav.jpg" type="image/jpeg" />
 </head>
 <body class="tickets-body">
@@ -39,7 +40,7 @@
             <a class="nav-mobile-cta" href="tickets.html">Get Tickets</a>
           </li>
         </ul>
-        <a class="btn btn-secondary header-cta" href="#ticket-card">Get Tickets</a>
+        <a class="btn btn-secondary header-cta" href="#ticket-card" data-ticket-checkout-open>Get Tickets</a>
       </nav>
     </div>
   </header>
@@ -48,253 +49,46 @@
     <section class="tickets-hero" data-aos="fade-up">
       <div class="container">
         <h1>Get Your Tickets</h1>
-        <p class="hero-subtitle">Your seat at Smoke Edition 8 is just a click away—easy, safe, and ready for an unforgettable night.</p>
+        <p class="hero-subtitle">Saturday, 7 November 2026 · 6:00 PM till dawn at HAMRIYA EAST AJMAN - DESERT OASIS CAMPS &amp; LAND PARK.</p>
         <div class="hero-cta">
           <a href="#ticket-guide" class="btn btn-secondary">Ticket Guide</a>
-          <a href="#payment-options" class="btn btn-secondary">Payment Options</a>
         </div>
       </div>
     </section>
 
-    <section class="payment-options" id="payment-options">
-      <div class="container" data-aos="fade-up" data-aos-delay="150">
-        <header class="section-header">
-          <h2>Payment Options</h2>
-          <p>Choose the method that suits you and we will deliver the ticket with QR verification instantly.</p>
-        </header>
-        <div class="payment-grid">
-          <article class="payment-option payment-option--stripe" data-aos="fade-right">
-            <h3>Stripe Checkout</h3>
-            <p>Secure credit/debit payments in one click. Redirects to the hosted checkout page with fraud protection.</p>
-            <button class="btn btn-secondary" type="button" onclick="window.open('https://buy.stripe.com/cNi4gBgiS25c6dUaWu3oA02', '_blank')">Pay via Card</button>
-          </article>
-          <article class="payment-option payment-option--mpesa" data-aos="fade-left">
-            <div class="payment-option__heading">
-              <img class="payment-option__logo" src="/assets/media/logos/m-pesa-logo.png" alt="M-PESA logo" />
-              <h3>M-PESA PAYMENT</h3>
+    <section class="ticket-zone" id="ticket-card">
+      <div class="container" data-aos="fade-up">
+        <article class="ticket-card">
+          <p class="ticket-highlight">Where There's Smoke Edition 8</p>
+          <h2 class="ticket-card-title">General Admission</h2>
+          <div class="ticket-info">
+            <div>
+              <strong>Date</strong>
+              <span>Saturday, 7 November 2026</span>
             </div>
-            <p>Send 5,500&nbsp;KSH over M-Pesa to the number below, then confirm the payment so we can deliver your ticket.</p>
-            <dl class="payment-details">
-              <div>
-                <dt>Number</dt>
-                <dd>0710 261 539</dd>
-              </div>
-              <div>
-                <dt>Name</dt>
-                <dd>Grishon Gachomo</dd>
-              </div>
-              <div>
-                <dt>Amount</dt>
-                <dd>5,500&nbsp;KSH</dd>
-              </div>
-            </dl>
-            <div class="payment-actions">
-              <button class="btn btn-secondary" id="mpesa-show-form" type="button">I have paid</button>
-              <button class="btn btn-secondary copy-payment" type="button" data-payment-info="M-PESA PAYMENT • Number: 0710 261 539 • Name: Grishon Gachomo • Amount: 5,500 KSH">COPY DETAILS</button>
+            <div>
+              <strong>Time</strong>
+              <span>6:00 PM – Dawn</span>
             </div>
-            <form class="manual-payment-form" id="mpesa-form" novalidate>
-              <label>
-                Full name
-                <input type="text" id="mpesa-name" name="mpesa-name" placeholder="Enter Your Full Name" required />
-              </label>
-              <label>
-                Phone number
-                <input type="tel" id="mpesa-phone" name="mpesa-phone" placeholder="e.g. +254 7XX XXX XXX" required />
-              </label>
-              <label>
-                Email address
-                <input type="email" id="mpesa-email" name="mpesa-email" placeholder="you@example.com" autocomplete="email" required />
-              </label>
-              <button class="btn btn-secondary" type="submit">Send proof via WhatsApp</button>
-              <p class="manual-form-feedback" aria-live="assertive"></p>
-            </form>
-          </article>
-          <article class="payment-option payment-option--botim" data-aos="fade-right" data-aos-delay="100">
-            <div class="payment-option__heading">
-              <img class="payment-option__logo" src="/assets/media/logos/botim-money.jpg" alt="BOTIM logo" />
-              <h3>BOTIM Money</h3>
+            <div>
+              <strong>Venue</strong>
+              <span>HAMRIYA EAST AJMAN - DESERT OASIS CAMPS &amp; LAND PARK</span>
             </div>
-            <p>Pay 150&nbsp;AED via BOTIM Money using the number below, then confirm the payment with the form so we can send your ticket.</p>
-            <dl class="payment-details">
-              <div>
-                <dt>Number</dt>
-                <dd>+971 52 994 8589</dd>
-              </div>
-              <div>
-                <dt>Name</dt>
-                <dd>Grishon Gachomo</dd>
-              </div>
-              <div>
-                <dt>Amount</dt>
-                <dd>150&nbsp;AED</dd>
-              </div>
-            </dl>
-            <div class="payment-actions">
-              <button class="btn btn-secondary" id="botim-show-form" type="button">I have paid</button>
-              <button class="btn btn-secondary copy-payment" type="button" data-payment-info="BOTIM Money • Number: +971 52 994 8589 • Name: Grishon Gachomo • Amount: 150 AED">COPY DETAILS</button>
+            <div>
+              <strong>Price</strong>
+              <span id="ticket-card-total">AED 150</span>
             </div>
-            <form class="manual-payment-form" id="botim-form" novalidate>
-              <label>
-                Full name
-                <input type="text" id="botim-name" name="name" placeholder="Enter Your Full Name" required />
-              </label>
-              <label>
-                Phone number
-                <input type="tel" id="botim-phone" name="phone" placeholder="e.g. +971 50 123 4567" required />
-              </label>
-              <label>
-                Email address
-                <input type="email" id="botim-email" name="botim-email" placeholder="you@example.com" autocomplete="email" required />
-              </label>
-              <button class="btn btn-secondary" type="submit">Send proof via WhatsApp</button>
-              <p class="manual-form-feedback" aria-live="assertive"></p>
-            </form>
-          </article>
-
-          <article class="payment-option payment-option--bank payment-option--whizmo" data-aos="fade-left" data-aos-delay="200">
-            <div class="payment-option__heading">
-              <img class="payment-option__logo" src="/assets/media/logos/whizmo.jpg" alt="Whizmo logo" />
-              <span class="payment-option__title">Whizmo</span>
+          </div>
+          <div class="ticket-qty-row">
+            <span class="ticket-qty-label">Tickets</span>
+            <div class="ticket-qty-control">
+              <button type="button" class="ticket-qty-btn" id="ticket-qty-minus" aria-label="Decrease quantity">−</button>
+              <input type="text" id="ticket-quantity" value="1" readonly aria-label="Ticket quantity" />
+              <button type="button" class="ticket-qty-btn" id="ticket-qty-plus" aria-label="Increase quantity">+</button>
             </div>
-            <p>Pay 150&nbsp;AED via Whizmo using the details below, then confirm the payment so we can deliver your ticket.</p>
-            <dl class="payment-details">
-              <div>
-                <dt>Bank Name</dt>
-                <dd>Abu Dhabi Commercial Bank</dd>
-              </div>
-              <div>
-                <dt>Account Name</dt>
-                <dd>GRIGA EVENT'S FZE</dd>
-              </div>
-              <div>
-                <dt>IBAN</dt>
-                <dd>AE700030077195013990091</dd>
-              </div>
-              <div>
-                <dt>Amount</dt>
-                <dd>150&nbsp;AED</dd>
-              </div>
-            </dl>
-            <div class="payment-actions">
-              <button class="btn btn-secondary" id="bank-show-form" type="button">I have paid</button>
-              <button class="btn btn-secondary copy-payment" type="button" data-payment-info="Bank Transfer • Bank Name: Abu Dhabi Commercial Bank • Account Name: GRIGA EVENT'S FZE • IBAN: AE700030077195013990091">COPY DETAILS</button>
-            </div>
-            <form class="manual-payment-form" id="bank-form" novalidate>
-              <label>
-                Full name
-                <input type="text" id="bank-name" name="name" placeholder="Enter Your Full Name" required />
-              </label>
-              <label>
-                Phone number
-                <input type="tel" id="bank-phone" name="phone" placeholder="e.g. +971 50 123 4567" required />
-              </label>
-              <label>
-                Email address
-                <input type="email" id="bank-email" name="bank-email" placeholder="you@example.com" autocomplete="email" required />
-              </label>
-              <button class="btn btn-secondary" type="submit">Send proof via WhatsApp</button>
-              <p class="manual-form-feedback" aria-live="assertive"></p>
-            </form>
-          </article>
-          <article class="payment-option payment-option--bank payment-option--adcb" data-aos="fade-up" data-aos-delay="200">
-            <div class="payment-option__heading">
-              <img class="payment-option__logo" src="/assets/media/logos/ADCB.png" alt="ADCB logo" />
-              <span class="payment-option__title">ADCB</span>
-            </div>
-            <p>Pay 150&nbsp;AED via ADCB using the details below, then confirm the payment so we can deliver your ticket.</p>
-            <dl class="payment-details">
-              <div>
-                <dt>Bank Name</dt>
-                <dd>Abu Dhabi Commercial Bank PJSC</dd>
-              </div>
-              <div>
-                <dt>Account Name</dt>
-                <dd>GRISHON GITHINJI GACHOMO</dd>
-              </div>
-              <div>
-                <dt>Account Number</dt>
-                <dd>10085351920001</dd>
-              </div>
-              <div>
-                <dt>IBAN</dt>
-                <dd>AE570030010085351920001</dd>
-              </div>
-              <div>
-                <dt>Amount</dt>
-                <dd>150&nbsp;AED</dd>
-              </div>
-            </dl>
-            <div class="payment-actions">
-              <button class="btn btn-secondary" id="adcb-show-form" type="button">I have paid</button>
-              <button class="btn btn-secondary copy-payment" type="button" data-payment-info="Bank Transfer • Bank Name: Abu Dhabi Commercial Bank PJSC • Account Name: GRISHON GITHINJI GACHOMO • Account Number: 10085351920001 • IBAN: AE570030010085351920001 • Amount: 150 AED">COPY DETAILS</button>
-            </div>
-            <form class="manual-payment-form" id="adcb-form" novalidate>
-              <label>
-                Full name
-                <input type="text" id="adcb-name" name="name" placeholder="Enter Your Full Name" required />
-              </label>
-              <label>
-                Phone number
-                <input type="tel" id="adcb-phone" name="phone" placeholder="e.g. +971 50 123 4567" required />
-              </label>
-              <label>
-                Email address
-                <input type="email" id="adcb-email" name="adcb-email" placeholder="you@example.com" autocomplete="email" required />
-              </label>
-              <button class="btn btn-secondary" type="submit">Send proof via WhatsApp</button>
-              <p class="manual-form-feedback" aria-live="assertive"></p>
-            </form>
-          </article>
-          <article class="payment-option payment-option--bank payment-option--nbd" data-aos="fade-up" data-aos-delay="250">
-            <div class="payment-option__heading">
-              <img class="payment-option__logo" src="/assets/media/logos/NBD.png" alt="NBD logo" />
-              <span class="payment-option__title">NBD</span>
-            </div>
-            <p>Pay 150&nbsp;AED via NBD using the details below, then confirm the payment so we can deliver your ticket.</p>
-            <dl class="payment-details">
-              <div>
-                <dt>Bank Name</dt>
-                <dd>Emirates NBD</dd>
-              </div>
-              <div>
-                <dt>Account Name</dt>
-                <dd>Grishon Githinji Gachomo</dd>
-              </div>
-              <div>
-                <dt>Account Number</dt>
-                <dd>1014091695801</dd>
-              </div>
-              <div>
-                <dt>IBAN</dt>
-                <dd>AE060260001014091695801</dd>
-              </div>
-              <div>
-                <dt>Amount</dt>
-                <dd>150&nbsp;AED</dd>
-              </div>
-            </dl>
-            <div class="payment-actions">
-              <button class="btn btn-secondary" id="nbd-show-form" type="button">I have paid</button>
-              <button class="btn btn-secondary copy-payment" type="button" data-payment-info="Bank Transfer • Bank Name: Emirates NBD • Account Name: Grishon Githinji Gachomo • Account Number: 1014091695801 • IBAN: AE06 0260 0010 1409 1695 801 • Amount: 150 AED">COPY DETAILS</button>
-            </div>
-            <form class="manual-payment-form" id="nbd-form" novalidate>
-              <label>
-                Full name
-                <input type="text" id="nbd-name" name="name" placeholder="Enter Your Full Name" required />
-              </label>
-              <label>
-                Phone number
-                <input type="tel" id="nbd-phone" name="phone" placeholder="e.g. +971 50 123 4567" required />
-              </label>
-              <label>
-                Email address
-                <input type="email" id="nbd-email" name="nbd-email" placeholder="you@example.com" autocomplete="email" required />
-              </label>
-              <button class="btn btn-secondary" type="submit">Send proof via WhatsApp</button>
-              <p class="manual-form-feedback" aria-live="assertive"></p>
-            </form>
-          </article>
-        </div>
+          </div>
+          <button type="button" class="btn btn-primary btn-lg ticket-buy-btn" data-ticket-checkout-open>Proceed to Checkout</button>
+        </article>
       </div>
     </section>
 
@@ -302,17 +96,18 @@
       <div class="container">
         <header class="section-header">
           <h2>HOW TO BUY A TICKET</h2>
-          <p>Pick a payment method, send the money, then confirm it through the matching form so we can validate and hand over your ticket.</p>
+          <p>Enter your details, choose a payment method, pay, then send proof via WhatsApp so we can verify and deliver your ticket.</p>
         </header>
         <div class="guide-grid">
           <article class="guide-card guide-card--steps">
             <h3>Step-by-step</h3>
             <ol>
-              <li>Stripe opens a secure checkout; complete the payment and keep the confirmation email or receipt.</li>
-              <li>For BOTIM/M-Pesa, send the amount to the listed number and click “I have paid” to open the WhatsApp form.</li>
-              <li>Attach a screenshot (proof of payment) and send. Your ticket will be sent immediately after confirmation.</li>
+              <li>Click <strong>Proceed to Checkout</strong> and enter your name, email, and phone number.</li>
+              <li>Review your ticket order, then select Stripe or a manual payment method.</li>
+              <li>For card: click <strong>Pay via Card</strong> in the Stripe panel, complete payment, then <strong>Send proof via WhatsApp</strong>.</li>
+              <li>For M-Pesa, Botim, or bank transfer: pay using the listed details, copy if needed, then <strong>Send proof via WhatsApp</strong> with your screenshot.</li>
             </ol>
-            <p class="guide-note">We validate every payment, then email/WhatsApp you the ticket with QR code once everything checks out.</p>
+            <p class="guide-note">We validate every payment, then email or WhatsApp your ticket with QR code once everything checks out.</p>
           </article>
           <article class="guide-card guide-card--contact">
             <h3>Need help?</h3>
@@ -325,43 +120,102 @@
         </div>
       </div>
     </section>
+  </main>
 
-    <section class="container">
-      <div id="ticket-success" class="success-panel" data-aos="fade-up">
-        <div class="success-panel-inner">
-          <h3>Payment Success</h3>
-          <p id="payment-status">Awaiting payment...</p>
-          <div class="ticket-summary">
-            <div>
-              <strong>Ticket ID</strong>
-              <span id="ticket-id">—</span>
-            </div>
-            <div>
-              <strong>Payment</strong>
-              <span id="ticket-method">—</span>
-            </div>
-            <div>
-              <strong>Email</strong>
-              <span id="ticket-email">—</span>
-            </div>
-            <div>
-              <strong>Issued</strong>
-              <span id="ticket-timestamp">—</span>
-            </div>
-            <div>
-              <strong>Amount</strong>
-              <span id="ticket-price">—</span>
-            </div>
+  <!-- Checkout modal (same flow as shop) -->
+  <div class="shop-checkout" id="ticket-checkout" aria-hidden="true" role="dialog" aria-labelledby="ticket-checkout-title">
+    <div class="shop-checkout-backdrop" id="ticket-checkout-backdrop"></div>
+    <div class="shop-checkout-panel">
+      <div class="shop-checkout-header">
+        <h2 id="ticket-checkout-title">Ticket Checkout</h2>
+        <button type="button" class="shop-drawer-close" id="ticket-checkout-close" aria-label="Close checkout">&times;</button>
+      </div>
+      <div class="shop-steps" aria-label="Checkout progress">
+        <span class="shop-step is-active" data-step="1">1. Information</span>
+        <span class="shop-step" data-step="2">2. Order</span>
+        <span class="shop-step" data-step="3">3. Payment</span>
+        <span class="shop-step" data-step="4">4. Confirm</span>
+      </div>
+      <div class="shop-checkout-body">
+        <div class="shop-checkout-step is-active" data-step="1">
+          <form class="shop-form-grid" id="ticket-customer-form" novalidate>
+            <label>
+              Full Name
+              <input type="text" id="ticket-customer-name" name="name" placeholder="Enter your full name" autocomplete="name" required />
+            </label>
+            <label>
+              Email Address
+              <input type="email" id="ticket-customer-email" name="email" placeholder="you@example.com" autocomplete="email" required />
+            </label>
+            <label>
+              Phone Number
+              <input type="tel" id="ticket-customer-phone" name="phone" placeholder="e.g. +971 50 123 4567" autocomplete="tel" required />
+            </label>
+            <p class="shop-form-error" id="ticket-form-error" aria-live="polite"></p>
+          </form>
+        </div>
+        <div class="shop-checkout-step" data-step="2">
+          <h3 style="margin-top:0;font-size:1rem;text-transform:uppercase;letter-spacing:0.1em;">Order Summary</h3>
+          <div class="shop-order-review" id="ticket-order-review"></div>
+        </div>
+        <div class="shop-checkout-step" data-step="3">
+          <h3 style="margin-top:0;font-size:1rem;text-transform:uppercase;letter-spacing:0.1em;">Select Payment Method</h3>
+          <div class="shop-payment-grid" role="radiogroup" aria-label="Payment methods">
+            <label class="shop-payment-card shop-payment-card--stripe">
+              <input type="radio" name="ticket-payment" value="stripe" />
+              <div class="shop-payment-card-logo shop-payment-card-logo--text" aria-hidden="true">
+                <svg viewBox="0 0 60 25" width="60" height="25" role="img" aria-label="Stripe">
+                  <text x="0" y="18" fill="#635bff" font-family="system-ui,sans-serif" font-size="16" font-weight="700">stripe</text>
+                </svg>
+              </div>
+              <h4>Stripe Card Payment</h4>
+              <p>Secure credit &amp; debit card checkout</p>
+            </label>
+            <label class="shop-payment-card shop-payment-card--mpesa">
+              <input type="radio" name="ticket-payment" value="mpesa" />
+              <img class="shop-payment-card-logo" src="/assets/media/logos/m-pesa-logo.png" alt="M-Pesa logo" />
+              <h4>M-Pesa</h4>
+              <p>Mobile money payment</p>
+            </label>
+            <label class="shop-payment-card shop-payment-card--botim">
+              <input type="radio" name="ticket-payment" value="botim" />
+              <img class="shop-payment-card-logo" src="/assets/media/logos/botim-money.jpg" alt="Botim Money logo" />
+              <h4>Botim Money</h4>
+              <p>Pay via BOTIM wallet</p>
+            </label>
+            <label class="shop-payment-card">
+              <input type="radio" name="ticket-payment" value="whizmo" />
+              <img class="shop-payment-card-logo" src="/assets/media/logos/whizmo.jpg" alt="Whizmo logo" />
+              <h4>Whizmo</h4>
+              <p>ADCB Whizmo transfer</p>
+            </label>
+            <label class="shop-payment-card">
+              <input type="radio" name="ticket-payment" value="adcb" />
+              <img class="shop-payment-card-logo" src="/assets/media/logos/ADCB.png" alt="ADCB logo" />
+              <h4>ADCB Transfer</h4>
+              <p>Abu Dhabi Commercial Bank</p>
+            </label>
+            <label class="shop-payment-card">
+              <input type="radio" name="ticket-payment" value="nbd" />
+              <img class="shop-payment-card-logo" src="/assets/media/logos/NBD.png" alt="Emirates NBD logo" />
+              <h4>Emirates NBD Transfer</h4>
+              <p>Bank transfer via NBD</p>
+            </label>
           </div>
-          <div class="ticket-qr-box">
-            <div id="ticket-qr"></div>
-            <p>Your QR code will unlock contactless entry and the premium lounge.</p>
-          </div>
-          <button class="btn btn-secondary" id="download-ticket" disabled>Download Ticket</button>
+          <div id="ticket-payment-detail-panel" class="shop-payment-detail-panel" hidden></div>
+        </div>
+        <div class="shop-checkout-step" data-step="4">
+          <div id="ticket-confirmation-content"></div>
         </div>
       </div>
-    </section>
-  </main>
+      <div class="shop-checkout-footer" id="ticket-checkout-footer">
+        <button type="button" class="btn btn-secondary" id="ticket-checkout-back">Back</button>
+        <button type="button" class="btn btn-primary" id="ticket-checkout-next">Continue</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="shop-toast" id="ticket-toast" role="status" aria-live="polite"></div>
 
   <footer class="site-footer">
     <div class="container footer-inner">
@@ -394,21 +248,21 @@
   {
     "@context": "https://schema.org",
     "@type": "Event",
-    "name": "WHERE THERE'S SMOKE EDITION 8",
-    "startDate": "2026-04-04T18:00:00+04:00",
-    "endDate": "2026-04-05T06:00:00+04:00",
+    "name": "WHERE THERE'S SMOKE 8TH EDITION",
+    "startDate": "2026-11-07T18:00:00+04:00",
+    "endDate": "2026-11-08T06:00:00+04:00",
     "eventAttendanceMode": "https://schema.org/OfflineEventAttendanceMode",
     "eventStatus": "https://schema.org/EventScheduled",
     "location": {
       "@type": "Place",
-      "name": "MOUNTAINS RESORT - RAS AL KHAIMAH",
-        "address": {
-          "@type": "PostalAddress",
-          "streetAddress": "Mountains Resort",
-          "addressLocality": "Ras Al Khaimah",
-          "addressRegion": "Ras Al Khaimah",
-          "addressCountry": "AE"
-        }
+      "name": "HAMRIYA EAST AJMAN - DESERT OASIS CAMPS &amp; LAND PARK",
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "HAMRIYA EAST AJMAN - DESERT OASIS CAMPS &amp; LAND PARK",
+        "addressLocality": "Ajman",
+        "addressRegion": "Ajman",
+        "addressCountry": "AE"
+      }
     },
     "image": [
       "https://grigaeventsfze.com/assets/media/images/where there's smoke edition 8.jpeg"
@@ -429,51 +283,8 @@
   </script>
 
   <script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-    <script src="assets/js/main.js?v=20251128.12"></script>
-  <script src="assets/js/tickets.js"></script>
-  <script>
-    document.addEventListener('DOMContentLoaded', () => {
-      const copyButtons = document.querySelectorAll('.copy-payment');
-      if (!copyButtons.length) return;
-
-      copyButtons.forEach((button) => {
-        const originalLabel = button.textContent;
-        button.addEventListener('click', async () => {
-          const payload = button.dataset.paymentInfo;
-          if (!payload) return;
-          try {
-            await navigator.clipboard.writeText(payload);
-            showCopiedState(button, originalLabel);
-          } catch (error) {
-            fallbackCopy(payload);
-            showCopiedState(button, originalLabel);
-          }
-        });
-      });
-
-      function showCopiedState(button, original) {
-        button.textContent = 'Copied';
-        button.classList.add('copied');
-        setTimeout(() => {
-          button.textContent = original;
-          button.classList.remove('copied');
-        }, 2000);
-      }
-
-      function fallbackCopy(value) {
-        const temp = document.createElement('textarea');
-        temp.value = value;
-        temp.setAttribute('readonly', '');
-        temp.style.position = 'absolute';
-        temp.style.left = '-9999px';
-        document.body.appendChild(temp);
-        temp.select();
-        document.execCommand('copy');
-        document.body.removeChild(temp);
-      }
-    });
-  </script>
-  
+  <script src="assets/js/main.js?v=20251128.12"></script>
+  <script src="assets/js/tickets-payments.js?v=20250607.4"></script>
+  <script src="assets/js/tickets.js?v=20250607.7"></script>
 </body>
 </html>

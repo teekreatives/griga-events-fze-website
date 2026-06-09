@@ -101,17 +101,29 @@
   function scrollToPaymentDetails() {
     if (!window.matchMedia('(max-width: 768px)').matches) return;
 
+    var checkout = $('shop-checkout');
     var panel = $('shop-payment-detail-panel');
-    var scrollContainer = document.querySelector('.shop-checkout-panel');
-    if (!panel || panel.hidden || !scrollContainer) return;
+    var footer = $('shop-checkout-footer');
+    var scrollContainer = checkout ? checkout.querySelector('.shop-checkout-panel') : null;
+    if (!panel || panel.hidden || !scrollContainer || !footer) return;
 
     requestAnimationFrame(function () {
       setTimeout(function () {
-        var containerRect = scrollContainer.getBoundingClientRect();
-        var panelRect = panel.getBoundingClientRect();
-        var target = panelRect.top - containerRect.top + scrollContainer.scrollTop - 20;
-        scrollContainer.scrollTo({ top: Math.max(0, target), behavior: 'smooth' });
-      }, 120);
+        var detailCard = panel.querySelector('.shop-checkout-payment') || panel;
+        var padding = 16;
+        var maxScroll = scrollContainer.scrollHeight - scrollContainer.clientHeight;
+        var containerTop = scrollContainer.getBoundingClientRect().top;
+        var cardTop = detailCard.getBoundingClientRect().top - containerTop + scrollContainer.scrollTop;
+        var footerBottom = footer.getBoundingClientRect().bottom - containerTop + scrollContainer.scrollTop;
+        var blockHeight = footerBottom - cardTop + padding;
+        var viewport = scrollContainer.clientHeight;
+        var target = blockHeight <= viewport ? cardTop - padding : footerBottom - viewport + padding;
+
+        scrollContainer.scrollTo({
+          top: Math.max(0, Math.min(target, maxScroll)),
+          behavior: 'smooth'
+        });
+      }, 180);
     });
   }
 
@@ -635,6 +647,8 @@
     if (nextBtn) {
       nextBtn.classList.add('btn-primary');
       nextBtn.classList.remove('btn-secondary');
+      var showWhatsAppProof = state.checkoutStep === 3 && !!state.paymentMethod;
+      nextBtn.classList.toggle('shop-whatsapp-proof-btn', showWhatsAppProof);
       if (state.checkoutStep === 3) {
         nextBtn.style.display = '';
         if (state.paymentMethod) {
