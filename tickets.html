@@ -14,7 +14,7 @@
   <link rel="canonical" href="https://grigaeventsfze.com/tickets.html" />
   <link rel="stylesheet" href="https://unpkg.com/aos@2.3.4/dist/aos.css" />
   <link rel="stylesheet" href="assets/css/style.css?v=20250608.1" />
-  <link rel="stylesheet" href="assets/css/tickets.css?v=20250607.6" />
+  <link rel="stylesheet" href="assets/css/tickets.css?v=20250607.9" />
   <link rel="stylesheet" href="assets/css/shop.css?v=20250607.15" />
   <link rel="icon" href="assets/media/logos/fav.jpg" type="image/jpeg" />
 </head>
@@ -59,6 +59,23 @@
     <section class="ticket-zone" id="ticket-card">
       <div class="container" data-aos="fade-up">
         <article class="ticket-card">
+          <svg class="ticket-card-border" aria-hidden="true" focusable="false">
+            <defs>
+              <filter id="ticket-light-glow" x="-80%" y="-80%" width="260%" height="260%">
+                <feGaussianBlur in="SourceGraphic" stdDeviation="2.2" result="blur" />
+                <feMerge>
+                  <feMergeNode in="blur" />
+                  <feMergeNode in="SourceGraphic" />
+                </feMerge>
+              </filter>
+            </defs>
+            <path id="ticket-border-motion-path" class="ticket-card-border-motion" fill="none" />
+            <circle class="ticket-card-border-light" r="4.5" fill="#ffffff" filter="url(#ticket-light-glow)">
+              <animateMotion dur="6s" repeatCount="indefinite" calcMode="linear">
+                <mpath href="#ticket-border-motion-path" xlink:href="#ticket-border-motion-path" />
+              </animateMotion>
+            </circle>
+          </svg>
           <p class="ticket-highlight">Where There's Smoke Edition 8</p>
           <h2 class="ticket-card-title">General Admission</h2>
           <div class="ticket-info">
@@ -285,6 +302,6 @@
   <script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
   <script src="assets/js/main.js?v=20251128.12"></script>
   <script src="assets/js/tickets-payments.js?v=20250607.4"></script>
-  <script src="assets/js/tickets.js?v=20250607.7"></script>
+  <script src="assets/js/tickets.js?v=20250607.8"></script>
 </body>
 </html>

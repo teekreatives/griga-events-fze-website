@@ -589,11 +589,106 @@
     });
   }
 
+  function initTicketCardBorderLight() {
+    var card = document.querySelector('.ticket-card');
+    if (!card) return;
+
+    var svg = card.querySelector('.ticket-card-border');
+    var motionPath = document.getElementById('ticket-border-motion-path');
+    if (!svg || !motionPath) return;
+
+    function getInset() {
+      return window.matchMedia('(max-width: 768px)').matches ? 8 : 12;
+    }
+
+    function getRadius() {
+      return window.matchMedia('(max-width: 768px)').matches ? 14 : 22;
+    }
+
+    function updatePath() {
+      var inset = getInset();
+      var radius = getRadius();
+      var w = card.clientWidth;
+      var h = card.clientHeight;
+      var x = inset;
+      var y = inset;
+      var iw = w - inset * 2;
+      var ih = h - inset * 2;
+      var r = Math.min(radius, iw / 2, ih / 2);
+
+      var d =
+        'M ' +
+        (x + r) +
+        ' ' +
+        y +
+        ' H ' +
+        (x + iw - r) +
+        ' A ' +
+        r +
+        ' ' +
+        r +
+        ' 0 0 1 ' +
+        (x + iw) +
+        ' ' +
+        (y + r) +
+        ' V ' +
+        (y + ih - r) +
+        ' A ' +
+        r +
+        ' ' +
+        r +
+        ' 0 0 1 ' +
+        (x + iw - r) +
+        ' ' +
+        (y + ih) +
+        ' H ' +
+        (x + r) +
+        ' A ' +
+        r +
+        ' ' +
+        r +
+        ' 0 0 1 ' +
+        x +
+        ' ' +
+        (y + ih - r) +
+        ' V ' +
+        (y + r) +
+        ' A ' +
+        r +
+        ' ' +
+        r +
+        ' 0 0 1 ' +
+        (x + r) +
+        ' ' +
+        y +
+        ' Z';
+
+      motionPath.setAttribute('d', d);
+      svg.setAttribute('viewBox', '0 0 ' + w + ' ' + h);
+    }
+
+    updatePath();
+    window.requestAnimationFrame(updatePath);
+    window.setTimeout(updatePath, 150);
+
+    if (typeof ResizeObserver !== 'undefined') {
+      new ResizeObserver(updatePath).observe(card);
+    } else {
+      window.addEventListener('resize', updatePath);
+    }
+
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      var light = svg.querySelector('.ticket-card-border-light');
+      if (light) light.style.display = 'none';
+    }
+  }
+
   function init() {
     if (typeof AOS !== 'undefined') {
       AOS.init({ duration: 800, once: true, offset: 80 });
     }
 
+    initTicketCardBorderLight();
     scrollToTicketCardOnLoad();
 
     syncQuantityUI();
