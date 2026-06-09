@@ -833,15 +833,32 @@ body.shop-body {
 
 .shop-step {
   flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.2rem;
+  min-width: 0;
   text-align: center;
-  padding: 0.5rem;
-  font-size: 0.68rem;
+  padding: 0.5rem 0.25rem;
   font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
   color: #aaa;
   border-bottom: 2px solid transparent;
   transition: color 0.25s ease, border-color 0.25s ease;
+}
+
+.shop-step-num {
+  font-size: 0.68rem;
+  line-height: 1;
+  letter-spacing: 0;
+}
+
+.shop-step-label {
+  font-size: 0.58rem;
+  line-height: 1.15;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  max-width: 100%;
 }
 
 .shop-step.is-active {
@@ -1502,12 +1519,23 @@ body.shop-checkout-open {
   }
 
   .shop-steps {
-    flex-wrap: wrap;
-    padding: 1rem;
+    flex-wrap: nowrap;
+    padding: 1rem 0.75rem;
+    gap: 4px;
   }
 
   .shop-step {
-    font-size: 0.6rem;
+    min-height: 2.6rem;
+    padding: 0.35rem 0.15rem;
+  }
+
+  .shop-step-num {
+    font-size: 0.62rem;
+  }
+
+  .shop-step-label {
+    font-size: 0.52rem;
+    letter-spacing: 0.06em;
   }
 
   .shop-checkout-footer .shop-whatsapp-proof-btn {
