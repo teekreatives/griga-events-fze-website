@@ -618,12 +618,14 @@
     renderCheckoutStep();
     els.checkout.classList.add('is-open');
     document.body.classList.add('shop-checkout-open');
+    if (window.grigaScrollLock) window.grigaScrollLock.lock();
     closeCart();
   }
 
   function closeCheckoutModal() {
     els.checkout.classList.remove('is-open');
     document.body.classList.remove('shop-checkout-open');
+    if (window.grigaScrollLock) window.grigaScrollLock.unlock();
   }
 
   function renderCheckoutStep() {

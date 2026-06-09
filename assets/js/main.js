@@ -1,5 +1,29 @@
 // GRIGA Events FZE - Core interactions
 
+(function () {
+  var lockCount = 0;
+  var lockedScrollY = 0;
+
+  window.grigaScrollLock = {
+    lock: function () {
+      lockCount += 1;
+      if (lockCount > 1) return;
+      lockedScrollY = window.scrollY || window.pageYOffset || 0;
+      document.documentElement.classList.add('is-scroll-locked');
+      document.body.classList.add('is-scroll-locked');
+      document.body.style.top = '-' + lockedScrollY + 'px';
+    },
+    unlock: function () {
+      lockCount = Math.max(0, lockCount - 1);
+      if (lockCount > 0) return;
+      document.documentElement.classList.remove('is-scroll-locked');
+      document.body.classList.remove('is-scroll-locked');
+      document.body.style.top = '';
+      window.scrollTo(0, lockedScrollY);
+    }
+  };
+})();
+
 // Helper: on DOM ready
 function onReady(fn) {
   if (document.readyState === 'loading') {

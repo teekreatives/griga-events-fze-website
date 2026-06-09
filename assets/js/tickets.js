@@ -125,6 +125,7 @@
       checkout.setAttribute('aria-hidden', 'false');
     }
     document.body.classList.add('shop-checkout-open');
+    if (window.grigaScrollLock) window.grigaScrollLock.lock();
   }
 
   function closeCheckoutModal() {
@@ -134,6 +135,7 @@
       checkout.setAttribute('aria-hidden', 'true');
     }
     document.body.classList.remove('shop-checkout-open');
+    if (window.grigaScrollLock) window.grigaScrollLock.unlock();
   }
 
   function renderCheckoutStep() {

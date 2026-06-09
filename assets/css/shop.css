@@ -1416,6 +1416,19 @@ body.shop-checkout-open {
   overflow: hidden;
 }
 
+html.is-scroll-locked,
+body.is-scroll-locked {
+  overflow: hidden;
+  height: 100%;
+}
+
+body.is-scroll-locked {
+  position: fixed;
+  width: 100%;
+  left: 0;
+  right: 0;
+}
+
 /* Toast notification */
 
 .shop-toast {
@@ -1499,18 +1512,42 @@ body.shop-checkout-open {
   }
 
   .shop-checkout-panel {
-    border-radius: 20px 20px 0 0;
-    max-height: 95dvh;
-    align-self: flex-end;
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 1;
     width: 100%;
     max-width: 100%;
+    margin: 0;
+    border-radius: 20px 20px 0 0;
+    max-height: min(92dvh, calc(100dvh - env(safe-area-inset-top, 0px)));
     overflow-x: clip;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
+    transform: translateY(100%);
+  }
+
+  .shop-checkout.is-open .shop-checkout-panel {
+    transform: translateY(0) scale(1);
   }
 
   .shop-checkout {
     align-items: flex-end;
+    justify-content: flex-end;
     padding: 0;
-    overflow-x: clip;
+    overflow: hidden;
+    height: 100dvh;
+    min-height: 100dvh;
+    min-height: -webkit-fill-available;
+    overscroll-behavior: none;
+  }
+
+  .shop-checkout-backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
   }
 
   .shop-checkout-body {
