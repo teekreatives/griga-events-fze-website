@@ -643,7 +643,10 @@
 
     var backBtn = $('shop-checkout-back');
     var nextBtn = $('shop-checkout-next');
-    if (backBtn) backBtn.style.visibility = state.checkoutStep === 1 ? 'hidden' : 'visible';
+    if (backBtn) {
+      backBtn.style.visibility =
+        state.checkoutStep > 1 && state.checkoutStep < 4 ? 'visible' : 'hidden';
+    }
     if (nextBtn) {
       nextBtn.classList.add('btn-primary');
       nextBtn.classList.remove('btn-secondary');
@@ -912,7 +915,7 @@
           '" class="btn btn-primary" target="_blank" rel="noopener noreferrer">Open Stripe Again</a>'
         : '') +
       '<a href="#product-showcase" class="btn btn-secondary" id="shop-continue-shopping">Continue Shopping</a>' +
-      '<a href="home.html" class="btn btn-secondary">Go Home</a>' +
+      '<a href="tickets.html" class="btn btn-primary shop-buy-tickets-btn">Buy Tickets</a>' +
       '</div>' +
       '</div>';
 

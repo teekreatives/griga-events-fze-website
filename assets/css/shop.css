@@ -1327,7 +1327,8 @@ body.shop-body {
   justify-content: center;
 }
 
-.ticket-buy-merch-btn {
+.ticket-buy-merch-btn,
+.shop-buy-tickets-btn {
   position: relative;
   overflow: hidden;
   isolation: isolate;
@@ -1338,7 +1339,8 @@ body.shop-body {
   animation: ticketBuyMerchPulse 2.3s ease-in-out infinite;
 }
 
-.ticket-buy-merch-btn::after {
+.ticket-buy-merch-btn::after,
+.shop-buy-tickets-btn::after {
   content: '';
   position: absolute;
   top: 0;
@@ -1359,12 +1361,16 @@ body.shop-body {
 }
 
 .ticket-buy-merch-btn:hover,
-.ticket-buy-merch-btn:focus-visible {
+.ticket-buy-merch-btn:focus-visible,
+.shop-buy-tickets-btn:hover,
+.shop-buy-tickets-btn:focus-visible {
   animation-play-state: paused;
 }
 
 .ticket-buy-merch-btn:hover::after,
-.ticket-buy-merch-btn:focus-visible::after {
+.ticket-buy-merch-btn:focus-visible::after,
+.shop-buy-tickets-btn:hover::after,
+.shop-buy-tickets-btn:focus-visible::after {
   animation-play-state: paused;
 }
 
@@ -1664,12 +1670,14 @@ body.shop-checkout-open {
     display: none;
   }
 
-  .ticket-buy-merch-btn {
+  .ticket-buy-merch-btn,
+  .shop-buy-tickets-btn {
     animation: none;
     transform: none;
   }
 
-  .ticket-buy-merch-btn::after {
+  .ticket-buy-merch-btn::after,
+  .shop-buy-tickets-btn::after {
     animation: none;
     display: none;
   }
