@@ -339,6 +339,16 @@ p {
   background-image: linear-gradient(120deg, rgba(0,0,0,0.7), rgba(0,0,0,0.2)), url('../img/placeholder-hero.jpg');
 }
 
+.hero-poster {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background-image: linear-gradient(120deg, rgba(0, 0, 0, 0.25), rgba(0, 0, 0, 0.1)),
+    url("../media/images/where there's smoke edition 8.jpeg");
+  background-size: cover;
+  background-position: center;
+}
+
 .hero-video {
   position: absolute;
   inset: 0;
@@ -347,7 +357,19 @@ p {
   object-fit: cover;
   z-index: 0;
   filter: contrast(1.1) saturate(1.05);
+  opacity: 0;
+  transition: opacity 0.8s ease;
+  will-change: opacity;
+}
+
+.hero-video.is-ready {
   opacity: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-video {
+    transition: none;
+  }
 }
 
 .hero-bg-overlay {
