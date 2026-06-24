@@ -55,8 +55,6 @@
   }
 
   function scrollToPaymentDetails() {
-    if (!window.matchMedia('(max-width: 768px)').matches) return;
-
     var checkout = $('ticket-checkout');
     var panel = $('ticket-payment-detail-panel');
     var footer = $('ticket-checkout-footer');

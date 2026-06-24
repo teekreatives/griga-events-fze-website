@@ -99,8 +99,6 @@
   }
 
   function scrollToPaymentDetails() {
-    if (!window.matchMedia('(max-width: 768px)').matches) return;
-
     var checkout = $('shop-checkout');
     var panel = $('shop-payment-detail-panel');
     var footer = $('shop-checkout-footer');
