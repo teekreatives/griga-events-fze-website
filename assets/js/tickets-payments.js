@@ -44,7 +44,7 @@
       },
       amountDetail: true,
       copyInfo: function (amount) {
-        return 'M-PESA PAYMENT • Number: 0710 261 539 • Name: Grishon Gachomo • Amount: ' + amount;
+        return '0710 261 539';
       }
     },
     botim: {
@@ -71,7 +71,7 @@
       },
       amountDetail: true,
       copyInfo: function (amount) {
-        return 'BOTIM Money • Number: +971 52 994 8589 • Name: Grishon Gachomo • Amount: ' + amount;
+        return '+971 52 994 8589';
       }
     },
     whizmo: {
@@ -100,10 +100,7 @@
       },
       amountDetail: true,
       copyInfo: function (amount) {
-        return (
-          'Bank Transfer • Bank Name: Abu Dhabi Commercial Bank • Account Name: GRIGA EVENT\'S FZE • IBAN: AE700030077195013990091 • Amount: ' +
-          amount
-        );
+        return 'AE700030077195013990091';
       }
     },
     adcb: {
@@ -133,10 +130,7 @@
       },
       amountDetail: true,
       copyInfo: function (amount) {
-        return (
-          'Bank Transfer • Bank Name: Abu Dhabi Commercial Bank PJSC • Account Name: GRISHON GITHINJI GACHOMO • Account Number: 10085351920001 • IBAN: AE570030010085351920001 • Amount: ' +
-          amount
-        );
+        return 'AE570030010085351920001';
       }
     },
     nbd: {
@@ -166,10 +160,7 @@
       },
       amountDetail: true,
       copyInfo: function (amount) {
-        return (
-          'Bank Transfer • Bank Name: Emirates NBD • Account Name: Grishon Githinji Gachomo • Account Number: 1014091695801 • IBAN: AE06 0260 0010 1409 1695 801 • Amount: ' +
-          amount
-        );
+        return 'AE060260001014091695801';
       }
     }
   };

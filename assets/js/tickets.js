@@ -251,6 +251,10 @@
     }
 
     var copyInfo = method.copyInfo ? method.copyInfo(amount) : '';
+    var copyLabel =
+      method.cardClass && method.cardClass.indexOf('payment-option--bank') !== -1
+        ? 'Copy IBAN'
+        : 'Copy Number';
 
     panel.innerHTML =
       '<article class="payment-option ' +
@@ -266,7 +270,9 @@
       '<div class="payment-actions">' +
       '<button type="button" class="btn btn-secondary" id="ticket-copy-payment" data-payment-info="' +
       copyInfo.replace(/"/g, '&quot;') +
-      '">Copy Details</button>' +
+      '">' +
+      copyLabel +
+      '</button>' +
       '</div>' +
       '<p class="shop-payment-panel-note">After paying, click <strong>Send proof via WhatsApp</strong> below. We will verify and confirm your ticket.</p>' +
       '</article>';
