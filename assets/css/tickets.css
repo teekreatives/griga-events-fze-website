@@ -485,6 +485,15 @@ body.tickets-body {
   color: #fff;
 }
 
+.payment-option--eand {
+  background: linear-gradient(135deg, #e10600, #a30400);
+  color: #fff;
+}
+
+.payment-option--eand button {
+  border-color: rgba(255, 255, 255, 0.4);
+}
+
 .payment-details {
   margin: 1rem 0;
   display: grid;

@@ -67,6 +67,32 @@
         return '+971 52 994 8589';
       }
     },
+    eand: {
+      id: 'eand',
+      type: 'manual',
+      label: 'E& Money',
+      prefix: 'EAND',
+      cardClass: 'payment-option--eand',
+      logo: '/assets/media/logos/E%26%20Money.jpg',
+      logoAlt: 'E& Money logo',
+      intro: function (amount) {
+        return (
+          'Pay ' +
+          amount +
+          ' via E& Money using the number below, then confirm the payment so we can process your order.'
+        );
+      },
+      details: function () {
+        return [
+          { dt: 'Number', dd: '+971 52 994 8589' },
+          { dt: 'Name', dd: 'Grishon Gachomo' }
+        ];
+      },
+      amountDetail: true,
+      copyInfo: function (amount) {
+        return '+971 52 994 8589';
+      }
+    },
     whizmo: {
       id: 'whizmo',
       type: 'manual',
