@@ -206,9 +206,6 @@
       'Phone: ' +
       order.phone +
       '\n' +
-      'Email: ' +
-      order.email +
-      '\n' +
       'Product: ' +
       order.productName +
       '\n' +

@@ -911,9 +911,7 @@
       formatPrice(o.total) +
       '</span></div>' +
       '</div>' +
-      '<p class="shop-confirmation-notice">A confirmation email will be sent to <strong>' +
-      o.email +
-      '</strong> once payment is verified.</p>' +
+      '<p class="shop-confirmation-notice">An order confirmation will be sent via <strong>WhatsApp</strong> once payment is verified.</p>' +
       '<div class="shop-confirmation-actions">' +
       (isStripe
         ? '<a href="' +
@@ -937,20 +935,15 @@
 
   function validateStep1() {
     var name = $('shop-customer-name').value.trim();
-    var email = $('shop-customer-email').value.trim();
     var phone = $('shop-customer-phone').value.trim();
     var err = $('shop-form-error');
 
-    if (!name || !email || !phone) {
+    if (!name || !phone) {
       if (err) err.textContent = 'Please complete all fields.';
       return null;
     }
-    if (!$('shop-customer-email').checkValidity()) {
-      if (err) err.textContent = 'Please enter a valid email address.';
-      return null;
-    }
     if (err) err.textContent = '';
-    return { name: name, email: email, phone: phone };
+    return { name: name, phone: phone };
   }
 
   function finalizeOrder(customer, paymentMethod, orderId) {
@@ -958,7 +951,6 @@
     state.order = {
       orderId: orderId || generateOrderId(),
       customerName: customer.name,
-      email: customer.email,
       phone: customer.phone,
       productName: item.name,
       variant: item.variantLabel,
@@ -986,7 +978,6 @@
     return {
       orderId: generateOrderId(),
       customerName: state.customer.name,
-      email: state.customer.email,
       phone: state.customer.phone,
       productName: item.name,
       variant: item.variantLabel,

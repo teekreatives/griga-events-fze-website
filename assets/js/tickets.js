@@ -94,7 +94,7 @@
     state.customer = null;
     state.paymentMethod = preselectedMethod || null;
 
-    ['ticket-customer-name', 'ticket-customer-email', 'ticket-customer-phone'].forEach(function (id) {
+    ['ticket-customer-name', 'ticket-customer-phone'].forEach(function (id) {
       var field = $(id);
       if (field) field.value = '';
     });
@@ -406,9 +406,7 @@
       TICKET_PAYMENTS.formatAmount(o.total, o.currency) +
       '</span></div>' +
       '</div>' +
-      '<p class="shop-confirmation-notice">Your ticket with QR verification will be sent to <strong>' +
-      o.email +
-      '</strong> once payment is verified.</p>' +
+      '<p class="shop-confirmation-notice">Your ticket with QR verification will be sent via <strong>WhatsApp</strong> once payment is verified.</p>' +
       '<div class="shop-confirmation-actions">' +
       (isStripe
         ? '<a href="' +
@@ -433,20 +431,15 @@
 
   function validateStep1() {
     var name = $('ticket-customer-name').value.trim();
-    var email = $('ticket-customer-email').value.trim();
     var phone = $('ticket-customer-phone').value.trim();
     var err = $('ticket-form-error');
 
-    if (!name || !email || !phone) {
+    if (!name || !phone) {
       if (err) err.textContent = 'Please complete all fields.';
       return null;
     }
-    if (!$('ticket-customer-email').checkValidity()) {
-      if (err) err.textContent = 'Please enter a valid email address.';
-      return null;
-    }
     if (err) err.textContent = '';
-    return { name: name, email: email, phone: phone };
+    return { name: name, phone: phone };
   }
 
   function buildOrderPayload() {
@@ -455,7 +448,6 @@
     return {
       orderId: generateOrderId(),
       customerName: state.customer.name,
-      email: state.customer.email,
       phone: state.customer.phone,
       eventName: TICKET_PAYMENTS.eventName,
       quantity: state.quantity,
@@ -471,7 +463,6 @@
     state.order = {
       orderId: orderId || generateOrderId(),
       customerName: customer.name,
-      email: customer.email,
       phone: customer.phone,
       eventName: TICKET_PAYMENTS.eventName,
       quantity: state.quantity,

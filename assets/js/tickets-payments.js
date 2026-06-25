@@ -240,9 +240,6 @@
       'Phone: ' +
       order.phone +
       '\n' +
-      'Email: ' +
-      order.email +
-      '\n' +
       'Tickets: ' +
       order.quantity +
       '\n' +
