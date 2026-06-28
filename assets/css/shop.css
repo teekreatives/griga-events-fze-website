@@ -977,6 +977,10 @@ body.shop-body {
   gap: 12px;
 }
 
+.shop-payment-card[hidden] {
+  display: none !important;
+}
+
 .shop-payment-card {
   position: relative;
   padding: 1.25rem;
