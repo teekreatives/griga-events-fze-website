@@ -196,6 +196,28 @@
       methodId === 'stripe'
         ? "I'm attaching my Stripe payment confirmation.\n"
         : "I'm attaching a screenshot to proof the payment.\n";
+
+    var items = order.items || [];
+    var itemsBlock = items
+      .map(function (it, i) {
+        var line =
+          i +
+          1 +
+          '. ' +
+          it.name +
+          ' — ' +
+          it.variant +
+          ' · Size ' +
+          it.size +
+          ' · Qty ' +
+          it.quantity;
+        if (typeof it.price === 'number') {
+          line += ' · ' + formatAmount(it.price * it.quantity, it.currency || order.currency || 'AED');
+        }
+        return line;
+      })
+      .join('\n');
+
     return (
       'Hello, I have paid for my merchandise order via ' +
       (method ? method.label : methodId) +
@@ -206,19 +228,10 @@
       'Phone: ' +
       order.phone +
       '\n' +
-      'Product: ' +
-      order.productName +
+      'Items:\n' +
+      itemsBlock +
       '\n' +
-      'Variant: ' +
-      order.variant +
-      '\n' +
-      'Size: ' +
-      order.size +
-      '\n' +
-      'Quantity: ' +
-      order.quantity +
-      '\n' +
-      'Amount: ' +
+      'Total: ' +
       amount +
       '\n' +
       'Order ID: ' +

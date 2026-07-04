@@ -152,6 +152,46 @@ body.shop-body {
   padding: clamp(48px, 6vw, 80px) 0;
 }
 
+/* Product filters */
+.shop-filter-bar {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+  margin: 0 0 clamp(28px, 4vw, 44px);
+}
+
+.shop-filter-bar[hidden] {
+  display: none;
+}
+
+.shop-filter-chip {
+  padding: 10px 22px;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  border-radius: 999px;
+  background: var(--color-white);
+  color: var(--color-black-soft);
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  cursor: pointer;
+  transition: background 0.25s ease, border-color 0.25s ease, color 0.25s ease,
+    transform 0.2s ease, box-shadow 0.25s ease;
+}
+
+.shop-filter-chip:hover {
+  border-color: var(--color-black);
+  transform: translateY(-1px);
+}
+
+.shop-filter-chip.is-active {
+  background: var(--color-black);
+  color: #fff;
+  border-color: var(--color-black);
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.15);
+}
+
 .shop-reveal {
   animation: shopReveal 0.75s ease forwards;
 }
@@ -967,6 +1007,33 @@ body.shop-body {
 
 .shop-order-review-row span:first-child {
   color: #666;
+}
+
+.shop-order-review-item {
+  padding-bottom: 0.35rem;
+  margin-bottom: 0.35rem;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.shop-order-review-item:last-of-type {
+  border-bottom: none;
+  margin-bottom: 0;
+}
+
+/* Keep per-item subtotal rows at normal weight; only the grand total is emphasised */
+.shop-order-review-item .shop-order-review-row:last-child {
+  font-weight: 400;
+  font-size: 0.95rem;
+  padding-top: 0.5rem;
+  margin-top: 0;
+}
+
+.shop-order-review-row--total {
+  font-weight: 700;
+  font-size: 1.1rem;
+  padding-top: 0.75rem;
+  margin-top: 0.25rem;
+  border-top: 1px solid rgba(0, 0, 0, 0.12);
 }
 
 /* Payment methods */

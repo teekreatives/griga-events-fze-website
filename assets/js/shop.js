@@ -46,6 +46,51 @@
     return images[state.galleryIndex] || images[0];
   }
 
+  function getCurrentVariant() {
+    if (!state.product) return null;
+    return (
+      state.product.variants.find(function (v) {
+        return v.id === state.variant;
+      }) || state.product.variants[0]
+    );
+  }
+
+  function getVariantSizes() {
+    var variant = getCurrentVariant();
+    if (variant && variant.sizes) return variant.sizes;
+    return state.product ? state.product.sizes : [];
+  }
+
+  function buildSizeButtonsHtml() {
+    return getVariantSizes()
+      .map(function (s) {
+        return (
+          '<button type="button" class="shop-size-btn' +
+          (s === state.size ? ' is-active' : '') +
+          '" data-size="' +
+          s +
+          '" role="radio" aria-checked="' +
+          (s === state.size) +
+          '">' +
+          s +
+          '</button>'
+        );
+      })
+      .join('');
+  }
+
+  function bindSizeButtons() {
+    document.querySelectorAll('.shop-size-btn').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        state.size = btn.dataset.size;
+        document.querySelectorAll('.shop-size-btn').forEach(function (b) {
+          b.classList.toggle('is-active', b === btn);
+          b.setAttribute('aria-checked', b === btn ? 'true' : 'false');
+        });
+      });
+    });
+  }
+
   function saveCart() {
     try {
       localStorage.setItem(CART_KEY, JSON.stringify(state.cart));
@@ -304,6 +349,30 @@
 
     var images = getVariantImages();
 
+    var variantFieldsetHtml =
+      p.variants.length > 1
+        ? '<fieldset class="shop-variant-fieldset">' +
+          '<span class="shop-field-label">Style</span>' +
+          '<div class="shop-variant-group" role="radiogroup" aria-label="Product style">' +
+          p.variants
+            .map(function (v) {
+              return (
+                '<button type="button" class="shop-variant-btn' +
+                (v.id === state.variant ? ' is-active' : '') +
+                '" data-variant="' +
+                v.id +
+                '" role="radio" aria-checked="' +
+                (v.id === state.variant) +
+                '">' +
+                v.label +
+                '</button>'
+              );
+            })
+            .join('') +
+          '</div>' +
+          '</fieldset>'
+        : '';
+
     els.productRoot.innerHTML =
       '<div class="shop-gallery shop-reveal" id="shop-gallery">' +
       '<div class="shop-gallery-main">' +
@@ -333,44 +402,11 @@
       '<p class="shop-product-desc">' +
       p.shortDescription +
       '</p>' +
-      '<fieldset class="shop-variant-fieldset">' +
-      '<span class="shop-field-label">Variant</span>' +
-      '<div class="shop-variant-group" role="radiogroup" aria-label="Jersey variant">' +
-      p.variants
-        .map(function (v) {
-          return (
-            '<button type="button" class="shop-variant-btn' +
-            (v.id === state.variant ? ' is-active' : '') +
-            '" data-variant="' +
-            v.id +
-            '" role="radio" aria-checked="' +
-            (v.id === state.variant) +
-            '">' +
-            v.label +
-            '</button>'
-          );
-        })
-        .join('') +
-      '</div>' +
-      '</fieldset>' +
+      variantFieldsetHtml +
       '<fieldset class="shop-size-fieldset">' +
       '<span class="shop-field-label">Size</span>' +
-      '<div class="shop-size-group" role="radiogroup" aria-label="Jersey size">' +
-      p.sizes
-        .map(function (s) {
-          return (
-            '<button type="button" class="shop-size-btn' +
-            (s === state.size ? ' is-active' : '') +
-            '" data-size="' +
-            s +
-            '" role="radio" aria-checked="' +
-            (s === state.size) +
-            '">' +
-            s +
-            '</button>'
-          );
-        })
-        .join('') +
+      '<div class="shop-size-group" role="radiogroup" aria-label="Size">' +
+      buildSizeButtonsHtml() +
       '</div>' +
       '</fieldset>' +
       '<div class="shop-qty-row">' +
@@ -401,6 +437,74 @@
     preloadNearbySlides(state.galleryIndex);
   }
 
+  function switchProduct(productId, doScroll) {
+    var product = SHOP_CATALOG.getProductById(productId);
+    if (!product || product === state.product) return;
+
+    if (state.gallerySwiper) {
+      state.gallerySwiper.destroy(true, true);
+      state.gallerySwiper = null;
+    }
+
+    state.product = product;
+    state.variant = product.defaultVariant || product.variants[0].id;
+    state.size = null;
+    state.quantity = 1;
+    state.galleryIndex = 0;
+
+    renderProduct();
+    renderInfoCards();
+    updateActiveFilter();
+    if (doScroll) scrollToGallery();
+  }
+
+  function renderFilters() {
+    var bar = $('shop-filter-bar');
+    if (!bar || !SHOP_CATALOG.getCategories) return;
+
+    var cats = SHOP_CATALOG.getCategories();
+    if (cats.length <= 1) {
+      bar.hidden = true;
+      return;
+    }
+
+    bar.innerHTML = cats
+      .map(function (c) {
+        var prod = SHOP_CATALOG.products.filter(function (p) {
+          return p.category === c.id;
+        })[0];
+        var active = !!(state.product && state.product.category === c.id);
+        return (
+          '<button type="button" class="shop-filter-chip' +
+          (active ? ' is-active' : '') +
+          '" data-product="' +
+          (prod ? prod.id : '') +
+          '" data-category="' +
+          c.id +
+          '" role="tab" aria-selected="' +
+          active +
+          '">' +
+          c.label +
+          '</button>'
+        );
+      })
+      .join('');
+
+    bar.querySelectorAll('.shop-filter-chip').forEach(function (chip) {
+      chip.addEventListener('click', function () {
+        switchProduct(chip.dataset.product, true);
+      });
+    });
+  }
+
+  function updateActiveFilter() {
+    document.querySelectorAll('.shop-filter-chip').forEach(function (chip) {
+      var active = !!(state.product && chip.dataset.category === state.product.category);
+      chip.classList.toggle('is-active', active);
+      chip.setAttribute('aria-selected', active ? 'true' : 'false');
+    });
+  }
+
   function bindProductEvents() {
     document.querySelectorAll('.shop-variant-btn').forEach(function (btn) {
       btn.addEventListener('click', function () {
@@ -410,6 +514,12 @@
           b.classList.toggle('is-active', b === btn);
           b.setAttribute('aria-checked', b === btn ? 'true' : 'false');
         });
+        state.size = null;
+        var sizeGroup = document.querySelector('.shop-size-group');
+        if (sizeGroup) {
+          sizeGroup.innerHTML = buildSizeButtonsHtml();
+          bindSizeButtons();
+        }
         if (state.gallerySwiper) {
           state.gallerySwiper.destroy(true, true);
           state.gallerySwiper = null;
@@ -425,15 +535,7 @@
       });
     });
 
-    document.querySelectorAll('.shop-size-btn').forEach(function (btn) {
-      btn.addEventListener('click', function () {
-        state.size = btn.dataset.size;
-        document.querySelectorAll('.shop-size-btn').forEach(function (b) {
-          b.classList.toggle('is-active', b === btn);
-          b.setAttribute('aria-checked', b === btn ? 'true' : 'false');
-        });
-      });
-    });
+    bindSizeButtons();
 
     var minus = $('shop-qty-minus');
     var plus = $('shop-qty-plus');
@@ -840,31 +942,45 @@
     var container = $('shop-order-review');
     if (!container || !state.cart.length) return;
 
-    var item = state.cart[0];
     var total = cartSubtotal();
 
+    var itemsHtml = state.cart
+      .map(function (item) {
+        return (
+          '<div class="shop-order-review-item">' +
+          '<div class="shop-order-review-row shop-order-review-row--product">' +
+          '<span class="shop-order-review-label">Product</span>' +
+          '<span class="shop-order-review-value">' +
+          item.name +
+          '</span></div>' +
+          '<div class="shop-order-review-row">' +
+          '<span class="shop-order-review-label">Variant</span>' +
+          '<span class="shop-order-review-value">' +
+          item.variantLabel +
+          '</span></div>' +
+          '<div class="shop-order-review-row">' +
+          '<span class="shop-order-review-label">Size</span>' +
+          '<span class="shop-order-review-value">' +
+          item.size +
+          '</span></div>' +
+          '<div class="shop-order-review-row">' +
+          '<span class="shop-order-review-label">Quantity</span>' +
+          '<span class="shop-order-review-value">' +
+          item.quantity +
+          '</span></div>' +
+          '<div class="shop-order-review-row">' +
+          '<span class="shop-order-review-label">Subtotal</span>' +
+          '<span class="shop-order-review-value">' +
+          formatPrice(item.price * item.quantity) +
+          '</span></div>' +
+          '</div>'
+        );
+      })
+      .join('');
+
     container.innerHTML =
-      '<div class="shop-order-review-row shop-order-review-row--product">' +
-      '<span class="shop-order-review-label">Product</span>' +
-      '<span class="shop-order-review-value">' +
-      item.name +
-      '</span></div>' +
-      '<div class="shop-order-review-row">' +
-      '<span class="shop-order-review-label">Variant</span>' +
-      '<span class="shop-order-review-value">' +
-      item.variantLabel +
-      '</span></div>' +
-      '<div class="shop-order-review-row">' +
-      '<span class="shop-order-review-label">Size</span>' +
-      '<span class="shop-order-review-value">' +
-      item.size +
-      '</span></div>' +
-      '<div class="shop-order-review-row">' +
-      '<span class="shop-order-review-label">Quantity</span>' +
-      '<span class="shop-order-review-value">' +
-      item.quantity +
-      '</span></div>' +
-      '<div class="shop-order-review-row">' +
+      itemsHtml +
+      '<div class="shop-order-review-row shop-order-review-row--total">' +
       '<span class="shop-order-review-label">Total</span>' +
       '<span class="shop-order-review-value">' +
       formatPrice(total) +
@@ -896,14 +1012,21 @@
       '<div><strong>Customer</strong><span>' +
       o.customerName +
       '</span></div>' +
-      '<div><strong>Product</strong><span>' +
-      o.productName +
-      '</span></div>' +
-      '<div><strong>Variant</strong><span>' +
-      o.variant +
-      ' · Size ' +
-      o.size +
-      '</span></div>' +
+      (o.items || [])
+        .map(function (it) {
+          return (
+            '<div><strong>Item</strong><span>' +
+            it.name +
+            ' — ' +
+            it.variant +
+            ' · Size ' +
+            it.size +
+            ' · Qty ' +
+            it.quantity +
+            '</span></div>'
+          );
+        })
+        .join('') +
       '<div><strong>Payment</strong><span>' +
       getPaymentMethodLabel(o.paymentMethod) +
       '</span></div>' +
@@ -947,17 +1070,14 @@
   }
 
   function finalizeOrder(customer, paymentMethod, orderId) {
-    var item = state.cart[0];
     state.order = {
       orderId: orderId || generateOrderId(),
       customerName: customer.name,
       phone: customer.phone,
-      productName: item.name,
-      variant: item.variantLabel,
-      size: item.size,
-      quantity: item.quantity,
+      items: cartToOrderItems(),
+      itemCount: cartCount(),
       total: cartSubtotal(),
-      currency: item.currency || 'AED',
+      currency: (state.cart[0] && state.cart[0].currency) || 'AED',
       paymentMethod: paymentMethod,
       createdAt: new Date().toISOString()
     };
@@ -971,20 +1091,30 @@
     renderCheckoutStep();
   }
 
+  function cartToOrderItems() {
+    return state.cart.map(function (it) {
+      return {
+        name: it.name,
+        variant: it.variantLabel,
+        size: it.size,
+        quantity: it.quantity,
+        price: it.price,
+        currency: it.currency || 'AED'
+      };
+    });
+  }
+
   function buildOrderPayload() {
-    var item = state.cart[0];
-    if (!item) return null;
+    if (!state.cart.length) return null;
 
     return {
       orderId: generateOrderId(),
       customerName: state.customer.name,
       phone: state.customer.phone,
-      productName: item.name,
-      variant: item.variantLabel,
-      size: item.size,
-      quantity: item.quantity,
+      items: cartToOrderItems(),
+      itemCount: cartCount(),
       total: cartSubtotal(),
-      currency: item.currency || 'AED'
+      currency: (state.cart[0] && state.cart[0].currency) || 'AED'
     };
   }
 
@@ -1112,6 +1242,7 @@
     els.toast = $('shop-toast');
 
     renderProduct();
+    renderFilters();
     renderInfoCards();
     updateCartUI();
 
