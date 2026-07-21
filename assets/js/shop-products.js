@@ -11,6 +11,7 @@
   var JERSEY_BASE = 'assets/media/shop/jerseys/';
   var CROP_BASE = 'assets/media/shop/crop tops/';
   var KIDS_BASE = 'assets/media/shop/kids merch/';
+  var HOODIE_BASE = 'assets/media/shop/hoodies/';
 
   function jerseyImg(fileBase, alt) {
     return {
@@ -32,6 +33,14 @@
     return {
       src: KIDS_BASE + 'optimized/' + fileBase + '.webp',
       thumb: KIDS_BASE + 'thumbs/' + fileBase + '.webp',
+      alt: alt
+    };
+  }
+
+  function hoodieImg(fileBase, alt) {
+    return {
+      src: HOODIE_BASE + 'optimized/' + fileBase + '.webp',
+      thumb: HOODIE_BASE + 'thumbs/' + fileBase + '.webp',
       alt: alt
     };
   }
@@ -130,6 +139,55 @@
           'Official Where There\'s Smoke crop top with a fitted cut and premium print. Perfect for festival nights and everyday styling.',
         availableSizes:
           'Available in S, M, and L. Fitted crop cut. Refer to our size guide or contact support for fit recommendations.',
+        delivery: DELIVERY_INFO,
+        returns: RETURNS_INFO
+      }
+    },
+    {
+      id: 'wts-hoodie',
+      slug: 'where-theres-smoke-hoodie',
+      name: "Where There's Smoke Hoodie",
+      category: 'hoodies',
+      categoryLabel: 'Hoodies',
+      price: 100,
+      currency: 'AED',
+      shortDescription:
+        'A premium hoodie for the SMOKE community — cosy, bold, and built for cooler nights.',
+      inStock: true,
+      sizes: ['S', 'M', 'L', 'XL', 'XXL', 'XXXL'],
+      defaultVariant: 'black',
+      heroImage: hoodieImg('black-hoodie-1', "Where There's Smoke hoodie").src,
+      variants: [
+        {
+          id: 'black',
+          label: 'Black',
+          sizes: ['S', 'M', 'L', 'XL', 'XXL', 'XXXL'],
+          images: [
+            hoodieImg('black-hoodie-1', "Where There's Smoke black hoodie – front view"),
+            hoodieImg('black-hoodie-2', "Where There's Smoke black hoodie – alternate view"),
+            hoodieImg('black-hoodie-3', "Where There's Smoke black hoodie – detail"),
+            hoodieImg('black-hoodie-4', "Where There's Smoke black hoodie – back view"),
+            hoodieImg('black-hoodie-5', "Where There's Smoke black hoodie – full view")
+          ]
+        },
+        {
+          id: 'white',
+          label: 'White',
+          sizes: ['S', 'M', 'L', 'XL', 'XXL', 'XXXL'],
+          images: [
+            hoodieImg('white-hoodie-1', "Where There's Smoke white hoodie – front view"),
+            hoodieImg('white-hoodie-2', "Where There's Smoke white hoodie – alternate view"),
+            hoodieImg('white-hoodie-3', "Where There's Smoke white hoodie – detail"),
+            hoodieImg('white-hoodie-4', "Where There's Smoke white hoodie – back view"),
+            hoodieImg('white-hoodie-5', "Where There's Smoke white hoodie – full view")
+          ]
+        }
+      ],
+      infoCards: {
+        productDetails:
+          'Official Where There\'s Smoke hoodie with premium branding. Soft, warm fabric in Black and White colourways.',
+        availableSizes:
+          'Available in S through XXXL, in Black and White. Refer to our size guide or contact support for fit recommendations.',
         delivery: DELIVERY_INFO,
         returns: RETURNS_INFO
       }
