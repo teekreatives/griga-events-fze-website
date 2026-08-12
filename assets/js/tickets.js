@@ -10,7 +10,9 @@
     checkoutStep: 1,
     paymentMethod: null,
     order: null,
-    customer: null
+    customer: null,
+    mpesaOrderRef: null,
+    mpesaReceipt: null
   };
 
   function $(id) {
@@ -93,6 +95,8 @@
     state.order = null;
     state.customer = null;
     state.paymentMethod = preselectedMethod || null;
+    state.mpesaOrderRef = null;
+    state.mpesaReceipt = null;
 
     ['ticket-customer-name', 'ticket-customer-phone'].forEach(function (id) {
       var field = $(id);
@@ -256,6 +260,11 @@
         ? 'Copy IBAN'
         : 'Copy Number';
 
+    var stkSlot =
+      method.id === 'mpesa' && window.GRIGA_MPESA_STK && GRIGA_MPESA_STK.isEnabled()
+        ? '<div id="ticket-mpesa-stk"></div>'
+        : '';
+
     panel.innerHTML =
       '<article class="payment-option ' +
       method.cardClass +
@@ -274,11 +283,40 @@
       copyLabel +
       '</button>' +
       '</div>' +
+      stkSlot +
       '<p class="shop-payment-panel-note">After paying, click <strong>Send proof via WhatsApp</strong> below. We will verify and confirm your ticket.</p>' +
       '</article>';
 
     bindCopyPaymentButton();
+    attachMpesaStk();
     scrollToPaymentDetails();
+  }
+
+  function attachMpesaStk() {
+    var slot = $('ticket-mpesa-stk');
+    if (!slot || !window.GRIGA_MPESA_STK) return;
+
+    if (!state.mpesaOrderRef) {
+      state.mpesaOrderRef = TICKET_PAYMENTS.generateOrderId('MPESA');
+    }
+    var total = TICKET_PAYMENTS.getOrderTotal('mpesa', state.quantity);
+
+    GRIGA_MPESA_STK.attach({
+      container: slot,
+      idPrefix: 'ticket',
+      amountKsh: total.amount,
+      amountLabel: TICKET_PAYMENTS.formatAmount(total.amount, 'KSH'),
+      orderId: state.mpesaOrderRef,
+      source: 'tickets',
+      description: 'WTS8 Tickets',
+      paidReceipt: state.mpesaReceipt,
+      onSuccess: function (receipt) {
+        state.mpesaReceipt = receipt;
+        showToast('M-Pesa payment received!');
+        var nextBtn = $('ticket-checkout-next');
+        if (nextBtn) nextBtn.textContent = 'Confirm order via WhatsApp';
+      }
+    });
   }
 
   function bindStripePayButton() {
@@ -446,13 +484,15 @@
     if (!state.customer || !window.TICKET_PAYMENTS) return null;
     var total = TICKET_PAYMENTS.getOrderTotal(state.paymentMethod, state.quantity);
     return {
-      orderId: generateOrderId(),
+      orderId:
+        state.paymentMethod === 'mpesa' && state.mpesaOrderRef ? state.mpesaOrderRef : generateOrderId(),
       customerName: state.customer.name,
       phone: state.customer.phone,
       eventName: TICKET_PAYMENTS.eventName,
       quantity: state.quantity,
       total: total.amount,
-      currency: total.currency
+      currency: total.currency,
+      mpesaReceipt: state.paymentMethod === 'mpesa' ? state.mpesaReceipt : null
     };
   }
 

@@ -14,7 +14,7 @@
   <link rel="canonical" href="https://grigaeventsfze.com/tickets.html" />
   <link rel="stylesheet" href="https://unpkg.com/aos@2.3.4/dist/aos.css" />
   <link rel="stylesheet" href="assets/css/style.css?v=20260812.1" />
-  <link rel="stylesheet" href="assets/css/tickets.css?v=20260812.1" />
+  <link rel="stylesheet" href="assets/css/tickets.css?v=20260812.2" />
   <link rel="stylesheet" href="assets/css/shop.css?v=20250607.21" />
   <link rel="icon" href="assets/media/logos/fav.jpg" type="image/jpeg" />
 </head>
@@ -305,7 +305,13 @@
 
   <script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
   <script src="assets/js/main.js?v=20250608.1"></script>
-  <script src="assets/js/tickets-payments.js?v=20250607.8"></script>
-  <script src="assets/js/tickets.js?v=20250607.17"></script>
+  <script>
+    // Set this to the deployed backend URL to enable automatic M-Pesa STK push payments.
+    // Leave commented out to keep the manual pay + WhatsApp-proof flow only.
+    // window.GRIGA_MPESA_API_ORIGIN = 'https://api.grigaeventsfze.com';
+  </script>
+  <script src="assets/js/mpesa-stk.js?v=20260812.1"></script>
+  <script src="assets/js/tickets-payments.js?v=20260812.1"></script>
+  <script src="assets/js/tickets.js?v=20260812.1"></script>
 </body>
 </html>

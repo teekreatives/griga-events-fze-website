@@ -5,6 +5,13 @@
 (function (global) {
   var STRIPE_CHECKOUT_URL = 'https://buy.stripe.com/4gM4gBaYyeRYbyee8G3oA03';
   var WHATSAPP_NUMBER = '971522184531';
+  // Rate used to charge shop orders (priced in AED) via M-Pesa STK push.
+  // Update this when the AED -> KES exchange rate shifts materially.
+  var MPESA_KES_PER_AED = 35;
+
+  function getMpesaAmountKsh(totalAed) {
+    return Math.ceil(Number(totalAed) * MPESA_KES_PER_AED);
+  }
 
   var METHODS = {
     stripe: {
@@ -196,6 +203,11 @@
       methodId === 'stripe'
         ? "I'm attaching my Stripe payment confirmation.\n"
         : "I'm attaching a screenshot to proof the payment.\n";
+    var receiptLine = '';
+    if (order.mpesaReceipt) {
+      receiptLine = 'M-Pesa Receipt: ' + order.mpesaReceipt + '\n';
+      proofLine = 'Payment was confirmed automatically via M-Pesa.\n';
+    }
 
     var items = order.items || [];
     var itemsBlock = items
@@ -237,6 +249,7 @@
       'Order ID: ' +
       order.orderId +
       '\n' +
+      receiptLine +
       proofLine +
       'Kindly confirm and send my order details. Thank you.'
     );
@@ -252,6 +265,7 @@
     methods: METHODS,
     getMethod: getMethod,
     formatAmount: formatAmount,
+    getMpesaAmountKsh: getMpesaAmountKsh,
     buildWhatsAppMessage: buildWhatsAppMessage,
     generateManualOrderId: generateManualOrderId
   };

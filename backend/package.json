@@ -4,7 +4,11 @@
   "description": "This lightweight Node.js backend handles Stripe webhook events, generates QR-based tickets, and sends confirmation emails.",
   "main": "index.js",
   "scripts": {
+    "start": "node index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "engines": {
+    "node": ">=18"
   },
   "keywords": [],
   "author": "",

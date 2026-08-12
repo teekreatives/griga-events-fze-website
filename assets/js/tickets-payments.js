@@ -230,6 +230,11 @@
       methodId === 'stripe'
         ? "I'm attaching my Stripe payment confirmation.\n"
         : "I'm attaching a screenshot to proof the payment.\n";
+    var receiptLine = '';
+    if (order.mpesaReceipt) {
+      receiptLine = 'M-Pesa Receipt: ' + order.mpesaReceipt + '\n';
+      proofLine = 'Payment was confirmed automatically via M-Pesa.\n';
+    }
     return (
       'Hello, I have paid for my ticket via ' +
       (method ? method.label : methodId) +
@@ -249,6 +254,7 @@
       'Order ID: ' +
       order.orderId +
       '\n' +
+      receiptLine +
       proofLine +
       'Kindly confirm and send my ticket. Thank you.'
     );

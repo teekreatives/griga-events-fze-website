@@ -17,7 +17,9 @@
     checkoutStep: 1,
     paymentMethod: null,
     order: null,
-    gallerySwiper: null
+    gallerySwiper: null,
+    mpesaOrderRef: null,
+    mpesaReceipt: null
   };
 
   var els = {};
@@ -704,6 +706,8 @@
     state.paymentMethod = null;
     state.order = null;
     state.customer = null;
+    state.mpesaOrderRef = null;
+    state.mpesaReceipt = null;
     var panel = $('shop-payment-detail-panel');
     if (panel) {
       panel.innerHTML = '';
@@ -859,6 +863,11 @@
         ? 'Copy IBAN'
         : 'Copy Number';
 
+    var stkSlot =
+      method.id === 'mpesa' && window.GRIGA_MPESA_STK && GRIGA_MPESA_STK.isEnabled()
+        ? '<div id="shop-mpesa-stk"></div>'
+        : '';
+
     panel.innerHTML =
       '<article class="payment-option ' +
       method.cardClass +
@@ -877,11 +886,40 @@
       copyLabel +
       '</button>' +
       '</div>' +
+      stkSlot +
       '<p class="shop-payment-panel-note">After paying, click <strong>Send proof via WhatsApp</strong> below. We will verify and confirm your order.</p>' +
       '</article>';
 
     bindCopyPaymentButton();
+    attachMpesaStk();
     scrollToPaymentDetails();
+  }
+
+  function attachMpesaStk() {
+    var slot = $('shop-mpesa-stk');
+    if (!slot || !window.GRIGA_MPESA_STK || !window.SHOP_PAYMENTS) return;
+
+    if (!state.mpesaOrderRef) {
+      state.mpesaOrderRef = SHOP_PAYMENTS.generateManualOrderId('MPESA');
+    }
+    var amountKsh = SHOP_PAYMENTS.getMpesaAmountKsh(cartSubtotal());
+
+    GRIGA_MPESA_STK.attach({
+      container: slot,
+      idPrefix: 'shop',
+      amountKsh: amountKsh,
+      amountLabel: 'KSH ' + Number(amountKsh).toLocaleString('en-KE'),
+      orderId: state.mpesaOrderRef,
+      source: 'shop',
+      description: 'GRIGA Merch',
+      paidReceipt: state.mpesaReceipt,
+      onSuccess: function (receipt) {
+        state.mpesaReceipt = receipt;
+        showToast('M-Pesa payment received!');
+        var nextBtn = $('shop-checkout-next');
+        if (nextBtn) nextBtn.textContent = 'Confirm order via WhatsApp';
+      }
+    });
   }
 
   function bindStripePayButton() {
@@ -1108,13 +1146,15 @@
     if (!state.cart.length) return null;
 
     return {
-      orderId: generateOrderId(),
+      orderId:
+        state.paymentMethod === 'mpesa' && state.mpesaOrderRef ? state.mpesaOrderRef : generateOrderId(),
       customerName: state.customer.name,
       phone: state.customer.phone,
       items: cartToOrderItems(),
       itemCount: cartCount(),
       total: cartSubtotal(),
-      currency: (state.cart[0] && state.cart[0].currency) || 'AED'
+      currency: (state.cart[0] && state.cart[0].currency) || 'AED',
+      mpesaReceipt: state.paymentMethod === 'mpesa' ? state.mpesaReceipt : null
     };
   }
 
