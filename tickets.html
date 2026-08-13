@@ -14,7 +14,7 @@
   <link rel="canonical" href="https://grigaeventsfze.com/tickets.html" />
   <link rel="stylesheet" href="https://unpkg.com/aos@2.3.4/dist/aos.css" />
   <link rel="stylesheet" href="assets/css/style.css?v=20260812.1" />
-  <link rel="stylesheet" href="assets/css/tickets.css?v=20260812.2" />
+  <link rel="stylesheet" href="assets/css/tickets.css?v=20260813.1" />
   <link rel="stylesheet" href="assets/css/shop.css?v=20250607.21" />
   <link rel="icon" href="assets/media/logos/fav.jpg" type="image/jpeg" />
 </head>
@@ -163,6 +163,7 @@
             <label>
               Phone Number
               <input type="tel" id="ticket-customer-phone" name="phone" placeholder="e.g. +971 50 123 4567" autocomplete="tel" required />
+              <span class="shop-form-hint">Paying via M-Pesa? Enter your M-Pesa number here.</span>
             </label>
             <p class="shop-form-error" id="ticket-form-error" aria-live="polite"></p>
           </form>
@@ -174,6 +175,12 @@
         <div class="shop-checkout-step" data-step="3">
           <h3 style="margin-top:0;font-size:1rem;text-transform:uppercase;letter-spacing:0.1em;">Select Payment Method</h3>
           <div class="shop-payment-grid" role="radiogroup" aria-label="Payment methods">
+            <label class="shop-payment-card shop-payment-card--mpesa">
+              <input type="radio" name="ticket-payment" value="mpesa" />
+              <img class="shop-payment-card-logo" src="/assets/media/logos/m-pesa-logo.png" alt="M-Pesa logo" />
+              <h4>M-Pesa</h4>
+              <p>Instant payment prompt on your phone</p>
+            </label>
             <label class="shop-payment-card shop-payment-card--stripe">
               <input type="radio" name="ticket-payment" value="stripe" />
               <div class="shop-payment-card-logo shop-payment-card-logo--text" aria-hidden="true">
@@ -183,12 +190,6 @@
               </div>
               <h4>Stripe Card Payment</h4>
               <p>Secure credit &amp; debit card checkout</p>
-            </label>
-            <label class="shop-payment-card shop-payment-card--mpesa">
-              <input type="radio" name="ticket-payment" value="mpesa" />
-              <img class="shop-payment-card-logo" src="/assets/media/logos/m-pesa-logo.png" alt="M-Pesa logo" />
-              <h4>M-Pesa</h4>
-              <p>Mobile money payment</p>
             </label>
             <label class="shop-payment-card shop-payment-card--botim">
               <input type="radio" name="ticket-payment" value="botim" />
@@ -310,8 +311,8 @@
     // Comment this line out to fall back to the manual pay + WhatsApp-proof flow only.
     window.GRIGA_MPESA_API_ORIGIN = 'https://griga-events-fze-website.onrender.com';
   </script>
-  <script src="assets/js/mpesa-stk.js?v=20260812.1"></script>
+  <script src="assets/js/mpesa-stk.js?v=20260813.1"></script>
   <script src="assets/js/tickets-payments.js?v=20260812.1"></script>
-  <script src="assets/js/tickets.js?v=20260812.1"></script>
+  <script src="assets/js/tickets.js?v=20260813.1"></script>
 </body>
 </html>

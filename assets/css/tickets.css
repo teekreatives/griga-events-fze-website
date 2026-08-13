@@ -480,6 +480,16 @@ body.tickets-body {
   color: #fefefe;
 }
 
+.shop-form-hint {
+  display: block;
+  margin-top: 0.35rem;
+  font-size: 0.78rem;
+  opacity: 0.75;
+  font-weight: 400;
+  text-transform: none;
+  letter-spacing: normal;
+}
+
 /* ── M-Pesa STK push (automatic payment) ── */
 
 .mpesa-stk {

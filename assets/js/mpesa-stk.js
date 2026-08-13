@@ -39,6 +39,8 @@
    *   orderId     – order reference
    *   source      – 'tickets' | 'shop'
    *   description – short transaction description
+   *   lead        – optional intro sentence above the input
+   *   prefillPhone – optional phone number to pre-fill (from checkout step 1)
    *   onSuccess(receipt) – called when payment is confirmed
    * }
    */
@@ -48,15 +50,23 @@
 
     var p = opts.idPrefix;
 
+    var lead =
+      opts.lead ||
+      'Or pay automatically: enter your M-Pesa number and we will send a payment request to your phone.';
+
     container.innerHTML =
       '<div class="mpesa-stk">' +
-      '<p class="mpesa-stk-lead">Or pay automatically: enter your M-Pesa number and we will send a payment request to your phone.</p>' +
+      '<p class="mpesa-stk-lead">' + lead + '</p>' +
       '<div class="mpesa-stk-row">' +
       '<input type="tel" id="' + p + '-mpesa-phone" class="mpesa-stk-input" inputmode="tel" placeholder="e.g. 0712 345 678" autocomplete="tel" />' +
       '<button type="button" class="btn btn-primary mpesa-stk-btn" id="' + p + '-mpesa-pay">Pay ' + opts.amountLabel + ' via M-Pesa</button>' +
       '</div>' +
       '<p class="mpesa-stk-status" id="' + p + '-mpesa-status" role="status" aria-live="polite"></p>' +
       '</div>';
+
+    if (opts.prefillPhone) {
+      document.getElementById(p + '-mpesa-phone').value = opts.prefillPhone;
+    }
 
     var phoneInput = document.getElementById(p + '-mpesa-phone');
     var payBtn = document.getElementById(p + '-mpesa-pay');
@@ -92,7 +102,7 @@
           stopPolling();
           payBtn.disabled = false;
           setStatus(
-            'We have not received a confirmation yet. If you completed the payment, send the proof via WhatsApp below.',
+            'We have not received a confirmation yet. Tap Pay to try again, or message us on WhatsApp if the amount was already deducted.',
             'warn'
           );
           return;
@@ -161,7 +171,7 @@
         })
         .catch(function () {
           payBtn.disabled = false;
-          setStatus('Could not reach the payment server. Please pay manually using the number above.', 'error');
+          setStatus('Could not reach the payment server. Check your connection and try again.', 'error');
         });
     });
   }

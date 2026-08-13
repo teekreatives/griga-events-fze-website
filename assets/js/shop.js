@@ -760,11 +760,7 @@
       nextBtn.classList.toggle('shop-whatsapp-proof-btn', showWhatsAppProof);
       if (state.checkoutStep === 3) {
         nextBtn.style.display = '';
-        if (state.paymentMethod) {
-          nextBtn.textContent = 'Send proof via WhatsApp';
-        } else {
-          nextBtn.textContent = 'Place Order';
-        }
+        nextBtn.textContent = getStep3NextLabel();
       } else if (state.checkoutStep >= 4) {
         nextBtn.style.display = 'none';
       } else {
@@ -772,6 +768,18 @@
         nextBtn.textContent = 'Continue';
       }
     }
+  }
+
+  function isStkActive() {
+    return !!(window.GRIGA_MPESA_STK && GRIGA_MPESA_STK.isEnabled());
+  }
+
+  function getStep3NextLabel() {
+    if (!state.paymentMethod) return 'Place Order';
+    if (state.paymentMethod === 'mpesa' && isStkActive()) {
+      return state.mpesaReceipt ? 'Confirm order via WhatsApp' : 'Complete M-Pesa Payment';
+    }
+    return 'Send proof via WhatsApp';
   }
 
   function getCheckoutAmountLabel() {
@@ -821,6 +829,36 @@
       return;
     }
 
+    // Automated M-Pesa (STK push) replaces the manual pay-and-send-proof flow.
+    if (method.id === 'mpesa' && isStkActive()) {
+      var amountKshLabel = window.SHOP_PAYMENTS && SHOP_PAYMENTS.getMpesaAmountKsh
+        ? 'KSH ' + Number(SHOP_PAYMENTS.getMpesaAmountKsh(cartSubtotal())).toLocaleString('en-KE')
+        : '';
+      panel.innerHTML =
+        '<article class="payment-option ' +
+        method.cardClass +
+        ' shop-checkout-payment">' +
+        '<div class="payment-option__heading">' +
+        '<img class="payment-option__logo" src="' +
+        method.logo +
+        '" alt="' +
+        (method.logoAlt || '') +
+        '" />' +
+        '<h3>' +
+        method.label +
+        '</h3></div>' +
+        '<dl class="payment-details">' +
+        '<div><dt>Order Total</dt><dd>' + amount + '</dd></div>' +
+        (amountKshLabel ? '<div><dt>Amount in KSH</dt><dd>' + amountKshLabel + '</dd></div>' : '') +
+        '</dl>' +
+        '<div id="shop-mpesa-stk"></div>' +
+        '<p class="shop-payment-panel-note">Once your payment is confirmed, click <strong>Confirm order via WhatsApp</strong> below and we will process your order.</p>' +
+        '</article>';
+      attachMpesaStk();
+      scrollToPaymentDetails();
+      return;
+    }
+
     var details = method.details ? method.details() : [];
     var detailsHtml = details
       .map(function (row) {
@@ -863,11 +901,6 @@
         ? 'Copy IBAN'
         : 'Copy Number';
 
-    var stkSlot =
-      method.id === 'mpesa' && window.GRIGA_MPESA_STK && GRIGA_MPESA_STK.isEnabled()
-        ? '<div id="shop-mpesa-stk"></div>'
-        : '';
-
     panel.innerHTML =
       '<article class="payment-option ' +
       method.cardClass +
@@ -886,12 +919,10 @@
       copyLabel +
       '</button>' +
       '</div>' +
-      stkSlot +
       '<p class="shop-payment-panel-note">After paying, click <strong>Send proof via WhatsApp</strong> below. We will verify and confirm your order.</p>' +
       '</article>';
 
     bindCopyPaymentButton();
-    attachMpesaStk();
     scrollToPaymentDetails();
   }
 
@@ -912,6 +943,8 @@
       orderId: state.mpesaOrderRef,
       source: 'shop',
       description: 'GRIGA Merch',
+      lead: 'Confirm your M-Pesa number below, then tap Pay. You will receive a payment request on your phone – just enter your M-Pesa PIN.',
+      prefillPhone: state.customer ? state.customer.phone : '',
       paidReceipt: state.mpesaReceipt,
       onSuccess: function (receipt) {
         state.mpesaReceipt = receipt;
@@ -1224,6 +1257,10 @@
     }
 
     if (state.checkoutStep === 3) {
+      if (state.paymentMethod === 'mpesa' && isStkActive() && !state.mpesaReceipt) {
+        showToast('Complete the M-Pesa payment on your phone first.');
+        return;
+      }
       processPayment();
     }
   }
