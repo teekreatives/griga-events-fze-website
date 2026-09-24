@@ -9,7 +9,7 @@
   var TICKET_PRICE_MPESA_KSH = 5500;
   var EVENT_NAME = "Where There's Smoke Edition 8";
   var EVENT_DATE = 'Saturday, 7 November 2026 · 6:00 PM – Dawn';
-  var EVENT_VENUE = 'HAMRIYA EAST AJMAN - DESERT OASIS CAMPS & LAND PARK';
+  var EVENT_VENUE = 'MOUNTAIN RESORT BY ESCAPE TIME';
 
   var METHODS = {
     stripe: {
