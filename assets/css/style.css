@@ -298,6 +298,18 @@ p {
   color: var(--color-white);
 }
 
+.btn-whatsapp-channel {
+  background: #25d366;
+  color: #fff;
+  border-color: #25d366;
+}
+
+.btn-whatsapp-channel:hover {
+  background: #1ebe57;
+  color: #fff;
+  border-color: #1ebe57;
+}
+
 .btn-lg {
   padding: 14px 32px;
 }
