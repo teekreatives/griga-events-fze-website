@@ -808,6 +808,8 @@ p {
   height: auto;
   max-height: none;
   object-fit: contain;
+  border: 5px solid var(--color-red);
+  box-sizing: border-box;
 }
 
 .sold-out-badge {
