@@ -308,6 +308,8 @@ p {
   background: #1ebe57;
   color: #fff;
   border-color: #1ebe57;
+  transform: translateY(-1px);
+  box-shadow: 0 12px 26px rgba(0, 0, 0, 0.12);
 }
 
 .btn-lg {
