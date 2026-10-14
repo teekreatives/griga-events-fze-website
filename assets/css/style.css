@@ -312,6 +312,34 @@ p {
   box-shadow: 0 12px 26px rgba(0, 0, 0, 0.12);
 }
 
+.btn-instagram {
+  background: #e1306c;
+  color: #fff;
+  border-color: #e1306c;
+}
+
+.btn-instagram:hover {
+  background: #c13584;
+  color: #fff;
+  border-color: #c13584;
+  transform: translateY(-1px);
+  box-shadow: 0 12px 26px rgba(0, 0, 0, 0.12);
+}
+
+.btn-tiktok {
+  background: #010101;
+  color: #fff;
+  border-color: #010101;
+}
+
+.btn-tiktok:hover {
+  background: #111;
+  color: #fff;
+  border-color: #111;
+  transform: translateY(-1px);
+  box-shadow: 0 12px 26px rgba(0, 0, 0, 0.12);
+}
+
 .btn-lg {
   padding: 14px 32px;
 }
@@ -529,9 +557,9 @@ p {
   align-items: center;
   gap: 14px;
   text-align: center;
-  width: min(960px, 95vw);
+  width: min(1040px, 96vw);
   margin: 18px auto 0;
-  padding: 0 clamp(20px, 5vw, 60px);
+  padding: 0 clamp(12px, 2vw, 24px);
   animation: heroCtaIn 0.8s ease 0.15s both;
 }
 
@@ -543,8 +571,133 @@ p {
 }
 
 .hero-cta-group .hero-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   justify-content: center;
-  margin-top: 0;
+  flex-wrap: nowrap;
+  gap: 18px;
+  width: 100%;
+  margin-top: 4px;
+}
+
+.hero-primary-action {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
+.hero-cta-group .hero-primary-action .btn {
+  width: auto;
+  min-width: 210px;
+  max-width: 100%;
+  height: 56px;
+  padding: 0 36px;
+  gap: 8px;
+  white-space: nowrap;
+}
+
+.hero-secondary-actions {
+  display: flex;
+  flex-wrap: nowrap;
+  justify-content: center;
+  align-items: stretch;
+  gap: 16px;
+  width: 100%;
+}
+
+.hero-cta-group .hero-secondary-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 210px;
+  min-width: 210px;
+  max-width: 210px;
+  height: 56px;
+  flex: 0 0 210px;
+  padding: 0 10px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  line-height: 1.1;
+  white-space: nowrap;
+}
+
+.hero-btn-icon {
+  width: 18px;
+  height: 18px;
+  flex: 0 0 18px;
+  display: block;
+}
+
+.hero-cta-group .btn:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 3px;
+}
+
+.hero-cta-group .btn:active {
+  transform: translateY(0);
+}
+
+@media (max-width: 1000px) {
+  .hero-secondary-actions {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 210px));
+    justify-content: center;
+    gap: 14px;
+    width: auto;
+    max-width: 100%;
+  }
+
+  .hero-cta-group .hero-secondary-btn {
+    width: 100%;
+    min-width: 0;
+    max-width: none;
+    flex: none;
+  }
+}
+
+@media (max-width: 520px) {
+  .hero-cta-group .hero-actions {
+    align-items: stretch;
+  }
+
+  .hero-cta-group .hero-primary-action .btn {
+    width: auto;
+    min-width: 0;
+    max-width: 100%;
+    align-self: center;
+  }
+
+  .hero-secondary-actions {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    width: 100%;
+    gap: 10px;
+  }
+
+  .hero-cta-group .hero-secondary-btn {
+    height: 52px;
+    padding: 0 6px;
+    font-size: 9px;
+    letter-spacing: 0;
+    gap: 5px;
+  }
+
+  .hero-btn-icon {
+    width: 15px;
+    height: 15px;
+    flex-basis: 15px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-cta-group .btn,
+  .hero-cta-group .btn:hover,
+  .hero-cta-group .btn:active {
+    transition: none;
+    transform: none;
+  }
 }
 
 @keyframes heroCtaIn {
