@@ -14,6 +14,12 @@
   }
 
   var METHODS = {
+    tabby: {
+      id: 'tabby',
+      type: 'tabby',
+      label: 'Tabby test',
+      cardClass: 'payment-option--tabby'
+    },
     stripe: {
       id: 'stripe',
       type: 'stripe',

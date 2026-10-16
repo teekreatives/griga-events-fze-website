@@ -88,6 +88,14 @@
     if (qtyInput) qtyInput.value = state.quantity;
     var totalEl = $('ticket-card-total');
     if (totalEl) totalEl.textContent = formatPriceAed(getDefaultTotal());
+    if (window.GRIGA_TABBY && GRIGA_TABBY.mountPromo) {
+      GRIGA_TABBY.mountPromo({
+        selector: '#griga-ticket-tabby-promo',
+        price: getDefaultTotal(),
+        source: 'product',
+        note: 'Split the price above into 4 payments with Tabby.'
+      });
+    }
   }
 
   function openCheckoutModal(preselectedMethod) {
@@ -98,12 +106,19 @@
     state.mpesaOrderRef = null;
     state.mpesaReceipt = null;
 
-    ['ticket-customer-name', 'ticket-customer-phone'].forEach(function (id) {
+    ['ticket-customer-name', 'ticket-customer-phone', 'ticket-customer-email'].forEach(function (id) {
       var field = $(id);
       if (field) field.value = '';
     });
     var err = $('ticket-form-error');
     if (err) err.textContent = '';
+    var tabbyCard = document.querySelector('#ticket-checkout .shop-payment-card--tabby');
+    if (tabbyCard) tabbyCard.hidden = false;
+    var tabbyNote = $('ticket-tabby-eligibility');
+    if (tabbyNote) {
+      tabbyNote.hidden = true;
+      tabbyNote.textContent = '';
+    }
 
     var panel = $('ticket-payment-detail-panel');
     if (panel) {
@@ -164,10 +179,11 @@
     if (nextBtn) {
       nextBtn.classList.add('btn-primary');
       nextBtn.classList.remove('btn-secondary');
-      var showWhatsAppProof = state.checkoutStep === 3 && !!state.paymentMethod;
+      var isTabby = state.paymentMethod === 'tabby';
+      var showWhatsAppProof = state.checkoutStep === 3 && !!state.paymentMethod && !isTabby;
       nextBtn.classList.toggle('shop-whatsapp-proof-btn', showWhatsAppProof);
       if (state.checkoutStep === 3) {
-        nextBtn.style.display = '';
+        nextBtn.style.display = isTabby ? 'none' : '';
         nextBtn.textContent = getStep3NextLabel();
       } else if (state.checkoutStep >= 4) {
         nextBtn.style.display = 'none';
@@ -176,6 +192,54 @@
         nextBtn.textContent = 'Continue';
       }
     }
+
+    if (state.checkoutStep === 3) refreshTabbyEligibility();
+  }
+
+  function tabbyContact() {
+    var panelEmail = $('ticket-tabby-email');
+    var panelPhone = $('ticket-tabby-phone');
+    var savedEmail = $('ticket-customer-email');
+    var email =
+      panelEmail && panelEmail.value.trim()
+        ? panelEmail.value.trim()
+        : (state.customer && state.customer.email) || (savedEmail && savedEmail.value.trim()) || '';
+    var phone =
+      panelPhone && panelPhone.value.trim()
+        ? panelPhone.value.trim()
+        : (state.customer && state.customer.phone) || '';
+    return { email: email, phone: phone };
+  }
+
+  var tabbyEligibilityTimer = null;
+  function refreshTabbyEligibility() {
+    if (!window.GRIGA_TABBY || !GRIGA_TABBY.applyEligibility || state.checkoutStep !== 3) return;
+    clearTimeout(tabbyEligibilityTimer);
+    tabbyEligibilityTimer = setTimeout(function () {
+      var contact = tabbyContact();
+      GRIGA_TABBY.applyEligibility({
+        email: contact.email,
+        phone: contact.phone,
+        source: 'tickets',
+        quantity: state.quantity,
+        cardSelector: '#ticket-checkout .shop-payment-card--tabby',
+        noteSelector: '#ticket-tabby-eligibility',
+        onHidden: function () {
+          state.paymentMethod = null;
+          var panel = $('ticket-payment-detail-panel');
+          if (panel) {
+            panel.innerHTML = '';
+            panel.hidden = true;
+          }
+          var nextBtn = $('ticket-checkout-next');
+          if (nextBtn) {
+            nextBtn.style.display = '';
+            nextBtn.classList.remove('shop-whatsapp-proof-btn');
+            nextBtn.textContent = 'Place Order';
+          }
+        }
+      });
+    }, 350);
   }
 
   function isStkActive() {
@@ -209,6 +273,33 @@
 
     var amount = getCheckoutAmountLabel();
     panel.hidden = false;
+
+    if (method.type === 'tabby' && window.GRIGA_TABBY) {
+      panel.innerHTML = '<div id="ticket-tabby-slot"></div>';
+      GRIGA_TABBY.mount({
+        slot: $('ticket-tabby-slot'),
+        amountLabel: amount,
+        price: getDefaultTotal(),
+        emailId: 'ticket-tabby-email',
+        phoneId: 'ticket-tabby-phone',
+        buttonId: 'ticket-tabby-pay',
+        statusId: 'ticket-tabby-status',
+        noteId: 'ticket-tabby-note',
+        defaultEmail: state.customer && state.customer.email,
+        onContactChange: refreshTabbyEligibility,
+        getOrder: function () {
+          if (!state.customer) return null;
+          return {
+            name: state.customer.name,
+            source: 'tickets',
+            page: 'tickets.html',
+            quantity: state.quantity
+          };
+        }
+      });
+      scrollToPaymentDetails();
+      return;
+    }
 
     if (method.type === 'stripe') {
       panel.innerHTML =
@@ -503,14 +594,20 @@
   function validateStep1() {
     var name = $('ticket-customer-name').value.trim();
     var phone = $('ticket-customer-phone').value.trim();
+    var emailField = $('ticket-customer-email');
+    var email = emailField ? emailField.value.trim() : '';
     var err = $('ticket-form-error');
 
     if (!name || !phone) {
       if (err) err.textContent = 'Please complete all fields.';
       return null;
     }
+    if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      if (err) err.textContent = 'Enter a valid email, or leave it blank.';
+      return null;
+    }
     if (err) err.textContent = '';
-    return { name: name, phone: phone };
+    return { name: name, phone: phone, email: email };
   }
 
   function buildOrderPayload() {
@@ -606,6 +703,10 @@
     }
 
     if (state.checkoutStep === 3) {
+      if (state.paymentMethod === 'tabby') {
+        showToast('Use Continue to Tabby in the payment panel.');
+        return;
+      }
       if (state.paymentMethod === 'mpesa' && isStkActive() && !state.mpesaReceipt) {
         showToast('Complete the M-Pesa payment on your phone first.');
         return;
@@ -625,7 +726,10 @@
     state.quantity = Math.min(10, Math.max(1, state.quantity + delta));
     syncQuantityUI();
     if (state.checkoutStep === 2) renderOrderReview();
-    if (state.checkoutStep === 3) renderPaymentPanel();
+    if (state.checkoutStep === 3) {
+      renderPaymentPanel();
+      refreshTabbyEligibility();
+    }
   }
 
   function bindPaymentMethodInputs() {
@@ -764,6 +868,8 @@
     if (typeof AOS !== 'undefined') {
       AOS.init({ duration: 800, once: true, offset: 80 });
     }
+
+    if (window.GRIGA_TABBY) GRIGA_TABBY.consumeReturn();
 
     initTicketCardBorderLight();
     scrollToTicketCardOnLoad();

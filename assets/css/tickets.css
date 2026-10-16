@@ -121,6 +121,36 @@ body.tickets-body {
   display: block;
 }
 
+.ticket-card .griga-tabby-promo {
+  position: relative;
+  z-index: 2;
+  margin: 0.85rem 0 0;
+  padding: 0;
+  background: transparent;
+  color: #fff;
+  --snippetTextColor: #1a1a1a;
+  --snippetLinkTextColor: #1a73e8;
+}
+
+.ticket-card .griga-tabby-context {
+  margin: 0 0 0.45rem;
+  color: #fff;
+  font-family: var(--font-body);
+  font-size: 0.78rem;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  line-height: 1.35;
+  text-align: center;
+}
+
+.ticket-card .griga-tabby-promo-host {
+  zoom: 0.92;
+}
+
+.ticket-card .griga-tabby-promo[hidden] {
+  display: none;
+}
+
 .ticket-qty-row {
   display: flex;
   align-items: center;
@@ -478,6 +508,46 @@ body.tickets-body {
 .payment-option--mpesa {
   background: linear-gradient(135deg, #1f8a47, #0a5b30);
   color: #fefefe;
+}
+
+.payment-option--tabby {
+  background: linear-gradient(160deg, #d8ffe9, #3dffb0);
+  color: #1a1a1a;
+  border: 1px solid rgba(26, 26, 26, 0.08);
+}
+
+.payment-option--tabby h3,
+.payment-option--tabby p,
+.payment-option--tabby .payment-details dt,
+.payment-option--tabby .payment-details dd,
+.payment-option--tabby .shop-payment-panel-note,
+.payment-option--tabby .tabby-field,
+.payment-option--tabby .tabby-status {
+  color: #1a1a1a;
+}
+
+.payment-option--tabby .payment-option__logo {
+  width: auto;
+  height: 42px;
+  margin-bottom: 0;
+  border-radius: 8px;
+}
+
+.payment-option--tabby .tabby-field input {
+  background: #fff;
+  color: #1a1a1a;
+  border-color: rgba(26, 26, 26, 0.16);
+}
+
+.payment-option--tabby .payment-actions .btn {
+  background: #1a1a1a;
+  color: #3dffb0;
+  border-color: #1a1a1a;
+}
+
+.payment-option--tabby .payment-actions .btn:hover {
+  background: #000;
+  color: #3dffb0;
 }
 
 .shop-form-hint {

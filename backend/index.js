@@ -12,6 +12,7 @@ const app = express();
 app.use(express.json());
 app.use('/assets', express.static(path.join(__dirname, '../assets')));
 app.use('/mpesa', require('./mpesa'));
+app.use('/tabby', require('./tabby'));
 const stripe = Stripe(process.env.STRIPE_SECRET_KEY);
 
 const adminEmail = process.env.ADMIN_EMAIL;

@@ -20,8 +20,8 @@
   <link rel="stylesheet" href="https://unpkg.com/aos@2.3.4/dist/aos.css" />
   <link rel="stylesheet" href="https://unpkg.com/swiper@9/swiper-bundle.min.css" />
   <link rel="stylesheet" href="assets/css/style.css?v=20261007.1" />
-  <link rel="stylesheet" href="assets/css/tickets.css?v=20261007.1" />
-  <link rel="stylesheet" href="assets/css/shop.css?v=20250607.23" />
+  <link rel="stylesheet" href="assets/css/tickets.css?v=20261015.3" />
+  <link rel="stylesheet" href="assets/css/shop.css?v=20261015.7" />
   <link rel="icon" href="assets/media/logos/fav.jpg" type="image/jpeg" />
 </head>
 <body class="shop-body">
@@ -172,6 +172,7 @@
           <span>Total</span>
           <span id="shop-cart-total">AED 0</span>
         </div>
+        <div id="griga-shop-cart-tabby-promo" class="griga-tabby-promo"></div>
       </div>
       <button type="button" class="btn btn-primary" id="shop-cart-checkout" style="width:100%;" disabled>Proceed to Checkout</button>
     </div>
@@ -204,6 +205,10 @@
               <input type="tel" id="shop-customer-phone" name="phone" placeholder="e.g. +971 50 123 4567" autocomplete="tel" required />
               <span class="shop-form-hint">Paying via M-Pesa? Enter your M-Pesa number here.</span>
             </label>
+            <label>
+              Email
+              <input type="email" id="shop-customer-email" name="email" placeholder="Needed if you pay with Tabby" autocomplete="email" />
+            </label>
             <p class="shop-form-error" id="shop-form-error" aria-live="polite"></p>
           </form>
         </div>
@@ -221,6 +226,12 @@
               <img class="shop-payment-card-logo" src="/assets/media/logos/m-pesa-logo.png" alt="M-Pesa logo" />
               <h4>M-Pesa</h4>
               <p>Instant payment prompt on your phone</p>
+            </label>
+            <label class="shop-payment-card shop-payment-card--tabby">
+              <input type="radio" name="shop-payment" value="tabby" />
+              <img class="shop-payment-card-logo" src="/assets/media/logos/Tabby.png" alt="Tabby logo" />
+              <h4>Pay later with Tabby</h4>
+              <p>4 interest-free payments, or up to 12 months.</p>
             </label>
             <label class="shop-payment-card shop-payment-card--stripe">
               <input type="radio" name="shop-payment" value="stripe" />
@@ -265,6 +276,7 @@
               <p>Bank transfer via NBD</p>
             </label>
           </div>
+          <p class="shop-payment-note" id="shop-tabby-eligibility" hidden></p>
           <div id="shop-payment-detail-panel" class="shop-payment-detail-panel" hidden></div>
         </div>
         <!-- Step 4: Confirmation -->
@@ -341,7 +353,8 @@
     window.GRIGA_MPESA_API_ORIGIN = 'https://griga-events-fze-website.onrender.com';
   </script>
   <script src="assets/js/mpesa-stk.js?v=20260813.1"></script>
-  <script src="assets/js/shop-payments.js?v=20260812.1"></script>
-  <script src="assets/js/shop.js?v=20260813.1"></script>
+  <script src="assets/js/shop-payments.js?v=20261015.1"></script>
+  <script src="assets/js/tabby-checkout.js?v=20261015.10"></script>
+  <script src="assets/js/shop.js?v=20261015.3"></script>
 </body>
 </html>

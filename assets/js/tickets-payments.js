@@ -9,9 +9,16 @@
   var TICKET_PRICE_MPESA_KSH = 5500;
   var EVENT_NAME = "Where There's Smoke Edition 8";
   var EVENT_DATE = 'Saturday, 7 November 2026 · 6:00 PM – Dawn';
-  var EVENT_VENUE = 'MOUNTAIN RESORT BY ESCAPE TIME';
+  var EVENT_VENUE = 'MOUNTAIN RESORT BY ESCAPE TIME, Isfini Street, Fujairah';
 
   var METHODS = {
+    tabby: {
+      id: 'tabby',
+      type: 'tabby',
+      label: 'Tabby test',
+      cardClass: 'payment-option--tabby',
+      currency: 'AED'
+    },
     stripe: {
       id: 'stripe',
       type: 'stripe',

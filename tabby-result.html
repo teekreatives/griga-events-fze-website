@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Tabby payment | GRIGA Events FZE</title>
+  <link rel="stylesheet" href="assets/css/style.css?v=20261007.1" />
+  <link rel="stylesheet" href="assets/css/shop.css?v=20261016.2" />
+  <link rel="icon" href="assets/media/logos/fav.jpg" type="image/jpeg" />
+</head>
+<body class="tickets-body">
+  <header class="site-header" id="site-header">
+    <div class="container header-inner">
+      <div class="logo-branding">
+        <a href="home.html" class="logo">GRIGA<span>Events</span></a>
+        <img src="/assets/media/logos/where-theres-smoke.png" alt="Where There's Smoke logo" />
+      </div>
+      <nav class="main-nav" aria-label="Main navigation">
+        <button class="nav-toggle" aria-label="Open menu" aria-expanded="false">
+          <span></span><span></span><span></span>
+        </button>
+        <ul class="nav-links">
+          <li><a href="home.html">Home</a></li>
+          <li><a href="events.html">Events</a></li>
+          <li><a href="gallery.html">Gallery</a></li>
+          <li><a href="shop.html">Shop</a></li>
+          <li><a href="tickets.html">Tickets</a></li>
+          <li><a href="contact.html">Contact</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main class="tabby-result">
+    <div id="tabby-result-root"></div>
+  </main>
+
+  <script src="assets/js/main.js?v=20250608.1"></script>
+  <script src="assets/js/tabby-checkout.js?v=20261015.10"></script>
+  <script>
+    if (window.GRIGA_TABBY) {
+      GRIGA_TABBY.renderResult(document.getElementById('tabby-result-root'));
+    }
+  </script>
+</body>
+</html>
