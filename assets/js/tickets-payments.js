@@ -15,7 +15,7 @@
     tabby: {
       id: 'tabby',
       type: 'tabby',
-      label: 'Tabby test',
+      label: 'Pay later with Tabby',
       cardClass: 'payment-option--tabby',
       currency: 'AED'
     },

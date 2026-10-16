@@ -268,7 +268,7 @@ router.post('/session', async (req, res) => {
     return res.status(400).json({ message: 'This order cannot be sent to Tabby.' });
   }
   if (body.currency && String(body.currency).toUpperCase() !== 'AED') {
-    return res.status(400).json({ message: 'Tabby test checkout accepts AED only.' });
+    return res.status(400).json({ message: 'Tabby checkout accepts AED only.' });
   }
 
   const referenceId = 'GRIGA-' + Date.now().toString(36).toUpperCase();

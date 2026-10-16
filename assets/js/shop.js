@@ -909,7 +909,6 @@
         phoneId: 'shop-tabby-phone',
         buttonId: 'shop-tabby-pay',
         statusId: 'shop-tabby-status',
-        noteId: 'shop-tabby-note',
         defaultEmail: state.customer && state.customer.email,
         onContactChange: refreshTabbyEligibility,
         getOrder: function () {

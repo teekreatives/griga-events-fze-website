@@ -284,7 +284,6 @@
         phoneId: 'ticket-tabby-phone',
         buttonId: 'ticket-tabby-pay',
         statusId: 'ticket-tabby-status',
-        noteId: 'ticket-tabby-note',
         defaultEmail: state.customer && state.customer.email,
         onContactChange: refreshTabbyEligibility,
         getOrder: function () {

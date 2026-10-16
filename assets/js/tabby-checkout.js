@@ -195,9 +195,6 @@
       options.buttonId +
       '">Continue to Tabby</button>' +
       '</div>' +
-      '<p class="shop-payment-panel-note" id="' +
-      options.noteId +
-      '">This test does not send a ticket. No real money is taken.</p>' +
       '<p class="tabby-status" id="' +
       options.statusId +
       '" role="status" aria-live="polite"></p>' +
@@ -205,23 +202,11 @@
 
     mountCard(document.getElementById(options.statusId + '-card'), options.price);
 
-    var lead = document.getElementById(options.statusId + '-lead');
-    var note = document.getElementById(options.noteId);
     loadConfig()
       .then(function (config) {
         var emailInput = document.getElementById(options.emailId);
         if (config.testMode && emailInput && !emailInput.value.trim()) {
           emailInput.value = 'otp.success@tabby.ai';
-        }
-        if (config.testMode) {
-          if (lead) {
-            lead.textContent =
-              'This is a Tabby test. No real charge. Use the email and phone below, then enter OTP 8888 on the Tabby page.';
-          }
-          if (note) {
-            note.textContent =
-              'Success test: otp.success@tabby.ai and +971500000001. OTP is 8888. A ticket is not issued by this test.';
-          }
         }
         if (typeof options.onContactChange === 'function') options.onContactChange();
       })
@@ -307,15 +292,15 @@
       return;
     }
 
-    host.textContent = 'Checking the Tabby test payment…';
+    host.textContent = 'Checking your payment…';
     fetch(apiOrigin() + '/tabby/payments/' + encodeURIComponent(paymentId))
       .then(readJson)
       .then(function (data) {
         if (data.captured || data.status === 'CLOSED') {
           host.textContent =
-            'Tabby test payment is confirmed' +
-            (data.referenceId ? ' (' + data.referenceId + ')' : '') +
-            '. No real money was taken, and no ticket was sent.';
+            'Payment confirmed' +
+            (data.referenceId ? '. Reference ' + data.referenceId : '') +
+            '.';
           return;
         }
         host.textContent = data.message || 'Tabby has not confirmed this payment yet. Status: ' + (data.status || 'unknown') + '.';
@@ -377,9 +362,7 @@
           }
           var text = 'Tabby has approved this payment';
           if (data.referenceId) text += '. Reference ' + data.referenceId;
-          text += data.testMode
-            ? '. This was a test, so no real money was taken and no ticket was sent.'
-            : '. Your payment is confirmed.';
+          text += '. Your payment is confirmed.';
           show('Payment successful', text, 'success');
           return;
         }
