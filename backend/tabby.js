@@ -356,6 +356,54 @@ async function retrievePayment(paymentId) {
   });
 }
 
+const OUR_REFERENCE = /^GRIGA-[A-Z0-9]{4,20}$/;
+
+/**
+ * Rebuild an order record from Tabby's own payment data when the local
+ * order file no longer has it, for example after the server restarted.
+ * Only payments this website created are accepted: the order reference
+ * must be ours, the currency AED, and the amount a real number.
+ */
+function recoverOrder(paymentId, payment) {
+  if (!payment || !payment.order) return null;
+  const referenceId = String(payment.order.reference_id || '');
+  if (!OUR_REFERENCE.test(referenceId)) return null;
+  if (String(payment.currency || '').toUpperCase() !== 'AED') return null;
+  const amount = Number(payment.amount);
+  if (!Number.isFinite(amount) || amount <= 0) return null;
+  if (typeof payment.is_test === 'boolean' && payment.is_test !== TEST_MODE) return null;
+
+  const order = {
+    paymentId: paymentId,
+    referenceId: referenceId,
+    amount: money(amount),
+    currency: 'AED',
+    status: String(payment.status || 'created').toUpperCase(),
+    testMode: TEST_MODE,
+    recovered: true,
+    createdAt: payment.created_at || new Date().toISOString(),
+    updatedAt: new Date().toISOString()
+  };
+  orders[paymentId] = order;
+  persistOrders();
+  console.log('[tabby] Recovered order ' + referenceId + ' from Tabby.');
+  return order;
+}
+
+/**
+ * Fetch the payment from Tabby and find the matching order, recovering it
+ * when the local list does not have it.
+ */
+async function lookupOrder(paymentId) {
+  const lookup = await retrievePayment(paymentId);
+  const payment = lookup.data || {};
+  let order = orders[paymentId] || null;
+  if (!order && lookup.response.ok) {
+    order = recoverOrder(paymentId, payment);
+  }
+  return { lookup: lookup, payment: payment, order: order };
+}
+
 async function capturePayment(order, payment) {
   const status = String(payment.status || '').toUpperCase();
   if (status === 'CLOSED') return { status: 'CLOSED', captured: true };
@@ -422,19 +470,20 @@ router.get('/payments/:paymentId', async (req, res) => {
     return res.status(400).json({ message: 'Unknown payment.' });
   }
 
-  const order = orders[paymentId];
-  if (!order) {
-    return res.status(404).json({ message: 'This payment was not started on this website.' });
-  }
-
   try {
-    const { response, data } = await retrievePayment(paymentId);
-    if (!response.ok) {
-      console.error('[tabby] Payment lookup failed. Status:', response.status);
+    const { lookup, payment, order } = await lookupOrder(paymentId);
+    if (!lookup.response.ok) {
+      if (lookup.response.status === 404) {
+        return res.status(404).json({ message: 'Unknown payment.' });
+      }
+      console.error('[tabby] Payment lookup failed. Status:', lookup.response.status);
       return res.status(502).json({ message: 'Could not check this Tabby payment.' });
     }
+    if (!order) {
+      return res.status(404).json({ message: 'This payment was not started on this website.' });
+    }
 
-    const result = await capturePayment(order, data);
+    const result = await capturePayment(order, payment);
     order.status = result.status;
     order.updatedAt = new Date().toISOString();
     persistOrders();
@@ -442,7 +491,7 @@ router.get('/payments/:paymentId', async (req, res) => {
     return res.json({
       status: result.status,
       captured: result.captured,
-      testMode: Boolean(data.is_test) || TEST_MODE,
+      testMode: Boolean(payment.is_test) || TEST_MODE,
       message: result.message || null,
       referenceId: order.referenceId
     });
@@ -504,19 +553,16 @@ router.post('/payments/:paymentId/refund', requireAdmin, async (req, res) => {
     return res.status(400).json({ message: 'Unknown payment.' });
   }
 
-  const order = orders[paymentId];
-  if (!order) {
-    return res.status(404).json({ message: 'This payment was not started on this website.' });
-  }
-
   try {
-    const lookup = await retrievePayment(paymentId);
+    const { lookup, payment, order } = await lookupOrder(paymentId);
     if (!lookup.response.ok) {
       console.error('[tabby] Refund lookup failed. Status:', lookup.response.status);
       return res.status(502).json({ message: 'Could not check this Tabby payment.' });
     }
+    if (!order) {
+      return res.status(404).json({ message: 'This payment was not started on this website.' });
+    }
 
-    const payment = lookup.data || {};
     const status = String(payment.status || '').toUpperCase();
     if (status !== 'CLOSED') {
       return res.status(409).json({ message: 'Only a captured Tabby payment can be refunded.' });
@@ -596,18 +642,16 @@ router.post('/payments/:paymentId/close', requireAdmin, async (req, res) => {
   if (!/^[A-Za-z0-9_-]{8,80}$/.test(paymentId)) {
     return res.status(400).json({ message: 'Unknown payment.' });
   }
-  const order = orders[paymentId];
-  if (!order) {
-    return res.status(404).json({ message: 'This payment was not started on this website.' });
-  }
-
   try {
-    const lookup = await retrievePayment(paymentId);
+    const { lookup, payment, order } = await lookupOrder(paymentId);
     if (!lookup.response.ok) {
       console.error('[tabby] Close lookup failed. Status:', lookup.response.status);
       return res.status(502).json({ message: 'Could not check this Tabby payment.' });
     }
-    const status = String((lookup.data && lookup.data.status) || '').toUpperCase();
+    if (!order) {
+      return res.status(404).json({ message: 'This payment was not started on this website.' });
+    }
+    const status = String(payment.status || '').toUpperCase();
     if (status === 'CLOSED') {
       order.status = 'CLOSED';
       order.updatedAt = new Date().toISOString();
@@ -643,14 +687,13 @@ router.post('/webhook', async (req, res) => {
   }
   res.status(200).json({ received: true });
 
-  const paymentId = req.body && req.body.id;
-  const order = paymentId && orders[paymentId];
-  if (!order || !isConfigured()) return;
+  const paymentId = String((req.body && req.body.id) || '');
+  if (!isConfigured() || !/^[A-Za-z0-9_-]{8,80}$/.test(paymentId)) return;
 
   try {
-    const { response, data } = await retrievePayment(paymentId);
-    if (!response.ok) return;
-    const result = await capturePayment(order, data);
+    const { lookup, payment, order } = await lookupOrder(paymentId);
+    if (!lookup.response.ok || !order) return;
+    const result = await capturePayment(order, payment);
     order.status = result.status;
     order.updatedAt = new Date().toISOString();
     persistOrders();
