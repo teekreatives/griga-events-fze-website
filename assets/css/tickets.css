@@ -992,6 +992,24 @@ body.tickets-body {
   }
 }
 
+.ticket-terms-note {
+  margin: 0 1.75rem 0.85rem;
+  font-size: 0.85rem;
+  line-height: 1.45;
+  color: #444;
+}
+
+.ticket-terms-note a {
+  color: #d11f26;
+  font-weight: 700;
+}
+
+@media (max-width: 640px) {
+  .ticket-terms-note {
+    margin: 0 1rem 0.75rem;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .ticket-card-border-light {
     display: none;
