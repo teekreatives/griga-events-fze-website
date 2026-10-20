@@ -993,7 +993,7 @@ body.tickets-body {
 }
 
 .ticket-terms-note {
-  margin: 0 1.75rem 0.85rem;
+  margin: 1rem 0 0;
   font-size: 0.85rem;
   line-height: 1.45;
   color: #444;
@@ -1002,12 +1002,6 @@ body.tickets-body {
 .ticket-terms-note a {
   color: #d11f26;
   font-weight: 700;
-}
-
-@media (max-width: 640px) {
-  .ticket-terms-note {
-    margin: 0 1rem 0.75rem;
-  }
 }
 
 @media (prefers-reduced-motion: reduce) {
