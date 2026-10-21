@@ -312,15 +312,36 @@
     var backHref = params.get('return') === 'shop' ? 'shop.html' : 'tickets.html';
     var backLabel = backHref === 'shop.html' ? 'Back to shop' : 'Back to tickets';
 
-    function show(title, text, kind) {
+    function show(title, text, kind, extraHtml) {
+      var backLink = '<a class="btn btn-primary" href="' + backHref + '">' + backLabel + '</a>';
+      var actions = extraHtml
+        ? '<div class="tabby-result-actions">' + extraHtml + backLink + '</div>'
+        : backLink;
       root.innerHTML =
         '<article class="tabby-result-card tabby-result-card--' + kind + '">' +
         '<header><img src="/assets/media/logos/Tabby.png" alt="Tabby logo" /></header>' +
         '<div class="tabby-result-body">' +
         '<h1>' + escapeText(title) + '</h1>' +
         '<p>' + escapeText(text) + '</p>' +
-        '<a class="btn btn-primary" href="' + backHref + '">' + backLabel + '</a>' +
+        actions +
         '</div></article>';
+    }
+
+    function whatsappProofLink(data) {
+      var amount = data && data.amount ? 'AED ' + data.amount : '';
+      var lines = [
+        'Hello, I have paid for my ticket via Pay later with Tabby.',
+        'Name: ' + ((data && data.name) || ''),
+        'Phone: ' + ((data && data.phone) || ''),
+        'Email: ' + ((data && data.email) || ''),
+        'Tickets: ' + ((data && data.quantity) || ''),
+        'Amount: ' + amount,
+        'Order ID: ' + ((data && data.referenceId) || ''),
+        'Payment is confirmed.',
+        'Kindly confirm and send my ticket. Thank you.'
+      ];
+      var href = 'https://wa.me/971522184531?text=' + encodeURIComponent(lines.join('\n'));
+      return '<a class="btn btn-primary shop-whatsapp-proof-btn" href="' + href + '" target="_blank" rel="noopener noreferrer">Send proof via WhatsApp</a>';
     }
 
     if (result === 'cancel') {
@@ -348,7 +369,7 @@
           var text = 'Your payment is confirmed';
           if (data.referenceId) text += '. Reference ' + data.referenceId;
           text += '.';
-          show('Thank you', text, 'success');
+          show('Thank you', text, 'success', whatsappProofLink(data));
           return;
         }
         show(

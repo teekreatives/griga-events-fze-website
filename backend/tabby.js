@@ -325,6 +325,8 @@ router.post('/session', async (req, res) => {
       page: 'tickets.html',
       name: name,
       email: email,
+      phone: phone,
+      quantity: order.quantity,
       status: 'created',
       testMode: TEST_MODE,
       createdAt: new Date().toISOString()
@@ -357,6 +359,41 @@ const OUR_REFERENCE = /^GRIGA-[A-Z0-9]{4,20}$/;
  * Only payments this website created are accepted: the order reference
  * must be ours, the currency AED, and the amount a real number.
  */
+function textValue(value) {
+  return value == null ? '' : String(value).trim();
+}
+
+function buyerValue(payment, key) {
+  const buyer = payment && payment.buyer;
+  return textValue(buyer && buyer[key]);
+}
+
+function orderQuantity(order, payment) {
+  const stored = Number(order && order.quantity);
+  if (Number.isFinite(stored) && stored > 0) return stored;
+  const items = payment && payment.order && Array.isArray(payment.order.items) ? payment.order.items : [];
+  const fromItems = items.reduce(function (sum, item) {
+    return sum + (Number(item && item.quantity) || 0);
+  }, 0);
+  if (fromItems > 0) return fromItems;
+  const amount = Number((order && order.amount) || (payment && payment.amount));
+  if (Number.isFinite(amount) && amount > 0) return Math.round(amount / TICKET_PRICE_AED);
+  return null;
+}
+
+function customerDetails(order, payment) {
+  const name = textValue(order.name) || buyerValue(payment, 'name');
+  const email = textValue(order.email) || buyerValue(payment, 'email');
+  const phone = textValue(order.phone) || buyerValue(payment, 'phone');
+  const quantity = orderQuantity(order, payment);
+  const amount = textValue(order.amount) || (payment && payment.amount != null ? money(payment.amount) : '');
+  if (name && !order.name) order.name = name;
+  if (email && !order.email) order.email = email;
+  if (phone && !order.phone) order.phone = phone;
+  if (quantity && !order.quantity) order.quantity = quantity;
+  return { name: name, email: email, phone: phone, quantity: quantity, amount: amount };
+}
+
 function recoverOrder(paymentId, payment) {
   if (!payment || !payment.order) return null;
   const referenceId = String(payment.order.reference_id || '');
@@ -377,6 +414,7 @@ function recoverOrder(paymentId, payment) {
     createdAt: payment.created_at || new Date().toISOString(),
     updatedAt: new Date().toISOString()
   };
+  customerDetails(order, payment);
   orders[paymentId] = order;
   persistOrders();
   console.log('[tabby] Recovered order ' + referenceId + ' from Tabby.');
@@ -477,6 +515,7 @@ router.get('/payments/:paymentId', async (req, res) => {
     }
 
     const result = await capturePayment(order, payment);
+    const details = customerDetails(order, payment);
     order.status = result.status;
     order.updatedAt = new Date().toISOString();
     persistOrders();
@@ -486,7 +525,12 @@ router.get('/payments/:paymentId', async (req, res) => {
       captured: result.captured,
       testMode: Boolean(payment.is_test) || TEST_MODE,
       message: result.message || null,
-      referenceId: order.referenceId
+      referenceId: order.referenceId,
+      name: details.name,
+      email: details.email,
+      phone: details.phone,
+      quantity: details.quantity,
+      amount: details.amount
     });
   } catch (err) {
     console.error('[tabby] Payment check failed:', err.message);

@@ -1271,6 +1271,18 @@ body.shop-sold-out .shop-cart-toggle {
   line-height: 1.55;
 }
 
+.tabby-result-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.tabby-result-actions .btn {
+  width: 100%;
+  box-sizing: border-box;
+  text-align: center;
+}
+
 .shop-payment-card--mpesa {
   background: linear-gradient(135deg, #f0faf4, #e6f5eb);
 }
