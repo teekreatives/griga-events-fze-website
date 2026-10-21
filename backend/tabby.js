@@ -109,6 +109,14 @@ router.use((req, res, next) => {
   return next();
 });
 
+function tabbyPhone(value) {
+  let digits = String(value || '').replace(/\D/g, '');
+  if (digits.startsWith('971')) digits = digits.slice(3);
+  if (digits.startsWith('0')) digits = digits.slice(1);
+  if (!/^5\d{8}$/.test(digits)) return '';
+  return '+971' + digits;
+}
+
 function rejectionMessage(reason) {
   if (reason === 'order_amount_too_low') {
     return 'The purchase amount is below the minimum amount required to use Tabby, try adding more items or use another payment method.';
@@ -143,44 +151,24 @@ async function tabbyRequest(path, options) {
   return { response, data };
 }
 
-function cleanItems(items, source, quantity) {
-  if (source === 'tickets') {
-    const count = Math.min(10, Math.max(1, Number(quantity) || 1));
-    return {
-      amount: money(TICKET_PRICE_AED * count),
-      items: [
-        {
-          title: "Where There's Smoke Edition 8 ticket",
-          quantity: count,
-          unit_price: money(TICKET_PRICE_AED),
-          category: 'Events'
-        }
-      ],
-      quantity: count
-    };
-  }
-
-  if (!Array.isArray(items) || items.length === 0 || items.length > 20) {
-    return null;
-  }
-
-  let total = 0;
-  const cleaned = [];
-  for (const item of items) {
-    const qty = Math.min(20, Math.max(1, Number(item.quantity) || 0));
-    const unit = Number(item.unitPrice);
-    const title = String(item.title || '').trim().slice(0, 120);
-    if (!title || !Number.isFinite(unit) || unit <= 0 || unit > 20000) return null;
-    total += unit * qty;
-    cleaned.push({
-      title: title,
-      quantity: qty,
-      unit_price: money(unit),
-      category: 'Merchandise'
-    });
-  }
-  if (total <= 0 || total > 50000) return null;
-  return { amount: money(total), items: cleaned, quantity: cleaned.length };
+function cleanItems(source, quantity) {
+  if (source !== 'tickets') return null;
+  const count = Math.min(10, Math.max(1, Number(quantity) || 1));
+  return {
+    amount: money(TICKET_PRICE_AED * count),
+    items: [
+      {
+        title: "Where There's Smoke Edition 8 ticket",
+        reference_id: 'WTS-E8-TICKET',
+        quantity: count,
+        unit_price: money(TICKET_PRICE_AED),
+        category: 'Events',
+        image_url: 'https://www.grigaeventsfze.com/assets/media/images/where%20there%27s%20smoke%20edition%208.jpeg',
+        product_url: 'https://www.grigaeventsfze.com/tickets.html'
+      }
+    ],
+    quantity: count
+  };
 }
 
 router.get('/config', (req, res) => {
@@ -201,16 +189,16 @@ router.post('/eligibility', async (req, res) => {
 
   const body = req.body || {};
   const email = String(body.email || '').trim().slice(0, 120);
-  const phone = String(body.phone || '').trim().slice(0, 20);
+  const phone = tabbyPhone(body.phone);
   const origin = String(body.origin || '').replace(/\/$/, '');
-  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) || phone.replace(/\D/g, '').length < 8) {
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) || !phone) {
     return res.json({ eligible: true });
   }
   if (!allowedOrigin(origin)) {
     return res.status(400).json({ message: 'This site address is not allowed to start Tabby.' });
   }
 
-  const order = cleanItems(body.items, body.source, body.quantity);
+  const order = cleanItems(body.source, body.quantity);
   if (!order) {
     return res.json({ eligible: true });
   }
@@ -252,18 +240,23 @@ router.post('/session', async (req, res) => {
   const body = req.body || {};
   const name = String(body.name || '').trim().slice(0, 80);
   const email = String(body.email || '').trim().slice(0, 120);
-  const phone = String(body.phone || '').trim().slice(0, 20);
-  const page = body.page === 'shop.html' ? 'shop.html' : 'tickets.html';
+  const phone = tabbyPhone(body.phone);
   const origin = String(body.origin || '').replace(/\/$/, '');
+  if (body.source !== 'tickets') {
+    return res.status(400).json({ message: 'Tabby is only available for event tickets.' });
+  }
 
-  if (!name || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) || phone.replace(/\D/g, '').length < 8) {
+  if (!name || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
     return res.status(400).json({ message: 'Enter a name, a valid email, and a phone number.' });
+  }
+  if (!phone) {
+    return res.status(400).json({ message: 'Tabby needs a UAE mobile number, for example +971501234567.' });
   }
   if (!allowedOrigin(origin)) {
     return res.status(400).json({ message: 'This site address is not allowed to start Tabby.' });
   }
 
-  const order = cleanItems(body.items, body.source, body.quantity);
+  const order = cleanItems(body.source, body.quantity);
   if (!order) {
     return res.status(400).json({ message: 'This order cannot be sent to Tabby.' });
   }
@@ -295,9 +288,9 @@ router.post('/session', async (req, res) => {
         lang: 'en',
         merchant_code: MERCHANT_CODE,
         merchant_urls: {
-          success: origin + '/tabby-result.html?result=success&return=' + (page === 'shop.html' ? 'shop' : 'tickets'),
-          cancel: origin + '/tabby-result.html?result=cancel&return=' + (page === 'shop.html' ? 'shop' : 'tickets'),
-          failure: origin + '/tabby-result.html?result=failure&return=' + (page === 'shop.html' ? 'shop' : 'tickets')
+          success: origin + '/tabby-result.html?result=success&return=tickets',
+          cancel: origin + '/tabby-result.html?result=cancel&return=tickets',
+          failure: origin + '/tabby-result.html?result=failure&return=tickets'
         }
       })
     });
@@ -328,8 +321,8 @@ router.post('/session', async (req, res) => {
       referenceId: referenceId,
       amount: order.amount,
       currency: 'AED',
-      source: body.source === 'shop' ? 'shop' : 'tickets',
-      page: page,
+      source: 'tickets',
+      page: 'tickets.html',
       name: name,
       email: email,
       status: 'created',

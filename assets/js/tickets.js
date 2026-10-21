@@ -93,7 +93,7 @@
         selector: '#griga-ticket-tabby-promo',
         price: getDefaultTotal(),
         source: 'product',
-        note: 'Split the price above into 4 payments with Tabby.'
+        note: false
       });
     }
   }
@@ -285,6 +285,7 @@
         buttonId: 'ticket-tabby-pay',
         statusId: 'ticket-tabby-status',
         defaultEmail: state.customer && state.customer.email,
+        defaultPhone: state.customer && state.customer.phone,
         onContactChange: refreshTabbyEligibility,
         getOrder: function () {
           if (!state.customer) return null;

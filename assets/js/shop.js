@@ -401,7 +401,6 @@
       '<p class="shop-product-price" id="shop-price">' +
       formatPrice(p.price) +
       '</p>' +
-      '<div id="griga-shop-product-tabby-promo" class="griga-tabby-promo"></div>' +
       '<p class="shop-product-desc">' +
       p.shortDescription +
       '</p>' +
@@ -435,7 +434,6 @@
     els.thumbsContainer = $('shop-gallery-thumbs');
 
     bindProductEvents();
-    refreshTabbyPromos();
     renderThumbs(images);
     initMobileSwiper();
     preloadNearbySlides(state.galleryIndex);
@@ -550,7 +548,6 @@
         if (state.quantity > 1) {
           state.quantity -= 1;
           qtyVal.textContent = state.quantity;
-          refreshTabbyPromos();
         }
       });
     }
@@ -560,7 +557,6 @@
         if (state.quantity < 10) {
           state.quantity += 1;
           qtyVal.textContent = state.quantity;
-          refreshTabbyPromos();
         }
       });
     }
@@ -638,7 +634,6 @@
       if (els.cartSubtotal) els.cartSubtotal.textContent = formatPrice(0);
       if (els.cartTotal) els.cartTotal.textContent = formatPrice(0);
       if (els.checkoutBtn) els.checkoutBtn.disabled = true;
-      refreshTabbyPromos();
       return;
     }
 
@@ -686,25 +681,6 @@
     var sub = cartSubtotal();
     if (els.cartSubtotal) els.cartSubtotal.textContent = formatPrice(sub);
     if (els.cartTotal) els.cartTotal.textContent = formatPrice(sub);
-    refreshTabbyPromos();
-    if (state.checkoutStep === 3 && state.cart.length) {
-      if (state.paymentMethod === 'tabby') renderPaymentPanel();
-      refreshTabbyEligibility();
-    }
-  }
-
-  function refreshTabbyPromos() {
-    if (!window.GRIGA_TABBY || !GRIGA_TABBY.mountPromo) return;
-    GRIGA_TABBY.mountPromo({
-      selector: '#griga-shop-product-tabby-promo',
-      price: state.product ? state.product.price * state.quantity : 0,
-      source: 'product'
-    });
-    GRIGA_TABBY.mountPromo({
-      selector: '#griga-shop-cart-tabby-promo',
-      price: cartSubtotal(),
-      source: 'cart'
-    });
   }
 
   function openCart(show) {
@@ -736,13 +712,6 @@
     if (panel) {
       panel.innerHTML = '';
       panel.hidden = true;
-    }
-    var tabbyCard = document.querySelector('#shop-checkout .shop-payment-card--tabby');
-    if (tabbyCard) tabbyCard.hidden = false;
-    var tabbyNote = $('shop-tabby-eligibility');
-    if (tabbyNote) {
-      tabbyNote.hidden = true;
-      tabbyNote.textContent = '';
     }
     document.querySelectorAll('.shop-payment-card input').forEach(function (input) {
       input.checked = false;
@@ -787,11 +756,10 @@
     if (nextBtn) {
       nextBtn.classList.add('btn-primary');
       nextBtn.classList.remove('btn-secondary');
-      var isTabby = state.paymentMethod === 'tabby';
-      var showWhatsAppProof = state.checkoutStep === 3 && !!state.paymentMethod && !isTabby;
+      var showWhatsAppProof = state.checkoutStep === 3 && !!state.paymentMethod;
       nextBtn.classList.toggle('shop-whatsapp-proof-btn', showWhatsAppProof);
       if (state.checkoutStep === 3) {
-        nextBtn.style.display = isTabby ? 'none' : '';
+        nextBtn.style.display = '';
         nextBtn.textContent = getStep3NextLabel();
       } else if (state.checkoutStep >= 4) {
         nextBtn.style.display = 'none';
@@ -800,64 +768,6 @@
         nextBtn.textContent = 'Continue';
       }
     }
-
-    if (state.checkoutStep === 3) refreshTabbyEligibility();
-  }
-
-  function tabbyContact() {
-    var panelEmail = $('shop-tabby-email');
-    var panelPhone = $('shop-tabby-phone');
-    var savedEmail = $('shop-customer-email');
-    var email =
-      panelEmail && panelEmail.value.trim()
-        ? panelEmail.value.trim()
-        : (state.customer && state.customer.email) || (savedEmail && savedEmail.value.trim()) || '';
-    var phone =
-      panelPhone && panelPhone.value.trim()
-        ? panelPhone.value.trim()
-        : (state.customer && state.customer.phone) || '';
-    return { email: email, phone: phone };
-  }
-
-  function shopTabbyItems() {
-    return state.cart.map(function (item) {
-      return {
-        title: item.name + (item.variantLabel ? ' ' + item.variantLabel : ''),
-        quantity: item.quantity,
-        unitPrice: item.price
-      };
-    });
-  }
-
-  var tabbyEligibilityTimer = null;
-  function refreshTabbyEligibility() {
-    if (!window.GRIGA_TABBY || !GRIGA_TABBY.applyEligibility || state.checkoutStep !== 3) return;
-    clearTimeout(tabbyEligibilityTimer);
-    tabbyEligibilityTimer = setTimeout(function () {
-      var contact = tabbyContact();
-      GRIGA_TABBY.applyEligibility({
-        email: contact.email,
-        phone: contact.phone,
-        source: 'shop',
-        items: shopTabbyItems(),
-        cardSelector: '#shop-checkout .shop-payment-card--tabby',
-        noteSelector: '#shop-tabby-eligibility',
-        onHidden: function () {
-          state.paymentMethod = null;
-          var panel = $('shop-payment-detail-panel');
-          if (panel) {
-            panel.innerHTML = '';
-            panel.hidden = true;
-          }
-          var nextBtn = $('shop-checkout-next');
-          if (nextBtn) {
-            nextBtn.style.display = '';
-            nextBtn.classList.remove('shop-whatsapp-proof-btn');
-            nextBtn.textContent = 'Place Order';
-          }
-        }
-      });
-    }, 350);
   }
 
   function isStkActive() {
@@ -898,38 +808,6 @@
 
     var amount = getCheckoutAmountLabel();
     panel.hidden = false;
-
-    if (method.type === 'tabby' && window.GRIGA_TABBY) {
-      panel.innerHTML = '<div id="shop-tabby-slot"></div>';
-      GRIGA_TABBY.mount({
-        slot: $('shop-tabby-slot'),
-        amountLabel: amount,
-        price: cartSubtotal(),
-        emailId: 'shop-tabby-email',
-        phoneId: 'shop-tabby-phone',
-        buttonId: 'shop-tabby-pay',
-        statusId: 'shop-tabby-status',
-        defaultEmail: state.customer && state.customer.email,
-        onContactChange: refreshTabbyEligibility,
-        getOrder: function () {
-          if (!state.customer || !state.cart.length) return null;
-          return {
-            name: state.customer.name,
-            source: 'shop',
-            page: 'shop.html',
-            items: state.cart.map(function (item) {
-              return {
-                title: item.name + (item.variantLabel ? ' ' + item.variantLabel : ''),
-                quantity: item.quantity,
-                unitPrice: item.price
-              };
-            })
-          };
-        }
-      });
-      scrollToPaymentDetails();
-      return;
-    }
 
     if (method.type === 'stripe') {
       panel.innerHTML =
@@ -1385,10 +1263,6 @@
     }
 
     if (state.checkoutStep === 3) {
-      if (state.paymentMethod === 'tabby') {
-        showToast('Use Continue to Tabby in the payment panel.');
-        return;
-      }
       if (state.paymentMethod === 'mpesa' && isStkActive() && !state.mpesaReceipt) {
         showToast('Complete the M-Pesa payment on your phone first.');
         return;
@@ -1429,7 +1303,6 @@
   }
 
   function init() {
-    if (window.GRIGA_TABBY) GRIGA_TABBY.consumeReturn();
     if (!window.SHOP_CATALOG) return;
 
     loadCart();

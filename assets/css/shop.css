@@ -1116,9 +1116,10 @@ body.shop-body {
 }
 
 .shop-payment-card--tabby .shop-payment-card-logo {
-  height: 42px;
+  height: 72px;
   width: auto;
-  border-radius: 8px;
+  margin: -16px 0 -14px;
+  border-radius: 0;
 }
 
 .griga-tabby-promo,
@@ -1206,9 +1207,10 @@ body.shop-body {
 }
 
 .tabby-result-card header img {
-  height: 46px;
+  height: 72px;
   width: auto;
-  border-radius: 8px;
+  margin: -14px 0 -12px;
+  border-radius: 0;
 }
 
 .tabby-result-body {

@@ -528,9 +528,9 @@ body.tickets-body {
 
 .payment-option--tabby .payment-option__logo {
   width: auto;
-  height: 42px;
-  margin-bottom: 0;
-  border-radius: 8px;
+  height: 64px;
+  margin: -14px 0 -12px;
+  border-radius: 0;
 }
 
 .payment-option--tabby .tabby-field input {

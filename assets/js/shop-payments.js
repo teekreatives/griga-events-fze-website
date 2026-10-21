@@ -14,12 +14,6 @@
   }
 
   var METHODS = {
-    tabby: {
-      id: 'tabby',
-      type: 'tabby',
-      label: 'Pay later with Tabby',
-      cardClass: 'payment-option--tabby'
-    },
     stripe: {
       id: 'stripe',
       type: 'stripe',

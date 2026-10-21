@@ -101,11 +101,10 @@
           if (el.getAttribute('data-promo-token') !== token) return;
           if (typeof global.TabbyPromo !== 'function') return;
           el.innerHTML = '';
-          if (options.note !== false) {
+          if (typeof options.note === 'string' && options.note.trim()) {
             var note = document.createElement('p');
             note.className = 'griga-tabby-context';
-            note.textContent =
-              options.note || 'The price above does not change. Tabby can split it into 4 payments.';
+            note.textContent = options.note.trim();
             el.appendChild(note);
           }
           var host = document.createElement('div');
@@ -173,9 +172,6 @@
       '<div class="payment-option__heading">' +
       '<img class="payment-option__logo" src="/assets/media/logos/Tabby.png" alt="Tabby logo" />' +
       '<h3>Pay later with Tabby</h3></div>' +
-      '<p id="' +
-      options.statusId +
-      '-lead">Pay in 4 with Tabby. You leave this page, finish on Tabby, then come back here.</p>' +
       '<dl class="payment-details"><div><dt>Order total</dt><dd>' +
       escapeText(options.amountLabel) +
       '</dd></div></dl>' +
@@ -189,7 +185,9 @@
       '" /></label>' +
       '<label class="tabby-field">Phone<input type="tel" id="' +
       options.phoneId +
-      '" autocomplete="tel" value="+971500000001" /></label>' +
+      '" autocomplete="tel" value="' +
+      escapeText(options.defaultPhone || '') +
+      '" /></label>' +
       '<div class="payment-actions">' +
       '<button type="button" class="btn btn-primary" id="' +
       options.buttonId +
@@ -296,9 +294,9 @@
     fetch(apiOrigin() + '/tabby/payments/' + encodeURIComponent(paymentId))
       .then(readJson)
       .then(function (data) {
-        if (data.captured || data.status === 'CLOSED') {
+        if (paymentSucceeded(data)) {
           host.textContent =
-            'Payment confirmed' +
+            'Thank you. Your payment is confirmed' +
             (data.referenceId ? '. Reference ' + data.referenceId : '') +
             '.';
           return;
@@ -354,16 +352,11 @@
     fetch(apiOrigin() + '/tabby/payments/' + encodeURIComponent(paymentId))
       .then(readJson)
       .then(function (data) {
-        if (data.captured || data.status === 'CLOSED') {
-          if (params.get('return') === 'shop') {
-            try {
-              global.localStorage.removeItem('griga_shop_cart');
-            } catch (err) {}
-          }
-          var text = 'Tabby has approved this payment';
+        if (paymentSucceeded(data)) {
+          var text = 'Your payment is confirmed';
           if (data.referenceId) text += '. Reference ' + data.referenceId;
-          text += '. Your payment is confirmed.';
-          show('Payment successful', text, 'success');
+          text += '.';
+          show('Thank you', text, 'success');
           return;
         }
         show(
@@ -375,6 +368,11 @@
       .catch(function () {
         show('Payment not confirmed', 'We could not reach the payment server to verify this payment.', 'failure');
       });
+  }
+
+  function paymentSucceeded(data) {
+    var status = String((data && data.status) || '').toUpperCase();
+    return !!(data && (data.captured || status === 'CLOSED' || status === 'AUTHORIZED'));
   }
 
   var eligibilityToken = 0;
