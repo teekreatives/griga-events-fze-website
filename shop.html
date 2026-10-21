@@ -21,10 +21,10 @@
   <link rel="stylesheet" href="https://unpkg.com/swiper@9/swiper-bundle.min.css" />
   <link rel="stylesheet" href="assets/css/style.css?v=20261007.1" />
   <link rel="stylesheet" href="assets/css/tickets.css?v=20261015.3" />
-  <link rel="stylesheet" href="assets/css/shop.css?v=20261021.1" />
+  <link rel="stylesheet" href="assets/css/shop.css?v=20261021.3" />
   <link rel="icon" href="assets/media/logos/fav.jpg" type="image/jpeg" />
 </head>
-<body class="shop-body">
+<body class="shop-body shop-sold-out">
   <header class="site-header" id="site-header">
     <div class="container header-inner">
       <div class="logo-branding">
@@ -60,6 +60,10 @@
       </nav>
     </div>
   </header>
+
+  <div class="shop-sold-out-banner" role="status">
+    <p>SOLD OUT</p>
+  </div>
 
   <main id="top">
     <!-- Hero -->
@@ -327,7 +331,7 @@
       "url": "https://grigaeventsfze.com/shop.html",
       "priceCurrency": "AED",
       "price": "100",
-      "availability": "https://schema.org/InStock",
+      "availability": "https://schema.org/SoldOut",
       "seller": {
         "@type": "Organization",
         "name": "GRIGA Events FZE"
