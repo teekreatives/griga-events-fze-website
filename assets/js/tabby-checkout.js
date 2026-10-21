@@ -200,15 +200,7 @@
 
     mountCard(document.getElementById(options.statusId + '-card'), options.price);
 
-    loadConfig()
-      .then(function (config) {
-        var emailInput = document.getElementById(options.emailId);
-        if (config.testMode && emailInput && !emailInput.value.trim()) {
-          emailInput.value = 'otp.success@tabby.ai';
-        }
-        if (typeof options.onContactChange === 'function') options.onContactChange();
-      })
-      .catch(function () {});
+    if (typeof options.onContactChange === 'function') options.onContactChange();
 
     var emailInput = document.getElementById(options.emailId);
     var phoneInput = document.getElementById(options.phoneId);
@@ -242,8 +234,8 @@
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           name: order.name,
-          email: email ? email.value.trim() : '',
-          phone: phone ? phone.value.trim() : '',
+          email: (email && email.value.trim()) || order.email || '',
+          phone: (phone && phone.value.trim()) || order.phone || '',
           source: order.source,
           page: order.page,
           origin: global.location.origin,

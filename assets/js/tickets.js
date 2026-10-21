@@ -284,13 +284,15 @@
         phoneId: 'ticket-tabby-phone',
         buttonId: 'ticket-tabby-pay',
         statusId: 'ticket-tabby-status',
-        defaultEmail: state.customer && state.customer.email,
-        defaultPhone: state.customer && state.customer.phone,
+        defaultEmail: (state.customer && state.customer.email) || '',
+        defaultPhone: (state.customer && state.customer.phone) || '',
         onContactChange: refreshTabbyEligibility,
         getOrder: function () {
           if (!state.customer) return null;
           return {
             name: state.customer.name,
+            email: state.customer.email || '',
+            phone: state.customer.phone || '',
             source: 'tickets',
             page: 'tickets.html',
             quantity: state.quantity
