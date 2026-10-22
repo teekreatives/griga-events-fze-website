@@ -104,6 +104,50 @@
     .section-header-center {
       text-align: center;
     }
+    .current-sponsors {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 1.5rem;
+    }
+    .sponsor-card {
+      background: #fff;
+      border-radius: 1.25rem;
+      padding: 1.75rem 1.25rem 1.5rem;
+      box-shadow: 0 25px 45px rgba(0,0,0,0.15);
+      border: 1px solid rgba(0,0,0,0.05);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      gap: 0.85rem;
+      min-width: 0;
+      box-sizing: border-box;
+    }
+    .sponsor-card img {
+      width: 100%;
+      max-width: 100%;
+      height: 140px;
+      object-fit: contain;
+    }
+    .sponsor-card h3 {
+      margin: 0;
+      font-size: 1.15rem;
+      letter-spacing: 0.06em;
+      color: #d11f26;
+      text-transform: uppercase;
+      font-family: 'Playfair Display', serif;
+    }
+    .sponsor-card p {
+      margin: 0;
+      color: #333;
+      font-size: 0.95rem;
+      line-height: 1.45;
+    }
+    @media (max-width: 800px) {
+      .current-sponsors {
+        grid-template-columns: minmax(0, 1fr);
+      }
+    }
     @media (max-width: 640px) {
       .sponsors-grid {
         grid-template-columns: 1fr;
@@ -147,6 +191,31 @@
         <p class="eyebrow" style="color: rgba(255,255,255,0.9); letter-spacing:0.3em;">PARTNER WITH GRIGA EVENTS</p>
         <h1 style="font-family: 'Playfair Display', serif; font-size: clamp(2.6rem, 4vw, 4rem); margin-bottom: 1rem; font-weight: 700; color: #fff;">Become a Sponsor And Be Part of the Community</h1>
         <p style="max-width: 640px; margin: 0 auto; color: rgba(255,255,255,0.9);">Every great event has great partners behind it. Stand with us and let your brand shine where culture, energy, and people come alive.</p>
+      </div>
+    </section>
+
+    <section class="section" data-aos="fade-up" data-aos-duration="700">
+      <div class="container">
+        <header class="section-header section-header-center">
+          <h2>Our Sponsors</h2>
+        </header>
+        <div class="current-sponsors">
+          <article class="sponsor-card">
+            <img src="assets/media/logos/Kingdom%20Bank.png" alt="Kingdom Bank logo" />
+            <h3>Kingdom Bank</h3>
+            <p>A Subsidiary of The Co-operative Bank of Kenya</p>
+          </article>
+          <article class="sponsor-card">
+            <img src="assets/media/logos/Clauz%20Tours%20%26%20Travel.jpg" alt="Clauz Tours &amp; Travel logo" />
+            <h3>Clauz Tours &amp; Travel</h3>
+            <p>Travel Made Simple with Clauz Tours and Travel</p>
+          </article>
+          <article class="sponsor-card">
+            <img src="assets/media/logos/Zeenah%20Essence.jpg" alt="Zeenah Essence logo" />
+            <h3>Zeenah Essence</h3>
+            <p>Luxury Fragrance</p>
+          </article>
+        </div>
       </div>
     </section>
 
