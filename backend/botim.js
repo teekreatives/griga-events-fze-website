@@ -277,13 +277,19 @@ router.get('/orders/:merchantOrderNo', async (req, res) => {
 });
 
 router.post('/notify', (req, res) => {
+  const raw = typeof req.rawBody === 'string' ? req.rawBody : '';
+  const signature = req.get('sign') || '';
+  if (!verifyBody(raw, signature)) {
+    console.error('[botim] Payment notice signature did not match.');
+    return res.status(400).type('text/plain').send('FAIL');
+  }
   const body = req.body || {};
   const merchantOrderNo =
     body.acquireOrder && body.acquireOrder.merchantOrderNo
       ? String(body.acquireOrder.merchantOrderNo)
       : '';
   const noticeStatus = body.acquireOrder && body.acquireOrder.status ? String(body.acquireOrder.status) : '';
-  console.log('[botim] Payment notice received:', merchantOrderNo || 'unknown', noticeStatus || 'no status');
+  console.log('[botim] Payment notice verified:', merchantOrderNo || 'unknown', noticeStatus || 'no status');
   if (merchantOrderNo && orders[merchantOrderNo]) {
     const status = body.acquireOrder.status || orders[merchantOrderNo].status;
     orders[merchantOrderNo].status = status;

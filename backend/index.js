@@ -9,7 +9,12 @@ const bcrypt = require('bcrypt');
 const path = require('path');
 
 const app = express();
-app.use(express.json());
+app.use(express.json({
+  verify: (req, res, buf) => {
+    const pathOnly = String(req.originalUrl || '').split('?')[0];
+    if (pathOnly === '/botim/notify') req.rawBody = buf.toString('utf8');
+  }
+}));
 app.use('/assets', express.static(path.join(__dirname, '../assets')));
 app.use('/mpesa', require('./mpesa'));
 app.use('/tabby', require('./tabby'));
