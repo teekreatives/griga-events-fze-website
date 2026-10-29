@@ -60,9 +60,6 @@ function activeAccount() {
 }
 
 function ticketPriceAed() {
-  if (paymentMode() !== 'production') return TICKET_PRICE_AED;
-  const configured = Number(process.env.BOTIM_PROD_TICKET_PRICE);
-  if (Number.isFinite(configured) && configured >= 1 && configured <= TICKET_PRICE_AED) return configured;
   return TICKET_PRICE_AED;
 }
 
