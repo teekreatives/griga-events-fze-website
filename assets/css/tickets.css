@@ -1014,6 +1014,10 @@ body.tickets-body {
   font-weight: 700;
 }
 
+#ticket-checkout .shop-payment-card--tabby .shop-payment-card-logo {
+  margin-left: -19px;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .ticket-card-border-light {
     display: none;
