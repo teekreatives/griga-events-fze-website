@@ -507,6 +507,14 @@ body.tickets-body {
   border-color: rgba(255, 255, 255, 0.4);
 }
 
+.shop-checkout .payment-option--botim .shop-stripe-pay-btn,
+.shop-checkout .payment-option--botim .shop-stripe-pay-btn:disabled {
+  color: #005b9c;
+  -webkit-text-fill-color: #005b9c;
+  opacity: 1;
+  background: rgba(255, 255, 255, 0.95);
+}
+
 .payment-option--mpesa {
   background: linear-gradient(135deg, #1f8a47, #0a5b30);
   color: #fefefe;

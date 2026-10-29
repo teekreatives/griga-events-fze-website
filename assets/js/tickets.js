@@ -556,6 +556,18 @@
     if (window.grigaScrollLock) window.grigaScrollLock.lock();
   }
 
+  var botimOpenAttempt = 0;
+
+  function resumeUnpaidBotimButton() {
+    if (state.botimPaid) return;
+    botimOpenAttempt += 1;
+    var payBtn = $('ticket-botim-pay');
+    if (!payBtn) return;
+    payBtn.disabled = false;
+    var status = $('ticket-botim-status');
+    if (status && status.textContent.indexOf('Opening Botim') === 0) status.textContent = '';
+  }
+
   function bindBotimPayButton() {
     var payBtn = $('ticket-botim-pay');
     if (!payBtn) return;
@@ -563,6 +575,7 @@
     payBtn.addEventListener('click', function () {
       if (!validateCheckoutReady()) return;
       var status = $('ticket-botim-status');
+      var attempt = ++botimOpenAttempt;
       payBtn.disabled = true;
       if (status) status.textContent = 'Opening Botim…';
       fetch(paymentApiOrigin() + '/botim/checkout', {
@@ -579,6 +592,7 @@
           });
         })
         .then(function (result) {
+          if (attempt !== botimOpenAttempt) return;
           if (!result.ok || !result.data.payUrl) {
             payBtn.disabled = false;
             if (status) status.textContent = result.data.message || 'Botim did not open. Please try again.';
@@ -589,6 +603,7 @@
           window.location.href = result.data.payUrl;
         })
         .catch(function () {
+          if (attempt !== botimOpenAttempt) return;
           payBtn.disabled = false;
           if (status) status.textContent = 'The payment server could not be reached.';
         });
@@ -1070,6 +1085,20 @@
     }
   }
 
+  function restoreBotimCheckoutFromHistory() {
+    if (new URLSearchParams(window.location.search).get('botimOrder')) return;
+    var navEntries = performance.getEntriesByType ? performance.getEntriesByType('navigation') : [];
+    var nav = navEntries && navEntries[0];
+    if (!nav || nav.type !== 'back_forward') return;
+    var saved = readBotimCheckout();
+    if (!saved || !saved.customer) return;
+    state.customer = saved.customer;
+    state.quantity = saved.quantity || state.quantity;
+    state.botimOrderNo = saved.merchantOrderNo || '';
+    state.botimPaid = false;
+    showBotimCheckout();
+  }
+
   function init() {
     if (typeof AOS !== 'undefined') {
       AOS.init({ duration: 800, once: true, offset: 80 });
@@ -1077,6 +1106,7 @@
 
     if (window.GRIGA_TABBY) GRIGA_TABBY.consumeReturn();
     consumeBotimReturn();
+    restoreBotimCheckoutFromHistory();
 
     initTicketCardBorderLight();
     scrollToTicketCardOnLoad();
@@ -1109,6 +1139,9 @@
     }
 
     bindPaymentMethodInputs();
+    window.addEventListener('pageshow', function (event) {
+      if (event.persisted) resumeUnpaidBotimButton();
+    });
 
     document.addEventListener('keydown', function (e) {
       if (e.key === 'Escape') {
