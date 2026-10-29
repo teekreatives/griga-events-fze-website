@@ -59,6 +59,13 @@ function activeAccount() {
   return accountFrom(paymentMode());
 }
 
+function ticketPriceAed() {
+  if (paymentMode() !== 'production') return TICKET_PRICE_AED;
+  const configured = Number(process.env.BOTIM_PROD_TICKET_PRICE);
+  if (Number.isFinite(configured) && configured >= 1 && configured <= TICKET_PRICE_AED) return configured;
+  return TICKET_PRICE_AED;
+}
+
 function accountReady(account) {
   return Boolean(
     account.partnerId &&
@@ -379,7 +386,7 @@ router.get('/config', (req, res) => {
     mode: account.mode,
     productionReady: accountReady(accountFrom('production')),
     currency: 'AED',
-    ticketPrice: TICKET_PRICE_AED
+    ticketPrice: ticketPriceAed()
   });
 });
 
@@ -407,13 +414,13 @@ router.post('/checkout', async (req, res) => {
   let quantity = Number(req.body && req.body.quantity);
   if (!Number.isInteger(quantity) || quantity < 1 || quantity > 10) quantity = 1;
   const merchantOrderNo = orderNumber();
-  const amount = TICKET_PRICE_AED * quantity;
+  const amount = ticketPriceAed() * quantity;
   const site = allowedSite(req.body && req.body.returnOrigin);
   const returnUrl = site + '/tickets.html?botimOrder=' + encodeURIComponent(merchantOrderNo);
   try {
     const result = await botimPost('/placeOrder', {
       merchantOrderNo: merchantOrderNo,
-      subject: 'WTS Edition 8 test ticket',
+      subject: paymentMode() === 'production' ? 'WTS Edition 8 ticket' : 'WTS Edition 8 test ticket',
       totalAmount: { currency: 'AED', amount: amount },
       paySceneCode: 'PAYPAGE',
       paySceneParams: { redirectUrl: returnUrl },

@@ -56,30 +56,13 @@
     },
     botim: {
       id: 'botim',
-      type: 'manual',
+      type: 'botim',
       label: 'BOTIM Money',
       prefix: 'BOTIM',
       cardClass: 'payment-option--botim',
       logo: '/assets/media/logos/botim-money.jpg',
       logoAlt: 'BOTIM logo',
-      currency: 'AED',
-      intro: function (amount) {
-        return (
-          'Pay ' +
-          amount +
-          ' via BOTIM Money using the number below, then confirm the payment so we can send your ticket.'
-        );
-      },
-      details: function () {
-        return [
-          { dt: 'Number', dd: '+971 52 994 8589' },
-          { dt: 'Name', dd: 'Grishon Gachomo' }
-        ];
-      },
-      amountDetail: true,
-      copyInfo: function (amount) {
-        return '+971 52 994 8589';
-      }
+      currency: 'AED'
     },
     eand: {
       id: 'eand',
@@ -241,6 +224,10 @@
     if (order.mpesaReceipt) {
       receiptLine = 'M-Pesa Receipt: ' + order.mpesaReceipt + '\n';
       proofLine = 'Payment was confirmed automatically via M-Pesa.\n';
+    }
+    if (order.botimOrderNo) {
+      receiptLine = 'Botim order: ' + order.botimOrderNo + '\n';
+      proofLine = 'Payment was confirmed by Botim.\n';
     }
     return (
       'Hello, I have paid for my ticket via ' +

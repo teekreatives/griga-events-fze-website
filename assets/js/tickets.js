@@ -12,7 +12,9 @@
     order: null,
     customer: null,
     mpesaOrderRef: null,
-    mpesaReceipt: null
+    mpesaReceipt: null,
+    botimOrderNo: null,
+    botimPaid: false
   };
 
   function $(id) {
@@ -105,6 +107,8 @@
     state.paymentMethod = preselectedMethod || null;
     state.mpesaOrderRef = null;
     state.mpesaReceipt = null;
+    state.botimOrderNo = null;
+    state.botimPaid = false;
 
     ['ticket-customer-name', 'ticket-customer-phone', 'ticket-customer-email'].forEach(function (id) {
       var field = $(id);
@@ -179,11 +183,11 @@
     if (nextBtn) {
       nextBtn.classList.add('btn-primary');
       nextBtn.classList.remove('btn-secondary');
-      var isTabby = state.paymentMethod === 'tabby';
-      var showWhatsAppProof = state.checkoutStep === 3 && !!state.paymentMethod && !isTabby;
+      var isHostedPay = state.paymentMethod === 'tabby';
+      var showWhatsAppProof = state.checkoutStep === 3 && !!state.paymentMethod && !isHostedPay;
       nextBtn.classList.toggle('shop-whatsapp-proof-btn', showWhatsAppProof);
       if (state.checkoutStep === 3) {
-        nextBtn.style.display = isTabby ? 'none' : '';
+        nextBtn.style.display = isHostedPay ? 'none' : '';
         nextBtn.textContent = getStep3NextLabel();
       } else if (state.checkoutStep >= 4) {
         nextBtn.style.display = 'none';
@@ -299,6 +303,34 @@
           };
         }
       });
+      scrollToPaymentDetails();
+      return;
+    }
+
+    if (method.type === 'botim') {
+      panel.innerHTML =
+        '<article class="payment-option payment-option--botim shop-checkout-payment">' +
+        '<div class="payment-option__heading">' +
+        '<img class="payment-option__logo" src="' +
+        method.logo +
+        '" alt="' +
+        (method.logoAlt || '') +
+        '" />' +
+        '<h3>' +
+        method.label +
+        '</h3></div>' +
+        '<p>You will be taken to Botim to complete payment.</p>' +
+        '<dl class="payment-details"><div><dt>Amount</dt><dd id="ticket-botim-amount">' +
+        amount +
+        '</dd></div></dl>' +
+        '<div class="payment-actions">' +
+        '<button type="button" class="btn btn-secondary shop-stripe-pay-btn" id="ticket-botim-pay">Pay with Botim</button>' +
+        '</div>' +
+        '<p class="shop-payment-panel-note">Complete payment on Botim, then click <strong>Send proof via WhatsApp</strong> below after Botim confirms the payment.</p>' +
+        '<p class="shop-payment-panel-note" id="ticket-botim-status" role="status"></p>' +
+        '</article>';
+      bindBotimPayButton();
+      refreshBotimAmount();
       scrollToPaymentDetails();
       return;
     }
@@ -443,6 +475,168 @@
         if (nextBtn) nextBtn.textContent = 'Confirm order via WhatsApp';
       }
     });
+  }
+
+  function paymentApiOrigin() {
+    var host = window.location.hostname;
+    if (host === 'localhost' || host === '127.0.0.1') {
+      return window.location.protocol + '//' + host + ':8090';
+    }
+    if (window.GRIGA_MPESA_API_ORIGIN) {
+      return String(window.GRIGA_MPESA_API_ORIGIN).replace(/\/$/, '');
+    }
+    return '';
+  }
+
+  function refreshBotimAmount() {
+    fetch(paymentApiOrigin() + '/botim/config')
+      .then(function (response) {
+        return response.json();
+      })
+      .then(function (data) {
+        var price = Number(data && data.ticketPrice);
+        var amountNode = $('ticket-botim-amount');
+        if (!price || !amountNode || !window.TICKET_PAYMENTS) return;
+        amountNode.textContent = TICKET_PAYMENTS.formatAmount(price * state.quantity, 'AED');
+      })
+      .catch(function () {
+        return;
+      });
+  }
+
+  function rememberBotimCheckout(merchantOrderNo) {
+    try {
+      sessionStorage.setItem(
+        'griga-botim-checkout',
+        JSON.stringify({
+          customer: state.customer,
+          quantity: state.quantity,
+          merchantOrderNo: merchantOrderNo
+        })
+      );
+    } catch (err) {
+      return;
+    }
+  }
+
+  function readBotimCheckout() {
+    try {
+      return JSON.parse(sessionStorage.getItem('griga-botim-checkout') || 'null');
+    } catch (err) {
+      return null;
+    }
+  }
+
+  function showBotimCheckout() {
+    state.checkoutStep = 3;
+    state.paymentMethod = 'botim';
+    var name = $('ticket-customer-name');
+    var phone = $('ticket-customer-phone');
+    var email = $('ticket-customer-email');
+    if (state.customer) {
+      if (name) name.value = state.customer.name || '';
+      if (phone) phone.value = state.customer.phone || '';
+      if (email) email.value = state.customer.email || '';
+    }
+    syncQuantityUI();
+    document.querySelectorAll('#ticket-checkout .shop-payment-card input').forEach(function (input) {
+      input.checked = input.value === 'botim';
+    });
+    document.querySelectorAll('#ticket-checkout .shop-payment-card').forEach(function (card) {
+      var input = card.querySelector('input');
+      card.classList.toggle('is-selected', !!(input && input.checked));
+    });
+    renderCheckoutStep();
+    var checkout = $('ticket-checkout');
+    if (checkout) {
+      checkout.classList.add('is-open');
+      checkout.setAttribute('aria-hidden', 'false');
+    }
+    document.body.classList.add('shop-checkout-open');
+    if (window.grigaScrollLock) window.grigaScrollLock.lock();
+  }
+
+  function bindBotimPayButton() {
+    var payBtn = $('ticket-botim-pay');
+    if (!payBtn) return;
+    payBtn.disabled = !!state.botimPaid;
+    payBtn.addEventListener('click', function () {
+      if (!validateCheckoutReady()) return;
+      var status = $('ticket-botim-status');
+      payBtn.disabled = true;
+      if (status) status.textContent = 'Opening Botim…';
+      fetch(paymentApiOrigin() + '/botim/checkout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          quantity: state.quantity,
+          returnOrigin: window.location.origin
+        })
+      })
+        .then(function (response) {
+          return response.json().then(function (data) {
+            return { ok: response.ok, data: data };
+          });
+        })
+        .then(function (result) {
+          if (!result.ok || !result.data.payUrl) {
+            payBtn.disabled = false;
+            if (status) status.textContent = result.data.message || 'Botim did not open. Please try again.';
+            return;
+          }
+          state.botimOrderNo = result.data.merchantOrderNo || '';
+          rememberBotimCheckout(state.botimOrderNo);
+          window.location.href = result.data.payUrl;
+        })
+        .catch(function () {
+          payBtn.disabled = false;
+          if (status) status.textContent = 'The payment server could not be reached.';
+        });
+    });
+  }
+
+  function applyBotimResult(data) {
+    var status = $('ticket-botim-status');
+    if (!data || data.signatureVerified === false || (!data.paid && !data.failed)) {
+      state.botimPaid = false;
+      if (status) status.textContent = 'Botim has not confirmed the payment yet.';
+      showToast('Botim has not confirmed the payment yet.');
+      return;
+    }
+    if (data.paid) {
+      state.botimPaid = true;
+      if (status) status.textContent = 'Botim confirmed the payment. Send proof via WhatsApp to receive your ticket.';
+      showToast('Botim payment succeeded.');
+      var payBtn = $('ticket-botim-pay');
+      if (payBtn) payBtn.disabled = true;
+      return;
+    }
+    state.botimPaid = false;
+    if (status) status.textContent = 'Botim payment failed.';
+    showToast('Botim payment failed.');
+  }
+
+  function consumeBotimReturn() {
+    var params = new URLSearchParams(window.location.search);
+    var orderNo = params.get('botimOrder');
+    if (!orderNo) return;
+    var saved = readBotimCheckout();
+    if (saved && saved.customer) {
+      state.customer = saved.customer;
+      state.quantity = saved.quantity || state.quantity;
+      state.botimOrderNo = saved.merchantOrderNo || orderNo;
+      showBotimCheckout();
+    }
+    fetch(paymentApiOrigin() + '/botim/orders/' + encodeURIComponent(orderNo))
+      .then(function (response) {
+        return response.json();
+      })
+      .then(function (data) {
+        applyBotimResult(data);
+      })
+      .catch(function () {
+        showToast('The Botim test result could not be checked.');
+      });
   }
 
   function bindStripePayButton() {
@@ -624,7 +818,8 @@
       quantity: state.quantity,
       total: total.amount,
       currency: total.currency,
-      mpesaReceipt: state.paymentMethod === 'mpesa' ? state.mpesaReceipt : null
+      mpesaReceipt: state.paymentMethod === 'mpesa' ? state.mpesaReceipt : null,
+      botimOrderNo: state.paymentMethod === 'botim' ? state.botimOrderNo : null
     };
   }
 
@@ -685,6 +880,11 @@
     var message = TICKET_PAYMENTS.buildWhatsAppMessage(state.paymentMethod, orderPayload);
     var url = 'https://wa.me/' + TICKET_PAYMENTS.whatsappNumber + '?text=' + encodeURIComponent(message);
     window.open(url, '_blank', 'noopener,noreferrer');
+    try {
+      sessionStorage.removeItem('griga-botim-checkout');
+    } catch (err) {
+      /* The checkout can still finish if the browser blocks storage. */
+    }
     finalizeOrder(state.customer, state.paymentMethod, orderPayload.orderId);
   }
 
@@ -707,6 +907,10 @@
     if (state.checkoutStep === 3) {
       if (state.paymentMethod === 'tabby') {
         showToast('Use Continue to Tabby in the payment panel.');
+        return;
+      }
+      if (state.paymentMethod === 'botim' && !state.botimPaid) {
+        showToast('Botim has not confirmed the payment yet.');
         return;
       }
       if (state.paymentMethod === 'mpesa' && isStkActive() && !state.mpesaReceipt) {
@@ -872,6 +1076,7 @@
     }
 
     if (window.GRIGA_TABBY) GRIGA_TABBY.consumeReturn();
+    consumeBotimReturn();
 
     initTicketCardBorderLight();
     scrollToTicketCardOnLoad();

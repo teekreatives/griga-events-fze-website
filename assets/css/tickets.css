@@ -496,12 +496,14 @@ body.tickets-body {
   letter-spacing: 0.08em;
 }
 
-.payment-option--stripe {
+.payment-option--stripe,
+.shop-checkout .payment-option--botim {
   background: linear-gradient(135deg, #0a7bdf, #005b9c);
   color: #fefefe;
 }
 
-.payment-option--stripe button {
+.payment-option--stripe button,
+.shop-checkout .payment-option--botim button {
   border-color: rgba(255, 255, 255, 0.4);
 }
 
