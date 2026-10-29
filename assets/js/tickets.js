@@ -319,7 +319,7 @@
         '<h3>' +
         method.label +
         '</h3></div>' +
-        '<p>You will be taken to Botim to complete payment.</p>' +
+        '<p>You will be taken to Botim’s payment page. It includes Debit or Credit Card, Botim Wallet, Google Pay and more.</p>' +
         '<dl class="payment-details"><div><dt>Amount</dt><dd id="ticket-botim-amount">' +
         amount +
         '</dd></div></dl>' +
