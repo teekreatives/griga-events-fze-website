@@ -3,8 +3,8 @@
  *
  * Endpoints (mounted in index.js):
  *   POST /mpesa/stk-push            – trigger an STK push to the buyer's phone
- *   POST /mpesa/callback            – Daraja result callback (must be publicly reachable)
- *   GET  /mpesa/status/:requestId   – frontend polls payment status
+ *   POST /mpesa/callback            – stores Daraja's result; it does not by itself mark a payment paid
+ *   GET  /mpesa/status/:requestId   – asks Safaricom, then reports the payment status
  *
  * Required env vars (see .env.example):
  *   MPESA_ENV               sandbox | production
@@ -115,6 +115,83 @@ function normalizePhone(input) {
   if (msisdn.startsWith('7') || msisdn.startsWith('1')) msisdn = '254' + msisdn;
   if (!/^254(7|1)\d{8}$/.test(msisdn)) return null;
   return msisdn;
+}
+
+const queriesInFlight = new Set();
+
+function sameAmount(left, right) {
+  const a = Number(left);
+  const b = Number(right);
+  return Number.isFinite(a) && Number.isFinite(b) && a === b;
+}
+
+function queryOutcome(data) {
+  const code =
+    data.ResultCode === undefined || data.ResultCode === null || data.ResultCode === ''
+      ? null
+      : Number(data.ResultCode);
+  const desc = String(data.ResultDesc || data.ResponseDescription || '');
+  if (code === 0) return 'success';
+  if (code === null || Number.isNaN(code) || code === 4999) return 'pending';
+  if (/still under processing|being processed/i.test(desc)) return 'pending';
+  if ([1, 1001, 1025, 1032, 1037, 2006].includes(code)) return 'failed';
+  if (/cancel|timeout|insufficient|wrong pin|declined/i.test(desc)) return 'failed';
+  return 'pending';
+}
+
+async function verifyWithSafaricom(order) {
+  if (order.safaricomVerified) return;
+  const now = Date.now();
+  if (order.lastQueryAt && now - Date.parse(order.lastQueryAt) < 4000) return;
+  if (queriesInFlight.has(order.checkoutRequestId)) return;
+  queriesInFlight.add(order.checkoutRequestId);
+  order.lastQueryAt = new Date().toISOString();
+  try {
+    const timestamp = darajaTimestamp();
+    const password = Buffer.from(`${SHORTCODE}${PASSKEY}${timestamp}`).toString('base64');
+    const token = await getAccessToken();
+    const response = await fetch(`${BASE_URL}/mpesa/stkpushquery/v1/query`, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        BusinessShortCode: SHORTCODE,
+        Password: password,
+        Timestamp: timestamp,
+        CheckoutRequestID: order.checkoutRequestId
+      })
+    });
+    const data = await response.json().catch(() => ({}));
+    if (!response.ok) {
+      console.error('[mpesa] Safaricom query did not answer:', response.status);
+      return;
+    }
+    const outcome = queryOutcome(data);
+    if (outcome === 'pending') return;
+    order.safaricomVerified = true;
+    order.completedAt = new Date().toISOString();
+    if (outcome === 'success') {
+      if (!order.claimedReceipt && order.receipt) order.claimedReceipt = String(order.receipt);
+      if (!order.claimedAmount && order.paidAmount) order.claimedAmount = order.paidAmount;
+      const amountOk = !order.claimedAmount || sameAmount(order.claimedAmount, order.amount);
+      const receiptOk = Boolean(order.claimedReceipt) && amountOk;
+      order.status = receiptOk ? 'success' : 'pending';
+      order.safaricomVerified = receiptOk;
+      order.receipt = receiptOk ? order.claimedReceipt : null;
+      if (receiptOk) {
+        console.log('[mpesa] Safaricom confirmed payment:', order.checkoutRequestId);
+      }
+      return;
+    }
+    order.status = 'failed';
+    order.receipt = null;
+    order.failureReason = data.ResultDesc || 'Payment was not completed.';
+    console.log('[mpesa] Safaricom reported failure:', order.checkoutRequestId, order.failureReason);
+  } finally {
+    queriesInFlight.delete(order.checkoutRequestId);
+  }
 }
 
 /* ── CORS for the static site ── */
@@ -234,37 +311,57 @@ router.post('/callback', (req, res) => {
     console.warn('[mpesa] Callback for unknown CheckoutRequestID:', CheckoutRequestID);
     return;
   }
+  if (order.safaricomVerified) return;
 
   if (Number(ResultCode) === 0) {
     const meta = {};
     ((CallbackMetadata && CallbackMetadata.Item) || []).forEach((item) => {
       meta[item.Name] = item.Value;
     });
-    order.status = 'success';
-    order.receipt = meta.MpesaReceiptNumber || null;
-    order.paidAmount = meta.Amount || order.amount;
-    order.paidPhone = meta.PhoneNumber || order.phone;
-    order.completedAt = new Date().toISOString();
-    console.log('[mpesa] Payment confirmed:', CheckoutRequestID, order.receipt);
+    if (meta.MpesaReceiptNumber) order.claimedReceipt = String(meta.MpesaReceiptNumber);
+    if (meta.Amount !== undefined && meta.Amount !== null && meta.Amount !== '') {
+      order.claimedAmount = meta.Amount;
+    }
+    order.callbackAt = new Date().toISOString();
+    console.log('[mpesa] Callback stored. Safaricom still has to confirm:', CheckoutRequestID);
   } else {
-    order.status = 'failed';
-    order.failureReason = ResultDesc || 'Payment was not completed.';
-    order.completedAt = new Date().toISOString();
-    console.log('[mpesa] Payment failed:', CheckoutRequestID, ResultDesc);
+    order.claimedFailure = ResultDesc || 'Payment was not completed.';
+    order.callbackAt = new Date().toISOString();
+    console.log('[mpesa] Callback stored a failure claim:', CheckoutRequestID, order.claimedFailure);
   }
   persistOrders();
 });
 
-router.get('/status/:requestId', (req, res) => {
+router.get('/status/:requestId', async (req, res) => {
   const order = orders[req.params.requestId];
   if (!order) {
     return res.status(404).json({ status: 'unknown' });
   }
-  return res.json({
-    status: order.status,
-    receipt: order.receipt || null,
-    message: order.failureReason || null
-  });
+  if (!(order.safaricomVerified && (order.status === 'success' || order.status === 'failed'))) {
+    try {
+      await verifyWithSafaricom(order);
+      persistOrders();
+    } catch (err) {
+      console.error('[mpesa] Could not verify with Safaricom:', err.message);
+    }
+  }
+  if (order.safaricomVerified && order.status === 'success' && order.receipt) {
+    return res.json({
+      status: 'success',
+      verified: true,
+      receipt: order.receipt,
+      message: null
+    });
+  }
+  if (order.safaricomVerified && order.status === 'failed') {
+    return res.json({
+      status: 'failed',
+      verified: true,
+      receipt: null,
+      message: order.failureReason || null
+    });
+  }
+  return res.json({ status: 'pending', verified: false, receipt: null, message: null });
 });
 
 module.exports = router;
