@@ -1018,6 +1018,16 @@ body.tickets-body {
   margin-left: -19px;
 }
 
+#ticket-checkout .shop-payment-card--botim p,
+#ticket-checkout .shop-payment-card--mpesa p {
+  margin: 0.35rem 0 0;
+  color: inherit;
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .ticket-card-border-light {
     display: none;
