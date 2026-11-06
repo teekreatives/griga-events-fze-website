@@ -1141,6 +1141,39 @@ p {
   margin: 0 auto;
 }
 
+.home-terms {
+  background: #fff;
+  border-top: 1px solid #eee;
+}
+
+.home-terms-article {
+  max-width: 760px;
+}
+
+.home-terms-article h2 {
+  margin-bottom: 8px;
+}
+
+.home-terms-subtitle,
+.home-terms-effective {
+  color: #666;
+  margin: 0 0 8px;
+}
+
+.home-terms-article h3 {
+  font-size: 20px;
+  margin: 22px 0 8px;
+}
+
+.home-terms-article ul {
+  margin: 0 0 12px 1.2rem;
+}
+
+.home-terms-article a {
+  color: var(--color-red);
+  font-weight: 700;
+}
+
 /* Footer */
 
 .site-footer {
