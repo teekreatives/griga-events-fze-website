@@ -29,7 +29,7 @@
   }
 
   function getDefaultTotal() {
-    return state.quantity * (window.TICKET_PAYMENTS ? TICKET_PAYMENTS.priceAed : 150);
+    return state.quantity * (window.TICKET_PAYMENTS ? TICKET_PAYMENTS.priceAed : 450);
   }
 
   function getCheckoutAmountLabel() {

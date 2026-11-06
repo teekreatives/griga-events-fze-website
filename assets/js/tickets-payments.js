@@ -5,8 +5,9 @@
 (function (global) {
   var STRIPE_CHECKOUT_URL = 'https://buy.stripe.com/cNi4gBgiS25c6dUaWu3oA02';
   var WHATSAPP_NUMBER = '971522184531';
-  var TICKET_PRICE_AED = 150;
-  var TICKET_PRICE_MPESA_KSH = 5500;
+  var TICKET_PRICE_AED = 450;
+  var MPESA_KSH_PER_AED = 36;
+  var TICKET_PRICE_MPESA_KSH = TICKET_PRICE_AED * MPESA_KSH_PER_AED;
   var EVENT_NAME = "Where There's Smoke Edition 8";
   var EVENT_DATE = 'Saturday, 7 November 2026 · 6:00 PM – Dawn';
   var EVENT_VENUE = 'MOUNTAIN RESORT BY ESCAPE TIME, Isfini Street, Fujairah';

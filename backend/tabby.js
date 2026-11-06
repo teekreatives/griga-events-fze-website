@@ -22,7 +22,7 @@ const SECRET_KEY = process.env.TABBY_SECRET_KEY || '';
 const PUBLIC_KEY = process.env.TABBY_PUBLIC_KEY || '';
 const MERCHANT_CODE = process.env.TABBY_MERCHANT_CODE || '';
 const WEBHOOK_SECRET = process.env.TABBY_WEBHOOK_SECRET || '';
-const TICKET_PRICE_AED = 150;
+const TICKET_PRICE_AED = 450;
 const TEST_MODE = SECRET_KEY.startsWith('sk_test_');
 
 const ordersDir = path.join(__dirname, process.env.TICKET_DATA_DIR || 'data');

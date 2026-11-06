@@ -199,7 +199,7 @@ app.post(
         subject: `${process.env.EVENT_NAME} Ticket #${ticketId}`,
         text: `${attendeeName}, thank you for booking your spot. Please see the attached QR code for entry.`,
         html: `<p>Hi ${attendeeName},</p>
-          <p>Payment of <strong>${process.env.EVENT_PRICE ?? '150'} AED</strong> is confirmed for <strong>${process.env.EVENT_NAME}</strong>.</p>
+          <p>Payment of <strong>${process.env.EVENT_PRICE ?? '450'} AED</strong> is confirmed for <strong>${process.env.EVENT_NAME}</strong>.</p>
           <p>Event location: ${process.env.EVENT_LOCATION}</p>
           <p>Show the QR below at the gate for contactless entry.</p>
           <img src="cid:qr" alt="QR ticket" style="max-width:240px;display:block;margin:16px auto;" />

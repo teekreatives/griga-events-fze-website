@@ -22,7 +22,7 @@ const router = express.Router();
 
 const UAT_BASE = 'https://uat.test2pay.com/sgs/api/acquire2';
 const PROD_BASE = 'https://api.payby.com/sgs/api/acquire2';
-const TICKET_PRICE_AED = 150;
+const TICKET_PRICE_AED = 450;
 const API_ORIGIN = 'https://griga-events-fze-website.onrender.com';
 const SITE_ORIGIN = 'https://www.grigaeventsfze.com';
 
