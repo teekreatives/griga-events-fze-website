@@ -218,13 +218,15 @@ router.use((req, res, next) => {
 /* ── Routes ── */
 
 router.post('/stk-push', async (req, res) => {
+  const { phone, amount, orderId, source, description } = req.body || {};
+  if (source === 'tickets') {
+    return res.status(409).json({ message: 'Tickets are sold out.' });
+  }
   if (!isConfigured()) {
     return res
       .status(503)
       .json({ message: 'M-Pesa is not configured on the server yet. Please pay manually.' });
   }
-
-  const { phone, amount, orderId, source, description } = req.body || {};
 
   const msisdn = normalizePhone(phone);
   if (!msisdn) {

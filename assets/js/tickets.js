@@ -21,6 +21,10 @@
     return document.getElementById(id);
   }
 
+  function ticketsSoldOut() {
+    return document.body.classList.contains('tickets-sold-out');
+  }
+
   function formatPriceAed(amount) {
     if (window.TICKET_PAYMENTS) {
       return TICKET_PAYMENTS.formatAmount(amount, 'AED');
@@ -90,6 +94,7 @@
     if (qtyInput) qtyInput.value = state.quantity;
     var totalEl = $('ticket-card-total');
     if (totalEl) totalEl.textContent = formatPriceAed(getDefaultTotal());
+    if (ticketsSoldOut()) return;
     if (window.GRIGA_TABBY && GRIGA_TABBY.mountPromo) {
       GRIGA_TABBY.mountPromo({
         selector: '#griga-ticket-tabby-promo',
@@ -101,6 +106,7 @@
   }
 
   function openCheckoutModal(preselectedMethod) {
+    if (ticketsSoldOut()) return;
     state.checkoutStep = 1;
     state.order = null;
     state.customer = null;
@@ -528,6 +534,7 @@
   }
 
   function showBotimCheckout() {
+    if (ticketsSoldOut()) return;
     state.checkoutStep = 3;
     state.paymentMethod = 'botim';
     var name = $('ticket-customer-name');
@@ -573,6 +580,7 @@
     if (!payBtn) return;
     payBtn.disabled = !!state.botimPaid;
     payBtn.addEventListener('click', function () {
+      if (ticketsSoldOut()) return;
       if (!validateCheckoutReady()) return;
       var status = $('ticket-botim-status');
       var attempt = ++botimOpenAttempt;
@@ -632,6 +640,7 @@
   }
 
   function consumeBotimReturn() {
+    if (ticketsSoldOut()) return;
     var params = new URLSearchParams(window.location.search);
     var orderNo = params.get('botimOrder');
     if (!orderNo) return;
@@ -875,6 +884,7 @@
   }
 
   function openStripeCheckout() {
+    if (ticketsSoldOut()) return;
     if (!validateCheckoutReady()) return;
     if (window.TICKET_PAYMENTS && TICKET_PAYMENTS.stripeUrl) {
       window.open(TICKET_PAYMENTS.stripeUrl, '_blank', 'noopener,noreferrer');
@@ -883,6 +893,7 @@
   }
 
   function sendPaymentProofViaWhatsApp() {
+    if (ticketsSoldOut()) return;
     if (!validateCheckoutReady()) return;
     if (!window.TICKET_PAYMENTS) {
       showToast('Payment configuration unavailable.');
@@ -904,6 +915,7 @@
   }
 
   function handleCheckoutNext() {
+    if (ticketsSoldOut()) return;
     if (state.checkoutStep === 1) {
       var customer = validateStep1();
       if (!customer) return;
@@ -1086,6 +1098,7 @@
   }
 
   function restoreBotimCheckoutFromHistory() {
+    if (ticketsSoldOut()) return;
     if (new URLSearchParams(window.location.search).get('botimOrder')) return;
     var navEntries = performance.getEntriesByType ? performance.getEntriesByType('navigation') : [];
     var nav = navEntries && navEntries[0];

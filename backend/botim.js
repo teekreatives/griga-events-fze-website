@@ -400,6 +400,7 @@ function allowedSite(origin) {
 }
 
 router.post('/checkout', async (req, res) => {
+  return res.status(409).json({ message: 'Tickets are sold out.' });
   if (!accountReady(activeAccount())) {
     const live = paymentMode() === 'production';
     return res.status(503).json({

@@ -183,6 +183,7 @@ router.get('/config', (req, res) => {
 });
 
 router.post('/eligibility', async (req, res) => {
+  return res.status(409).json({ eligible: false, message: 'Tickets are sold out.' });
   if (!isConfigured()) {
     return res.json({ eligible: true });
   }
@@ -233,6 +234,7 @@ router.post('/eligibility', async (req, res) => {
 });
 
 router.post('/session', async (req, res) => {
+  return res.status(409).json({ message: 'Tickets are sold out.' });
   if (!isConfigured()) {
     return res.status(503).json({ message: 'Tabby is not configured on the server yet.' });
   }

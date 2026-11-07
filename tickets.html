@@ -5,20 +5,20 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>GRIGA Events FZE | Get Your Tickets</title>
-  <meta name="description" content="Reserve your seat for Where There's Smoke Edition 8 on Saturday, 7 November 2026 at MOUNTAIN RESORT BY ESCAPE TIME, Isfini Street, Fujairah. Stripe and M-Pesa payments available." />
-  <meta property="og:title" content="Get Your Tickets | Where There's Smoke Edition 8" />
-  <meta property="og:description" content="Secure your tickets for Where There's Smoke Edition 8 on 7 November 2026 at MOUNTAIN RESORT BY ESCAPE TIME, Isfini Street, Fujairah." />
+  <meta name="description" content="Where There's Smoke Edition 8 tickets are sold out. Saturday, 7 November 2026 at MOUNTAIN RESORT BY ESCAPE TIME, Isfini Street, Fujairah." />
+  <meta property="og:title" content="Tickets Sold Out | Where There's Smoke Edition 8" />
+  <meta property="og:description" content="Tickets for Where There's Smoke Edition 8 are sold out." />
   <meta property="og:url" content="https://grigaeventsfze.com/tickets.html" />
   <meta property="og:site_name" content="GRIGA Events FZE" />
   <meta property="og:image" content="https://grigaeventsfze.com/assets/media/images/where there's smoke edition 8.jpeg?v=20261027" />
   <link rel="canonical" href="https://grigaeventsfze.com/tickets.html" />
   <link rel="stylesheet" href="https://unpkg.com/aos@2.3.4/dist/aos.css" />
   <link rel="stylesheet" href="assets/css/style.css?v=20261007.1" />
-  <link rel="stylesheet" href="assets/css/tickets.css?v=20261029.7" />
+  <link rel="stylesheet" href="assets/css/tickets.css?v=20261107.1" />
   <link rel="stylesheet" href="assets/css/shop.css?v=20261021.1" />
   <link rel="icon" href="assets/media/logos/fav.jpg" type="image/jpeg" />
 </head>
-<body class="tickets-body">
+<body class="tickets-body tickets-sold-out">
   <header class="site-header" id="site-header">
     <div class="container header-inner">
       <div class="logo-branding">
@@ -40,10 +40,14 @@
             <a class="nav-mobile-cta" href="tickets.html">Get Tickets</a>
           </li>
         </ul>
-        <a class="btn btn-secondary header-cta" href="#ticket-card" data-ticket-checkout-open>Get Tickets</a>
+        <a class="btn btn-secondary header-cta" href="#ticket-card">Sold Out</a>
       </nav>
     </div>
   </header>
+
+  <div class="tickets-sold-out-banner" role="status">
+    <p>SOLD OUT</p>
+  </div>
 
   <main>
     <section class="tickets-hero" data-aos="fade-up">
@@ -99,12 +103,12 @@
           <div class="ticket-qty-row">
             <span class="ticket-qty-label">Tickets</span>
             <div class="ticket-qty-control">
-              <button type="button" class="ticket-qty-btn" id="ticket-qty-minus" aria-label="Decrease quantity">−</button>
+              <button type="button" class="ticket-qty-btn" id="ticket-qty-minus" aria-label="Decrease quantity" disabled>−</button>
               <input type="text" id="ticket-quantity" value="1" readonly aria-label="Ticket quantity" />
-              <button type="button" class="ticket-qty-btn" id="ticket-qty-plus" aria-label="Increase quantity">+</button>
+              <button type="button" class="ticket-qty-btn" id="ticket-qty-plus" aria-label="Increase quantity" disabled>+</button>
             </div>
           </div>
-          <button type="button" class="btn btn-primary btn-lg ticket-buy-btn" data-ticket-checkout-open>Proceed to Checkout</button>
+          <button type="button" class="btn btn-primary btn-lg ticket-buy-btn" disabled>Sold Out</button>
           <div id="griga-ticket-tabby-promo" class="griga-tabby-promo"></div>
         </article>
       </div>
@@ -310,7 +314,7 @@
       "url": "https://grigaeventsfze.com/tickets.html",
       "price": "450",
       "priceCurrency": "AED",
-      "availability": "https://schema.org/InStock"
+      "availability": "https://schema.org/SoldOut"
     },
     "organizer": {
       "@type": "Organization",
@@ -329,6 +333,6 @@
   <script src="assets/js/mpesa-stk.js?v=20260813.1"></script>
   <script src="assets/js/tickets-payments.js?v=20261106.1"></script>
   <script src="assets/js/tabby-checkout.js?v=20261021.4"></script>
-  <script src="assets/js/tickets.js?v=20261106.1"></script>
+  <script src="assets/js/tickets.js?v=20261107.1"></script>
 </body>
 </html>
