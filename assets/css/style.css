@@ -1039,7 +1039,7 @@ p {
   max-width: 94%;
   height: 32px;
   margin: 0;
-  padding: 0 0.35rem;
+  padding: 0 0.7rem;
   border: 2px solid #111;
   border-radius: 0;
   background: #3a0006;
@@ -1061,9 +1061,9 @@ p {
   z-index: 1;
   color: #fff;
   font-family: var(--font-display);
-  font-size: 9px;
+  font-size: 14px;
   font-weight: 800;
-  letter-spacing: 0.6px;
+  letter-spacing: 0.12em;
   line-height: 1;
   text-align: center;
   text-transform: uppercase;
@@ -1092,7 +1092,8 @@ p {
   }
 
   .sold-out-badge-label {
-    letter-spacing: 0.3px;
+    font-size: 12px;
+    letter-spacing: 0.08em;
   }
 }
 
