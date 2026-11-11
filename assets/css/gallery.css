@@ -622,10 +622,6 @@
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 8px;
   }
-
-  .edition-photo-extra {
-    display: none;
-  }
 }
 
 @media (prefers-reduced-motion: reduce) {
