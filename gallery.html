@@ -16,7 +16,7 @@
   <meta name="twitter:card" content="summary_large_image" />
   <link rel="stylesheet" href="https://unpkg.com/aos@2.3.4/dist/aos.css" />
   <link rel="stylesheet" href="assets/css/style.css?v=20260812.1" />
-  <link rel="stylesheet" href="assets/css/gallery.css?v=20261111.15" />
+  <link rel="stylesheet" href="assets/css/gallery.css?v=20261111.17" />
   <link rel="preload" as="image" href="assets/media/images/smoke-8th-edition-pics/preview/gallery-banner-1600.webp?v=20261111.16" imagesrcset="assets/media/images/smoke-8th-edition-pics/preview/gallery-banner-1600.webp?v=20261111.16 1600w, assets/media/images/smoke-8th-edition-pics/preview/gallery-banner-1920.webp?v=20261111.16 1920w" imagesizes="100vw" fetchpriority="high" />
   <link rel="icon" href="assets/media/logos/fav.jpg" type="image/jpeg" />
 </head>
@@ -61,28 +61,28 @@
 
     <section class="section edition-photos" aria-label="Edition 8 photographs">
       <div class="edition-photo-grid" data-aos="fade-up" data-aos-duration="900">
-          <figure class="gallery-card" tabindex="0" role="button" aria-label="View a larger photo of the crowd">
+          <figure class="gallery-card" data-file="SAM_0047.jpg" tabindex="0" role="button" aria-label="View a larger photo of the crowd">
             <img src="assets/media/images/smoke-8th-edition-pics/preview/crowd-flag.webp?v=20261111.14" width="800" height="534" alt="Guests celebrating at Where There's Smoke Edition 8" decoding="async" loading="lazy" />
           </figure>
-          <figure class="gallery-card" tabindex="0" role="button" aria-label="View a larger photo of the crowd">
+          <figure class="gallery-card" data-file="SAM_0243.jpg" tabindex="0" role="button" aria-label="View a larger photo of the crowd">
             <img src="assets/media/images/smoke-8th-edition-pics/preview/crowd-wide.webp?v=20261111.14" width="800" height="534" alt="The crowd at Where There's Smoke Edition 8" decoding="async" loading="lazy" />
           </figure>
-          <figure class="gallery-card" tabindex="0" role="button" aria-label="View a larger photo of the stage">
+          <figure class="gallery-card" data-file="SAM_0572.jpg" tabindex="0" role="button" aria-label="View a larger photo of the stage">
             <img src="assets/media/images/smoke-8th-edition-pics/preview/stage.webp?v=20261111.14" width="800" height="534" alt="The crowd cheering at the stage at Where There's Smoke Edition 8" decoding="async" loading="lazy" />
           </figure>
-          <figure class="gallery-card" tabindex="0" role="button" aria-label="View a larger photo of the performer">
+          <figure class="gallery-card" data-file="SAM_0098.jpg" tabindex="0" role="button" aria-label="View a larger photo of the performer">
             <img src="assets/media/images/smoke-8th-edition-pics/preview/performer.webp?v=20261111.14" width="800" height="534" alt="A performer on stage at Where There's Smoke Edition 8" decoding="async" loading="lazy" />
           </figure>
-          <figure class="gallery-card edition-photo-extra" tabindex="0" role="button" aria-label="View a larger photo of a guest with a plate">
+          <figure class="gallery-card edition-photo-extra" data-file="SAM_0179.jpg" tabindex="0" role="button" aria-label="View a larger photo of a guest with a plate">
             <img src="assets/media/images/smoke-8th-edition-pics/preview/plate.webp?v=20261111.14" width="800" height="534" alt="A guest with a plate at Where There's Smoke Edition 8" decoding="async" loading="lazy" />
           </figure>
-          <figure class="gallery-card edition-photo-extra" tabindex="0" role="button" aria-label="View a larger photo of friends">
+          <figure class="gallery-card edition-photo-extra" data-file="SAM_0152(2).jpg" tabindex="0" role="button" aria-label="View a larger photo of friends">
             <img src="assets/media/images/smoke-8th-edition-pics/preview/friends.webp?v=20261111.14" width="800" height="534" alt="Friends together at Where There's Smoke Edition 8" decoding="async" loading="lazy" />
           </figure>
-          <figure class="gallery-card edition-photo-extra" tabindex="0" role="button" aria-label="View a larger photo of guests">
+          <figure class="gallery-card edition-photo-extra" data-file="SAM_0160.jpg" tabindex="0" role="button" aria-label="View a larger photo of guests">
             <img src="assets/media/images/smoke-8th-edition-pics/preview/guests.webp?v=20261111.14" width="800" height="534" alt="Guests on the red carpet at Where There's Smoke Edition 8" decoding="async" loading="lazy" />
           </figure>
-          <figure class="gallery-card edition-photo-extra" tabindex="0" role="button" aria-label="View a larger photo of the grill">
+          <figure class="gallery-card edition-photo-extra" data-file="SAM_0991.jpg" tabindex="0" role="button" aria-label="View a larger photo of the grill">
             <img src="assets/media/images/smoke-8th-edition-pics/preview/grill.webp?v=20261111.14" width="800" height="534" alt="The grill at Where There's Smoke Edition 8" decoding="async" loading="lazy" />
           </figure>
         </div>
@@ -139,11 +139,27 @@
 
   <div id="gallery-lightbox" class="gallery-lightbox" aria-hidden="true">
     <div class="lightbox-inner" role="dialog" aria-modal="true" aria-labelledby="lightbox-title">
+      <div class="lightbox-toolbar">
+        <button type="button" class="lightbox-tool" data-lightbox-close aria-label="Back">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5 L8 12 L15 19" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <div class="lightbox-actions">
+          <button type="button" class="lightbox-tool lightbox-heart" aria-label="Save photo" aria-pressed="false">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20s-7-4.4-7-9.1C5 8 6.8 6.2 9.1 6.2c1.3 0 2.4.6 2.9 1.6.5-1 1.6-1.6 2.9-1.6 2.3 0 4.1 1.8 4.1 4.7C19 15.6 12 20 12 20z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>
+          </button>
+          <a class="lightbox-tool lightbox-download" href="" download aria-label="Download photo">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v10" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/><path d="M8 11l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/><path d="M5 19h14" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
+          </a>
+          <button type="button" class="lightbox-tool lightbox-share" aria-label="Share photo">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 5h5v5" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/><path d="M19 5l-8 8" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/><path d="M16 13.5V18a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V9a1 1 0 0 1 1-1h4.5" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+        </div>
+      </div>
       <button type="button" class="lightbox-close" data-lightbox-close aria-label="Close gallery overlay">×</button>
       <div class="lightbox-media">
-        <img src="" alt="" loading="eager" />
+        <img src="" alt="" />
       </div>
-      <p class="lightbox-caption" id="lightbox-title"></p>
+      <p class="lightbox-filename" id="lightbox-title"></p>
     </div>
   </div>
 
@@ -160,7 +176,7 @@
   </script>
 
   <script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
-  <script src="assets/js/gallery.js?v=20251117.1"></script>
+  <script src="assets/js/gallery.js?v=20261111.17"></script>
   <script src="assets/js/main.js?v=20251128.12"></script>
 </body>
 </html>

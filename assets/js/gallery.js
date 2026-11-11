@@ -3,8 +3,11 @@ document.addEventListener('DOMContentLoaded', () => {
   const galleryCards = document.querySelectorAll('.gallery-card');
   const lightbox = document.getElementById('gallery-lightbox');
   const lightboxImage = lightbox?.querySelector('.lightbox-media img');
-  const lightboxCaption = lightbox?.querySelector('.lightbox-caption');
-  const closeButton = lightbox?.querySelector('[data-lightbox-close]');
+  const filenameEl = lightbox?.querySelector('.lightbox-filename');
+  const downloadLink = lightbox?.querySelector('.lightbox-download');
+  const heartButton = lightbox?.querySelector('.lightbox-heart');
+  const shareButton = lightbox?.querySelector('.lightbox-share');
+  const savedPhotos = new Set();
   let activeFilter = 'all';
 
   const setFilter = (filter) => {
@@ -37,11 +40,23 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!lightbox || !lightboxImage) return;
     const sourceImg = card.querySelector('img');
     if (!sourceImg) return;
-    lightboxImage.src = sourceImg.src;
+    const fileName = card.getAttribute('data-file');
+    const fullSrc = fileName
+      ? `assets/media/images/smoke-8th-edition-pics/${encodeURIComponent(fileName).replace(/%2F/g, '/')}`
+      : sourceImg.currentSrc || sourceImg.src;
+    lightboxImage.src = fullSrc;
     lightboxImage.alt = sourceImg.alt;
-    if (lightboxCaption) {
-      lightboxCaption.textContent = '';
+    if (filenameEl) {
+      filenameEl.textContent = fileName || '';
     }
+    if (downloadLink) {
+      downloadLink.href = fullSrc;
+      downloadLink.setAttribute('download', fileName || 'photo.jpg');
+    }
+    if (heartButton) {
+      heartButton.setAttribute('aria-pressed', savedPhotos.has(fileName || fullSrc) ? 'true' : 'false');
+    }
+    lightbox.dataset.currentFile = fileName || fullSrc;
     lightbox.setAttribute('aria-hidden', 'false');
     lightbox.classList.add('open');
     document.body.style.overflow = 'hidden';
@@ -64,9 +79,9 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  if (closeButton) {
-    closeButton.addEventListener('click', closeLightbox);
-  }
+  lightbox?.querySelectorAll('[data-lightbox-close]').forEach((button) => {
+    button.addEventListener('click', closeLightbox);
+  });
 
   if (lightbox) {
     lightbox.addEventListener('click', (event) => {
@@ -82,5 +97,39 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  setFilter('all');
+  if (heartButton) {
+    heartButton.addEventListener('click', () => {
+      const key = lightbox?.dataset.currentFile;
+      if (!key) return;
+      const saved = savedPhotos.has(key);
+      if (saved) {
+        savedPhotos.delete(key);
+      } else {
+        savedPhotos.add(key);
+      }
+      heartButton.setAttribute('aria-pressed', saved ? 'false' : 'true');
+    });
+  }
+
+  if (shareButton) {
+    shareButton.addEventListener('click', async () => {
+      const fileName = filenameEl?.textContent || 'Edition 8 photo';
+      const href = downloadLink?.href;
+      if (!href) return;
+      const url = new URL(href, window.location.href).href;
+      if (navigator.share) {
+        try {
+          await navigator.share({ title: fileName, url });
+        } catch (error) {
+          if (error && error.name === 'AbortError') return;
+        }
+        return;
+      }
+      window.open(url, '_blank', 'noopener');
+    });
+  }
+
+  if (filterButtons.length) {
+    setFilter('all');
+  }
 });
