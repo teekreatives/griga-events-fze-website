@@ -552,6 +552,8 @@
     align-items: center;
     justify-content: center;
     padding: 0 0.35rem;
+    overflow: hidden;
+    touch-action: pan-y;
   }
 
   .lightbox-media img {
